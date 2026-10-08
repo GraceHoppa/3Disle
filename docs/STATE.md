@@ -22,12 +22,21 @@ Where the project stands. Update at the end of every session (newest log entry a
   through the dev server. A project's `scale` fixes a file saved at the wrong size (viewer and
   editor).
 - **Start page** (`index.html`, titled 3Disle): tours, models, projects.
+- **FPV quad** (`public/models/drone/`), built only from engine assemblies: frame, motors, props,
+  ESC / FC / VTX stack, battery, camera, receiver, antennas and 36 real wires (battery leads,
+  3 phases per motor, the 8-pin stack cable with DShot, CRSF, video through the OSD, 5 V / 9 V,
+  RF). A Throttle slider drives prop and bell spin, every current and live readouts (rpm,
+  electrical Hz, amps, volts, watts, DShot value; author's numbers, approx.). Tour quad → FC →
+  MCU; dives into the ESC (battery bus, shunt, gate signals, phases), the motor (bell spins,
+  windings light by phase) and the battery. The throttle carries across dives.
+- **Engine additions**: `wires` (3D, by kind, stretch with Disassemble), `controls` / `readouts`
+  / rules (`logic.ts`), link `kind` / `level`, layer `base`, prop blades, `pulse`, rings that spin
+  about their centre. Downloaded GLB projects are no longer listed (owner, 2026-10-08: build
+  models with the engine instead); `public/projects/motor` stays in the repo.
 - **Data**: RTX 5070 Ti (card → PCB → package → die, tour, explicit links, each bus drawn once),
-  Pixel 6 (3 levels), FPV flight controller tour (FC → MCU); FPV ESC, motor and battery models
-  listed on the start page. First downloaded model: `public/projects/motor`, a brushless
-  outrunner (CC BY 4.0, credit from the file) with 13 named parts.
-- **Checks** (2026-10-08): lint, typecheck, 84 unit tests, format, build, size (device data not
-  counted); browser tests 9 passed, 2 skipped (Cut, X-Ray) as of `f0c1403`. CI runs them on
+  Pixel 6 (3 levels).
+- **Checks** (2026-10-08): lint, typecheck, 96 unit tests, format, build, size (device data not
+  counted); browser tests 13 passed, 2 skipped (Cut, X-Ray). CI runs them on
   every push; its first run has not been looked at.
 
 ## Known bugs and weak spots
@@ -35,7 +44,8 @@ Where the project stands. Update at the end of every session (newest log entry a
 - Labels on concentric parts (the motor's bell, magnets, shaft) line up in a column.
 - Disassemble scatters a GLB project: `explode()` pushes every part outward from the model's
   centre, so the motor's leads fly off screen.
-- Very shiny metals in downloaded GLBs (roughness ~0) bloom to white.
+- Very shiny metals and near-white parts (white plastic, connectors) bloom to white: the bloom
+  threshold from GPU → Atom suits its dark card. Engine data now avoids near-white colours.
 - The die's thin-film sheen is a static painted gradient, not the reference's angle-dependent
   shader.
 - No depth of field.
@@ -63,3 +73,11 @@ battery models. First downloaded model: the brushless motor as a project with 13
 credited from its file; projects got `scale` for files saved at the wrong size. Next: `PLAN.md`
 0.2 continues with the owner's other models (SG90 servo, Arduino Nano, ArduCopter FC), one at a
 time; then 1.3 story.
+
+Later the same day: the owner dropped downloaded models (laptop, SG90 and the rest; their
+untracked folders `public/projects/servo-sg90`, `framework16-board` await his OK to delete) and
+asked for a full teardown page built with the engine. Added 3D wires with flow kinds, controls
+and rules, and the FPV quad tour with real wiring, throttle and dives into ESC, FC and motor.
+Run skill `.claude/skills/run-3disle` drives the app headless for screenshots. Next: owner's
+notes on the quad; ESC heatsinks hide its buses (lift them or open on Disassemble); camera tilt;
+battery wrap; select → isolate; continuous zoom into dives.
