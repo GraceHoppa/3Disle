@@ -412,6 +412,8 @@ interface Tour {
   subtitle?: string;
   /** Landing title as separate lines (default: the tour's name). */
   heading?: string[];
+  /** Familiar sizes on the scale ruler, in metres (default: a person … an atom). */
+  ruler?: { marks?: { m: number; text: string }[] };
   /** Acts the levels group into (numbered I, II, III … on the landing card). */
   acts?: { title: string; levels?: number[] }[];
   /** Shown after the last level. */
@@ -741,6 +743,7 @@ tickers.add(() => {
   const z = zoom >= 10 ? Math.round(zoom).toLocaleString('en') : zoom.toFixed(1);
   const text = `≈ ${fmtLength(across)} across · ×${z} · about ${like[1]}`;
   if (text !== fovText) fovEl.textContent = fovText = text;
+  rideRuler(across);
   return false;
 });
 
@@ -760,21 +763,70 @@ const finale = document.getElementById('finale')!;
 const ruler = document.getElementById('ruler')!;
 let landingShown = false;
 
+/** Familiar sizes along the ruler (metres), as in GPU → Atom; a tour can list its own. */
+const RULER_MARKS = [
+  { m: 1.7, text: 'a person' },
+  { m: 1e-2, text: 'a fingernail' },
+  { m: 7e-5, text: 'a hair' },
+  { m: 7e-6, text: 'a blood cell' },
+  { m: 1e-7, text: 'a virus' },
+  { m: 2e-9, text: 'DNA' },
+  { m: 2e-10, text: 'an atom' },
+];
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+const sup = (n: number) => `${n < 0 ? '⁻' : ''}${String(Math.abs(n)).replace(/\d/g, (d) => SUP[+d])}`;
+
+/** Ruler span in decades (log10 of metres) and its live marker, set by buildRuler(). */
+let rulerSpan = { top: 0, bottom: -1 };
+let rulerMarker: { el: HTMLElement; label: HTMLElement; text: string } | null = null;
+const rulerY = (m: number) => (rulerSpan.top - Math.log10(m)) / (rulerSpan.top - rulerSpan.bottom);
+
+/**
+ * GPU → Atom's logarithmic ruler, sized to the tour: a tick per power of ten, familiar sizes
+ * along it, a dot per level, and a marker that rides it with the live width of the view.
+ */
 function buildRuler() {
   ruler.replaceChildren();
+  rulerMarker = null;
   if (!tour) return;
-  const logs = tour.levels.map((l) => Math.log10(metres(l.scale ?? '')));
-  const hi = Math.max(...logs.filter(Number.isFinite));
-  const lo = Math.min(...logs.filter(Number.isFinite));
-  tour.levels.forEach((l, i) => {
-    const li = document.createElement('li');
-    li.textContent = l.scale ?? '';
-    // Log position, so each tick sits where its size belongs; evenly spaced if sizes are missing.
-    const t =
-      Number.isFinite(logs[i]) && hi > lo ? (hi - logs[i]) / (hi - lo) : i / Math.max(1, tour!.levels.length - 1);
-    li.style.top = `${t * 100}%`;
-    ruler.append(li);
+  const logs = tour.levels.map((l) => Math.log10(metres(l.scale ?? ''))).filter(Number.isFinite);
+  if (!logs.length) return;
+  rulerSpan = { top: Math.ceil(Math.max(...logs) * 2) / 2 + 0.5, bottom: Math.floor(Math.min(...logs)) - 1 };
+  const at = (el: HTMLElement, m: number) => (el.style.top = `${rulerY(m) * 100}%`);
+  const add = (cls: string, m: number, text = '') => {
+    const el = document.createElement('div');
+    el.className = cls;
+    el.textContent = text;
+    at(el, m);
+    track.append(el);
+    return el;
+  };
+  const track = document.createElement('div');
+  track.className = 'ruler-track';
+  for (let e = Math.floor(rulerSpan.top); e >= Math.ceil(rulerSpan.bottom); e--)
+    add('ruler-tick', 10 ** e, `10${sup(e)}`);
+  for (const { m, text } of tour.ruler?.marks ?? RULER_MARKS) {
+    const y = rulerY(m);
+    if (y >= 0 && y <= 1) add('ruler-mark', m, text);
+  }
+  tour.levels.forEach((l) => {
+    const m = metres(l.scale ?? '');
+    if (Number.isFinite(m)) add('ruler-level', m).title = l.scale ?? '';
   });
+  const el = add('ruler-marker', 10 ** rulerSpan.top);
+  const label = document.createElement('span');
+  el.append(label);
+  rulerMarker = { el, label, text: '' };
+  ruler.append(track);
+}
+
+/** Move the ruler's marker to the current width of the view (mm). */
+function rideRuler(acrossMm: number) {
+  if (!rulerMarker) return;
+  const y = Math.min(1, Math.max(0, rulerY(Math.max(acrossMm / 1000, 1e-13))));
+  rulerMarker.el.style.top = `${y * 100}%`;
+  const text = fmtLength(acrossMm);
+  if (text !== rulerMarker.text) rulerMarker.label.textContent = rulerMarker.text = text;
 }
 
 const landingUp = () => !landing.hidden && !landing.classList.contains('leaving');
@@ -820,7 +872,9 @@ function drawStory(onTour = true) {
     landing.hidden = finale.hidden = true;
     return;
   }
-  [...ruler.children].forEach((li, i) => li.setAttribute('aria-current', String(onTour && i === tour!.at)));
+  ruler
+    .querySelectorAll('.ruler-level')
+    .forEach((d, i) => d.setAttribute('aria-current', String(onTour && i === tour!.at)));
   if (!landingShown && tour.at === 0 && !new URLSearchParams(location.search).has('nointro')) {
     landingShown = true;
     fillLanding(tour);

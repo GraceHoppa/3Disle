@@ -31,10 +31,11 @@ test('a tour opens on its landing card; the last ▶ opens the finale', async ({
   await expect(page.locator('#landing')).toBeVisible({ timeout: 90_000 });
   await expect(page.locator('#landing h1')).toHaveText('Inside the\nGeForce RTX 5070 Ti', { useInnerText: true });
   await expect(page.locator('#landing .acts li')).toHaveText(['IThe board', 'IIThe silicon']);
-  await expect(page.locator('#ruler li')).toHaveCount(4);
+  await expect(page.locator('#ruler .ruler-level')).toHaveCount(4);
   await page.locator('#explore-own').click();
   await expect(page.locator('#landing')).toBeHidden();
-  await expect(page.locator('#ruler li[aria-current="true"]')).toHaveText('30 cm');
+  await expect(page.locator('#ruler .ruler-level[aria-current="true"]')).toHaveAttribute('title', '30 cm');
+  await expect(page.locator('#ruler .ruler-mark').first()).toHaveText('a fingernail'); // the RTX tour's ruler starts at 1 m
   expect(errors).toEqual([]);
 });
 
@@ -175,6 +176,17 @@ test('on the landing, Esc explores and Enter starts the tour', async ({ page }) 
   await page.keyboard.press('Enter');
   await expect(page.locator('#landing')).toBeHidden();
   await expect(page.locator('#auto')).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('the ruler marker rides down as you zoom in', async ({ page }) => {
+  await page.goto('/viewer.html?model=rtx5070ti/tour.json&nointro');
+  await loaded(page);
+  const top = () => page.locator('.ruler-marker').evaluate((e) => parseFloat((e as HTMLElement).style.top));
+  await expect.poll(top).toBeGreaterThan(0);
+  const before = await top();
+  await page.mouse.move(480, 270);
+  for (let i = 0; i < 6; i++) await page.mouse.wheel(0, -400);
+  await expect.poll(top, { timeout: 10_000 }).toBeGreaterThan(before + 2);
 });
 
 test('a bad file shows an error instead of breaking the page', async ({ page }) => {

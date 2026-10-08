@@ -769,45 +769,91 @@ body.drag #gl {
   outline-offset: 2px;
 }
 
-/* Scale ruler: one tick per level on a log scale, the current level lit. */
+/* GPU → Atom's log ruler: decades, familiar sizes, a dot per level, a marker riding the view. */
 #ruler {
   position: fixed;
-  right: clamp(16px, 2.5vw, 32px);
+  right: calc(clamp(16px, 2.5vw, 32px) + 70px);
   top: 50%;
+  width: 90px;
+  height: min(52vh, 460px);
   transform: translateY(-50%);
-  height: min(46vh, 380px);
-  margin: 0;
-  padding: 0;
-  border-right: 1px solid var(--faint);
-  list-style: none;
+  color: var(--dim);
+  font: 10px var(--mono);
+  pointer-events: none;
 }
 #ruler[hidden] {
   display: none;
 }
-#ruler li {
+.ruler-track {
   position: absolute;
   right: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--dim);
-  font: 11px var(--mono);
-  white-space: nowrap;
-  transform: translateY(-50%);
-  transition: color 0.3s;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(225, 240, 215, 0.3) 6%,
+    rgba(225, 240, 215, 0.3) 94%,
+    transparent
+  );
 }
-#ruler li::after {
+.ruler-tick,
+.ruler-mark,
+.ruler-level,
+.ruler-marker {
+  position: absolute;
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+.ruler-tick {
+  right: 0;
+  padding-right: 7px;
+}
+.ruler-tick::after {
   content: '';
-  width: 10px;
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  width: 6px;
   height: 1px;
   background: currentColor;
 }
-#ruler li[aria-current='true'] {
+.ruler-mark {
+  right: 36px;
   color: var(--green-soft);
+  font-style: italic;
 }
-#ruler li[aria-current='true']::after {
-  width: 18px;
+.ruler-level {
+  right: -3px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--dim);
+  border-radius: 50%;
+  background: var(--bg);
+}
+.ruler-level[aria-current='true'] {
+  border-color: var(--green);
+}
+.ruler-marker {
+  right: -6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
   background: var(--green);
+  box-shadow: 0 0 12px var(--green);
+}
+/* The live value sits right of the track, clear of the decade labels on the left. */
+.ruler-marker span {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--white);
+  font-size: 11px;
+  transform: translateY(-50%);
 }
 @media (max-width: 600px) {
   #ruler {
