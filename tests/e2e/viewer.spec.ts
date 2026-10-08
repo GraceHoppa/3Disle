@@ -141,6 +141,26 @@ test('a project from a downloaded GLB shows its parts by name and credits its au
   expect(errors).toEqual([]);
 });
 
+test('level text rises into place on a level change, and stays still with reduced motion', async ({ page }) => {
+  const moving = () =>
+    page.evaluate(() =>
+      ['.scale', '.ttl', '.txt'].map((s) => document.querySelector(`#hud ${s}`)!.getAnimations().length),
+    );
+  await page.goto('/viewer.html?model=rtx5070ti/tour.json&nointro');
+  await loaded(page);
+  await expect(page.locator('#hud .ttl')).toHaveText('GeForce RTX 5070 Ti');
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('#hud .ttl')).toHaveText('Main PCB', { timeout: 60_000 });
+  expect(await moving()).toEqual([1, 1, 1]);
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/viewer.html?model=rtx5070ti/tour.json&nointro');
+  await loaded(page);
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('#hud .ttl')).toHaveText('Main PCB', { timeout: 60_000 });
+  expect(await moving()).toEqual([0, 0, 0]);
+});
+
 test('a bad file shows an error instead of breaking the page', async ({ page }) => {
   await page.goto('/viewer.html?model=rtx5070ti/die.json');
   await loaded(page);

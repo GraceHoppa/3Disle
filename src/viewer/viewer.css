@@ -497,21 +497,23 @@ body.drag #gl {
 }
 #hud .scale {
   margin: 0;
-  font: 200 clamp(44px, 8vw, 84px) / 1 var(--mono);
+  font: 300 clamp(40px, 7vw, 88px) / 1 var(--mono);
   letter-spacing: -0.02em;
+  text-shadow: 0 0 24px rgba(118, 185, 0, 0.35);
 }
 #hud .ttl {
-  margin: 6px 0;
+  margin: 10px 0 0;
   color: var(--green-soft);
-  font-size: 18px;
+  font-size: clamp(15px, 1.6vw, 20px);
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 #hud .txt {
-  margin: 0 0 12px;
+  margin: 8px 0 14px;
   color: var(--dim);
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 1.5;
 }
 #hud .cap {
   margin: 0;

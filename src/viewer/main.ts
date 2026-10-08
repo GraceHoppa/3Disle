@@ -616,6 +616,42 @@ function syncTour() {
   return true;
 }
 
+const still = matchMedia('(prefers-reduced-motion: reduce)');
+let hudShown = '';
+
+/**
+ * Fill the HUD. When the level changes, scale, title and text rise into place one after another
+ * and the caption follows, with GPU → Atom's timings; redrawing the same level changes nothing.
+ */
+function fillHud(scale: string, ttl: string, txt: string, cap: string) {
+  const els = ['.scale', '.ttl', '.txt', '.cap'].map((s) => hud.querySelector<HTMLElement>(s)!);
+  const key = [scale, ttl, txt, cap].join('\n');
+  if (key === hudShown) return;
+  const sameLevel = hudShown.split('\n').slice(0, 3).join('\n') === [scale, ttl, txt].join('\n');
+  hudShown = key;
+  [scale, ttl, txt, cap].forEach((text, i) => (els[i].textContent = text));
+  if (still.matches) return;
+  if (!sameLevel)
+    els.slice(0, 3).forEach((el, i) => {
+      el.getAnimations().forEach((a) => a.cancel());
+      el.animate(
+        [
+          { opacity: 0, transform: 'translateY(14px)', filter: 'blur(6px)' },
+          { opacity: 1, transform: 'none', filter: 'blur(0px)' },
+        ],
+        { duration: 900, delay: 100 + i * 80, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' },
+      );
+    });
+  els[3].getAnimations().forEach((a) => a.cancel());
+  els[3].animate(
+    [
+      { opacity: 0, transform: 'translateY(6px)' },
+      { opacity: 1, transform: 'none' },
+    ],
+    { duration: 450, delay: sameLevel ? 0 : 340, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'both' },
+  );
+}
+
 function drawHud() {
   const onTour = syncTour();
   drawStory(onTour);
@@ -626,17 +662,16 @@ function drawHud() {
   if (!canStep || !model) return;
   if (tour && onTour) {
     const L = tour.levels[tour.at];
-    hud.querySelector('.scale')!.textContent = L.scale ?? '';
-    hud.querySelector('.ttl')!.textContent = L.title ?? '';
-    hud.querySelector('.txt')!.textContent = L.text ?? '';
-    hud.querySelector('.cap')!.textContent = L.caption ?? '';
+    fillHud(L.scale ?? '', L.title ?? '', L.text ?? '', L.caption ?? '');
     counter.textContent = `${n(tour.at + 1)} / ${n(tour.levels.length)}`;
   } else {
     const next = nextDive();
-    hud.querySelector('.scale')!.textContent = scaleLabel(model);
-    hud.querySelector('.ttl')!.textContent = trail.at(-1)?.name ?? model.name;
-    hud.querySelector('.txt')!.textContent = (model.userData.info as string) || '';
-    hud.querySelector('.cap')!.textContent = next ? `Next: ${next.name}` : 'Deepest level';
+    fillHud(
+      scaleLabel(model),
+      trail.at(-1)?.name ?? model.name,
+      (model.userData.info as string) || '',
+      next ? `Next: ${next.name}` : 'Deepest level',
+    );
     counter.textContent = `Level ${n(trail.length)}`;
   }
   (document.getElementById('prev') as HTMLButtonElement).disabled = tour ? tour.at === 0 : trail.length < 2;
