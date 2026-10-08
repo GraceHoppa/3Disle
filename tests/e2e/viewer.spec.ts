@@ -104,6 +104,29 @@ test('Labels (L) tag the main parts and go away again', async ({ page }) => {
   await expect(page.locator('.tag')).toHaveCount(0);
 });
 
+test('labels never overlap each other and stay under the landing card', async ({ page }) => {
+  await page.goto('/viewer.html?model=rtx5070ti/tour.json');
+  await expect(page.locator('#landing')).toBeVisible({ timeout: 90_000 });
+  await page.keyboard.press('l');
+  await expect(page.locator('#labels')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#tags')).toBeHidden();
+  await page.locator('#explore-own').click();
+  await expect(page.locator('#landing')).toBeHidden();
+  await expect(page.locator('.tag:not([hidden])').first()).toBeVisible();
+  const boxes = await page
+    .locator('.tag:not([hidden])')
+    .evaluateAll((els) =>
+      els.map((e) => e.getBoundingClientRect()).map((r) => ({ x: r.x, y: r.y, w: r.width, h: r.height })),
+    );
+  for (let i = 0; i < boxes.length; i++)
+    for (let j = i + 1; j < boxes.length; j++) {
+      const a = boxes[i];
+      const b = boxes[j];
+      const overlap = a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+      expect(overlap, `tags ${i} and ${j} overlap`).toBe(false);
+    }
+});
+
 test('a bad file shows an error instead of breaking the page', async ({ page }) => {
   await page.goto('/viewer.html?model=rtx5070ti/die.json');
   await loaded(page);

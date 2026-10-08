@@ -142,6 +142,7 @@ const tagLayer = document.getElementById('tags')!;
 const labelsButton = document.getElementById('labels')!;
 let labelsOn = false;
 let tagged: { part: THREE.Object3D; el: HTMLElement; top: THREE.Vector3 }[] = [];
+let tagBox = new THREE.Box3();
 
 function buildTags() {
   tagLayer.replaceChildren();
@@ -172,34 +173,58 @@ function buildTags() {
     const c = box.getCenter(new THREE.Vector3());
     return { part, el, top: new THREE.Vector3(c.x, box.max.y, c.z) };
   });
+  tagBox = boxOf(model);
 }
 
 const projected = new THREE.Vector3();
-/** Place tags on screen; nudge each one up until it clears the tags already placed. */
+const corner = new THREE.Vector3();
+
+/** How many tags fit: one per ~70 px of the model's diagonal on screen, at least three. */
+function tagBudget() {
+  const min = new THREE.Vector2(Infinity, Infinity);
+  const max = new THREE.Vector2(-Infinity, -Infinity);
+  for (let i = 0; i < 8; i++) {
+    corner
+      .set(
+        i & 1 ? tagBox.max.x : tagBox.min.x,
+        i & 2 ? tagBox.max.y : tagBox.min.y,
+        i & 4 ? tagBox.max.z : tagBox.min.z,
+      )
+      .project(camera);
+    const x = (corner.x + 1) * 0.5 * innerWidth;
+    const y = (1 - corner.y) * 0.5 * innerHeight;
+    min.set(Math.min(min.x, x), Math.min(min.y, y));
+    max.set(Math.max(max.x, x), Math.max(max.y, y));
+  }
+  return Math.max(3, Math.floor(min.distanceTo(max) / 70));
+}
+
+/**
+ * Place tags on screen, biggest parts first. A tag that would cover one already placed is
+ * nudged up at most twice, then left out; so is anything past the budget for the model's size
+ * on screen (more appear as you zoom in).
+ */
 function placeTags() {
   if (!tagged.length) return false;
   const placed: { x: number; y: number; w: number }[] = [];
-  const order = tagged
-    .map((t) => {
-      projected.copy(t.top).project(camera);
-      return { t, x: (projected.x + 1) * 0.5 * innerWidth, y: (1 - projected.y) * 0.5 * innerHeight, z: projected.z };
-    })
-    .sort((a, b) => b.y - a.y);
-  for (const { t, x, y, z } of order) {
-    const show = z < 1 && x > 0 && x < innerWidth && y > 0 && y < innerHeight;
+  const budget = tagBudget();
+  for (const t of tagged) {
+    projected.copy(t.top).project(camera);
+    const x = (projected.x + 1) * 0.5 * innerWidth;
+    const y = (1 - projected.y) * 0.5 * innerHeight;
+    const show = placed.length < budget && projected.z < 1 && x > 0 && x < innerWidth && y > 0 && y < innerHeight;
     t.el.hidden = !show;
     if (!show) continue;
     const w = t.el.offsetWidth || 80;
     let ty = y - 14;
-    // Up to two nudges; a tag that still collides is left out (more appear as you zoom in).
     let clear = false;
     for (let k = 0; k < 3; k++) {
-      const hit = placed.find((p) => Math.abs(p.x - x) < (p.w + w) / 2 + 4 && Math.abs(p.y - ty) < 20);
+      const hit = placed.find((p) => Math.abs(p.x - x) < (p.w + w) / 2 + 8 && Math.abs(p.y - ty) < 22);
       if (!hit) {
         clear = true;
         break;
       }
-      ty = hit.y - 21;
+      ty = hit.y - 23;
     }
     t.el.hidden = !clear;
     if (!clear) continue;

@@ -708,6 +708,7 @@ body.drag #gl {
 .covered #hud,
 .covered #counter,
 .covered .tools,
+.covered #tags,
 .covered #inspector {
   visibility: hidden;
 }
