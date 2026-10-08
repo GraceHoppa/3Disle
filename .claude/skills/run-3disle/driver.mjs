@@ -97,8 +97,12 @@ try {
     else if (cmd === 'key') await page.keyboard.press(arg);
     else if (cmd === 'click') await page.locator(arg).first().click();
     else if (cmd === 'fill') {
-      const [sel, value] = arg.split('=');
-      await page.locator(sel).fill(value);
+      // The value follows the last '=', so selectors like input[data-control=throttle] work.
+      const at = arg.lastIndexOf('=');
+      await page
+        .locator(arg.slice(0, at))
+        .first()
+        .fill(arg.slice(at + 1));
     } else if (cmd === 'text') console.log(`${arg}: ${(await page.locator(arg).first().innerText()).trim()}`);
     else if (cmd === 'eval') console.log(`${arg} => ${JSON.stringify(await page.evaluate(arg))}`);
     else if (cmd === 'shot') {

@@ -1,6 +1,21 @@
 {
-  "name": "Inside an FPV flight controller",
+  "name": "Inside a 5-inch FPV quad",
+  "heading": ["Inside a", "5-inch FPV quad"],
+  "lead": "Three levels · 30 cm to 10 mm",
+  "subtitle": "A freestyle quad built part by part: every wire carries what it really carries. Move the throttle and watch the current, the motor phases and the commands change. Dive off the path into the ESC, a motor or the battery.",
+  "acts": [
+    { "title": "The machine", "levels": [0] },
+    { "title": "The brain", "levels": [1, 2] }
+  ],
   "levels": [
+    {
+      "file": "quad.json",
+      "scale": "30 cm",
+      "title": "5-inch FPV quad",
+      "text": "Battery to ESC on two 12 AWG leads, ESC to each motor on three phase wires, the flight controller above the ESC sending four DShot commands down an 8-wire cable. Camera, VTX and receiver hang off the FC's pads.",
+      "caption": "Over 100 A flat out, from a pack you hold in one hand.",
+      "into": "FC board"
+    },
     {
       "file": "fc.json",
       "scale": "36 mm",
@@ -17,10 +32,8 @@
       "caption": "The whole flight runs through 64 pins."
     }
   ],
-  "lead": "Two levels · 36 mm to 10 mm",
-  "subtitle": "From a 5-inch quad’s flight controller down to the microcontroller that flies it: it reads its gyro thousands of times a second and answers with four motor commands.",
   "finale": {
     "title": "64 pins fly the quad.",
-    "text": "Every stick input, gyro sample and motor command passes through this 10 mm chip."
+    "text": "Every stick input, gyro sample and motor command passes through this 10 mm chip, and every amp the motors pull is switched by the ESC below it."
   }
 }

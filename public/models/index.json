@@ -1,8 +1,13 @@
 [
   {
-    "name": "Inside an FPV flight controller",
+    "name": "Inside a 5-inch FPV quad",
     "file": "drone/tour.json",
-    "note": "Tour · arrows"
+    "note": "Tour · throttle · dives"
+  },
+  {
+    "name": "5-inch FPV quad",
+    "file": "drone/quad.json",
+    "note": "Wiring · throttle"
   },
   {
     "name": "Inside the RTX 5070 Ti",

@@ -17,9 +17,11 @@ test('lists the models and opens the drone tour first', async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto('/viewer.html');
   await loaded(page);
-  await expect(page.locator('#builtin button')).toHaveCount(8);
-  await expect(page.locator('#counter')).toHaveText('01 / 02');
-  await expect(page.locator('#hud .ttl')).toHaveText('SpeedyBee F405 V5 flight controller');
+  const listed = async (url: string) => ((await (await page.request.get(url)).json()) as unknown[]).length;
+  const models = (await listed('/models/index.json')) + (await listed('/projects/index.json'));
+  await expect(page.locator('#builtin button')).toHaveCount(models);
+  await expect(page.locator('#counter')).toHaveText('01 / 03');
+  await expect(page.locator('#hud .ttl')).toHaveText('5-inch FPV quad');
   await expect(page.locator('#xray')).toBeHidden();
   await expect(page.locator('.cut')).toBeHidden();
   expect(errors).toEqual([]);
@@ -210,4 +212,26 @@ test.describe('phone', () => {
     await loaded(page);
     await expect(page.locator('#title')).toHaveText('Google Pixel 6');
   });
+});
+
+test('the quad: throttle drives the readouts and the wiring follows Disassemble', async ({ page }) => {
+  const errors = collectErrors(page);
+  await page.goto('/viewer.html?model=drone/quad.json');
+  await loaded(page);
+  const panel = page.locator('#controls');
+  await expect(panel).toBeVisible();
+  await expect(panel.locator('output')).toHaveText('30 %');
+  const total = panel.locator('dt', { hasText: 'Total current' }).locator('xpath=following-sibling::dd[1]');
+  const at30 = await total.innerText();
+  await panel.locator('input[data-control="throttle"]').fill('100');
+  await expect(panel.locator('output')).toHaveText('100 %');
+  await expect(total).toHaveText('153 A');
+  expect(at30).not.toBe('153 A');
+  await panel.locator('input[data-control="throttle"]').fill('0');
+  await expect(panel.locator('dt', { hasText: 'Motor speed' }).locator('xpath=following-sibling::dd[1]')).toHaveText(
+    '0 rpm',
+  );
+  await page.locator('#explode').fill('1');
+  await page.waitForTimeout(500);
+  expect(errors).toEqual([]);
 });

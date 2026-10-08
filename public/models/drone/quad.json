@@ -1,0 +1,2162 @@
+{
+  "name": "5-inch FPV quad",
+  "footprint": [240, 240],
+  "controls": [
+    {
+      "id": "throttle",
+      "label": "Throttle",
+      "min": 0,
+      "max": 100,
+      "value": 30,
+      "unit": "%",
+      "info": "0 is disarmed. The numbers below are approx. for a 5-inch 6S quad on 2207 1750 KV motors."
+    }
+  ],
+  "readouts": [
+    {
+      "label": "Motor speed",
+      "by": "throttle",
+      "map": [
+        [0, 0],
+        [5, 3000],
+        [25, 11000],
+        [50, 19000],
+        [75, 25000],
+        [100, 29000]
+      ],
+      "unit": "rpm"
+    },
+    {
+      "label": "Electrical frequency",
+      "by": "throttle",
+      "map": [
+        [0, 0.0],
+        [5, 350.0],
+        [25, 1283.3333333333333],
+        [50, 2216.6666666666665],
+        [75, 2916.6666666666665],
+        [100, 3383.3333333333335]
+      ],
+      "unit": "Hz"
+    },
+    {
+      "label": "Current per motor",
+      "by": "throttle",
+      "map": [
+        [0, 0],
+        [5, 0.4],
+        [25, 2.5],
+        [50, 9],
+        [75, 22],
+        [100, 38]
+      ],
+      "unit": "A",
+      "digits": 1
+    },
+    {
+      "label": "Total current",
+      "by": "throttle",
+      "map": [
+        [0, 0.5],
+        [5, 2.1],
+        [25, 10.5],
+        [50, 36.5],
+        [75, 88.5],
+        [100, 152.5]
+      ],
+      "unit": "A"
+    },
+    {
+      "label": "Battery",
+      "by": "throttle",
+      "map": [
+        [0, 24.6],
+        [5, 24.5],
+        [25, 24.0],
+        [50, 23.0],
+        [75, 21.8],
+        [100, 20.5]
+      ],
+      "unit": "V",
+      "digits": 1
+    },
+    {
+      "label": "Power",
+      "by": "throttle",
+      "map": [
+        [0, 12.3],
+        [5, 51.45],
+        [25, 252.0],
+        [50, 839.5],
+        [75, 1929.3],
+        [100, 3126.25]
+      ],
+      "unit": "W"
+    }
+  ],
+  "layers": [
+    {
+      "name": "Bottom plate",
+      "thickness": 0,
+      "base": 0,
+      "category": "Frame · carbon fibre",
+      "info": "The lower plate of the frame body: the stack and the camera cage are bolted to it, the arms are clamped between it and the arm screws.",
+      "parts": [
+        {
+          "name": "Bottom plate",
+          "shape": "outline",
+          "height": 2,
+          "finish": "carbon",
+          "color": "#16181b",
+          "points": [
+            [14.0, -80.0],
+            [16.33, -79.69],
+            [18.5, -78.79],
+            [20.36, -77.36],
+            [21.79, -75.5],
+            [22.69, -73.33],
+            [23.0, -71.0],
+            [23.0, 55.0],
+            [22.69, 57.33],
+            [21.79, 59.5],
+            [20.36, 61.36],
+            [18.5, 62.79],
+            [16.33, 63.69],
+            [14.0, 64.0],
+            [-14.0, 64.0],
+            [-16.33, 63.69],
+            [-18.5, 62.79],
+            [-20.36, 61.36],
+            [-21.79, 59.5],
+            [-22.69, 57.33],
+            [-23.0, 55.0],
+            [-23.0, -71.0],
+            [-22.69, -73.33],
+            [-21.79, -75.5],
+            [-20.36, -77.36],
+            [-18.5, -78.79],
+            [-16.33, -79.69],
+            [-14.0, -80.0]
+          ],
+          "cutouts": [
+            {
+              "at": [-15.25, -15.25],
+              "radius": 1.6
+            },
+            {
+              "at": [-15.25, 15.25],
+              "radius": 1.6
+            },
+            {
+              "at": [15.25, -15.25],
+              "radius": 1.6
+            },
+            {
+              "at": [15.25, 15.25],
+              "radius": 1.6
+            },
+            {
+              "at": [0, 36],
+              "radius": 6
+            },
+            {
+              "at": [0, -36],
+              "radius": 5
+            }
+          ],
+          "category": "Frame · carbon fibre",
+          "info": "2 mm carbon fibre plate (approx.). Carbon is stiff and light, but it conducts: anything bare that touches it can short."
+        }
+      ]
+    },
+    {
+      "name": "Arms",
+      "thickness": 0,
+      "base": 2,
+      "category": "Frame",
+      "info": "Four arms in a true X, 225 mm motor to motor across the diagonal (approx.).",
+      "parts": [
+        {
+          "name": "Arm 1",
+          "shape": "outline",
+          "height": 5,
+          "finish": "carbon",
+          "color": "#16181b",
+          "points": [
+            [5.3, 14.5],
+            [65.74, 74.93],
+            [65.07, 78.09],
+            [65.11, 81.32],
+            [65.87, 84.45],
+            [67.31, 87.35],
+            [69.34, 89.85],
+            [71.88, 91.84],
+            [74.8, 93.22],
+            [77.95, 93.92],
+            [81.18, 93.9],
+            [84.33, 93.17],
+            [87.23, 91.77],
+            [89.75, 89.75],
+            [91.77, 87.23],
+            [93.17, 84.33],
+            [93.9, 81.18],
+            [93.92, 77.95],
+            [93.22, 74.8],
+            [91.84, 71.88],
+            [89.85, 69.34],
+            [87.35, 67.31],
+            [84.45, 65.87],
+            [81.32, 65.11],
+            [78.09, 65.07],
+            [74.93, 65.74],
+            [14.5, 5.3]
+          ],
+          "cutouts": [
+            {
+              "at": [79.5, 79.5],
+              "radius": 3.2
+            },
+            {
+              "at": [85.16, 85.16],
+              "radius": 1.6
+            },
+            {
+              "at": [73.84, 85.16],
+              "radius": 1.6
+            },
+            {
+              "at": [73.84, 73.84],
+              "radius": 1.6
+            },
+            {
+              "at": [85.16, 73.84],
+              "radius": 1.6
+            },
+            {
+              "at": [28.28, 28.28],
+              "radius": 3.5
+            },
+            {
+              "at": [41.01, 41.01],
+              "radius": 3
+            }
+          ],
+          "category": "Frame · arm",
+          "info": "5 mm carbon arm (approx.). It carries the motor at its tip, and the motor wires run along its top.",
+          "specs": {
+            "Motor bolt pattern": "16 × 16 mm, M3"
+          }
+        },
+        {
+          "name": "Arm 2",
+          "shape": "outline",
+          "height": 5,
+          "finish": "carbon",
+          "color": "#16181b",
+          "points": [
+            [14.5, -5.3],
+            [74.93, -65.74],
+            [78.09, -65.07],
+            [81.32, -65.11],
+            [84.45, -65.87],
+            [87.35, -67.31],
+            [89.85, -69.34],
+            [91.84, -71.88],
+            [93.22, -74.8],
+            [93.92, -77.95],
+            [93.9, -81.18],
+            [93.17, -84.33],
+            [91.77, -87.23],
+            [89.75, -89.75],
+            [87.23, -91.77],
+            [84.33, -93.17],
+            [81.18, -93.9],
+            [77.95, -93.92],
+            [74.8, -93.22],
+            [71.88, -91.84],
+            [69.34, -89.85],
+            [67.31, -87.35],
+            [65.87, -84.45],
+            [65.11, -81.32],
+            [65.07, -78.09],
+            [65.74, -74.93],
+            [5.3, -14.5]
+          ],
+          "cutouts": [
+            {
+              "at": [79.5, -79.5],
+              "radius": 3.2
+            },
+            {
+              "at": [85.16, -73.84],
+              "radius": 1.6
+            },
+            {
+              "at": [73.84, -73.84],
+              "radius": 1.6
+            },
+            {
+              "at": [73.84, -85.16],
+              "radius": 1.6
+            },
+            {
+              "at": [85.16, -85.16],
+              "radius": 1.6
+            },
+            {
+              "at": [28.28, -28.28],
+              "radius": 3.5
+            },
+            {
+              "at": [41.01, -41.01],
+              "radius": 3
+            }
+          ],
+          "category": "Frame · arm",
+          "info": "5 mm carbon arm (approx.). It carries the motor at its tip, and the motor wires run along its top.",
+          "specs": {
+            "Motor bolt pattern": "16 × 16 mm, M3"
+          }
+        },
+        {
+          "name": "Arm 3",
+          "shape": "outline",
+          "height": 5,
+          "finish": "carbon",
+          "color": "#16181b",
+          "points": [
+            [-14.5, 5.3],
+            [-74.93, 65.74],
+            [-78.09, 65.07],
+            [-81.32, 65.11],
+            [-84.45, 65.87],
+            [-87.35, 67.31],
+            [-89.85, 69.34],
+            [-91.84, 71.88],
+            [-93.22, 74.8],
+            [-93.92, 77.95],
+            [-93.9, 81.18],
+            [-93.17, 84.33],
+            [-91.77, 87.23],
+            [-89.75, 89.75],
+            [-87.23, 91.77],
+            [-84.33, 93.17],
+            [-81.18, 93.9],
+            [-77.95, 93.92],
+            [-74.8, 93.22],
+            [-71.88, 91.84],
+            [-69.34, 89.85],
+            [-67.31, 87.35],
+            [-65.87, 84.45],
+            [-65.11, 81.32],
+            [-65.07, 78.09],
+            [-65.74, 74.93],
+            [-5.3, 14.5]
+          ],
+          "cutouts": [
+            {
+              "at": [-79.5, 79.5],
+              "radius": 3.2
+            },
+            {
+              "at": [-73.84, 85.16],
+              "radius": 1.6
+            },
+            {
+              "at": [-85.16, 85.16],
+              "radius": 1.6
+            },
+            {
+              "at": [-85.16, 73.84],
+              "radius": 1.6
+            },
+            {
+              "at": [-73.84, 73.84],
+              "radius": 1.6
+            },
+            {
+              "at": [-28.28, 28.28],
+              "radius": 3.5
+            },
+            {
+              "at": [-41.01, 41.01],
+              "radius": 3
+            }
+          ],
+          "category": "Frame · arm",
+          "info": "5 mm carbon arm (approx.). It carries the motor at its tip, and the motor wires run along its top.",
+          "specs": {
+            "Motor bolt pattern": "16 × 16 mm, M3"
+          }
+        },
+        {
+          "name": "Arm 4",
+          "shape": "outline",
+          "height": 5,
+          "finish": "carbon",
+          "color": "#16181b",
+          "points": [
+            [-5.3, -14.5],
+            [-65.74, -74.93],
+            [-65.07, -78.09],
+            [-65.11, -81.32],
+            [-65.87, -84.45],
+            [-67.31, -87.35],
+            [-69.34, -89.85],
+            [-71.88, -91.84],
+            [-74.8, -93.22],
+            [-77.95, -93.92],
+            [-81.18, -93.9],
+            [-84.33, -93.17],
+            [-87.23, -91.77],
+            [-89.75, -89.75],
+            [-91.77, -87.23],
+            [-93.17, -84.33],
+            [-93.9, -81.18],
+            [-93.92, -77.95],
+            [-93.22, -74.8],
+            [-91.84, -71.88],
+            [-89.85, -69.34],
+            [-87.35, -67.31],
+            [-84.45, -65.87],
+            [-81.32, -65.11],
+            [-78.09, -65.07],
+            [-74.93, -65.74],
+            [-14.5, -5.3]
+          ],
+          "cutouts": [
+            {
+              "at": [-79.5, -79.5],
+              "radius": 3.2
+            },
+            {
+              "at": [-73.84, -73.84],
+              "radius": 1.6
+            },
+            {
+              "at": [-85.16, -73.84],
+              "radius": 1.6
+            },
+            {
+              "at": [-85.16, -85.16],
+              "radius": 1.6
+            },
+            {
+              "at": [-73.84, -85.16],
+              "radius": 1.6
+            },
+            {
+              "at": [-28.28, -28.28],
+              "radius": 3.5
+            },
+            {
+              "at": [-41.01, -41.01],
+              "radius": 3
+            }
+          ],
+          "category": "Frame · arm",
+          "info": "5 mm carbon arm (approx.). It carries the motor at its tip, and the motor wires run along its top.",
+          "specs": {
+            "Motor bolt pattern": "16 × 16 mm, M3"
+          }
+        },
+        {
+          "name": "Standoffs",
+          "shape": "cylinder",
+          "radius": 2.5,
+          "height": 32,
+          "material": "aluminium",
+          "color": "#b8342a",
+          "at": [-18, -38],
+          "repeat": {
+            "count": 4,
+            "grid": [2, 2],
+            "step": [36, 94]
+          },
+          "category": "Frame",
+          "info": "Aluminium spacers that hold the top plate above the stack (approx. 32 mm)."
+        },
+        {
+          "name": "Receiver (ExpressLRS)",
+          "shape": "box",
+          "size": [10, 3, 13],
+          "at": [0, 50],
+          "lift": 1,
+          "material": "pcb",
+          "color": "#123d22",
+          "category": "Radio · 2.4 GHz",
+          "info": "Hears the pilot’s radio and passes the sticks to the flight controller over a serial line, in the CRSF protocol (approx.: a typical nano receiver).",
+          "specs": {
+            "Link": "ExpressLRS 2.4 GHz",
+            "To the FC": "CRSF over UART, 420 000 baud",
+            "Packet rate": "50–500 Hz, set by the pilot",
+            "Power": "5 V from the FC"
+          }
+        },
+        {
+          "name": "Receiver LED",
+          "shape": "box",
+          "size": [1.2, 0.6, 0.8],
+          "at": [2.5, 46],
+          "lift": 4,
+          "glow": "#4dff6a",
+          "info": "Solid: link up."
+        }
+      ]
+    },
+    {
+      "name": "Motors",
+      "thickness": 0,
+      "base": 7,
+      "category": "Motors",
+      "parts": [
+        {
+          "name": "Motors",
+          "shape": "cylinder",
+          "radius": 13.8,
+          "height": 3,
+          "material": "gunmetal",
+          "at": [79.5, 79.5],
+          "repeat": {
+            "count": 4,
+            "grid": [2, 2],
+            "step": [-159.0, -159.0],
+            "names": ["Motor 1 (rear right)", "Motor 3 (rear left)", "Motor 2 (front right)", "Motor 4 (front left)"]
+          },
+          "detail": "motor.json",
+          "category": "Motor · stator side",
+          "info": "Brushless outrunner. The stator and its windings stay still on the arm; the bell with its magnets turns around them.",
+          "specs": {
+            "Model": "T-Motor Velox V2207 V3, 1750 KV",
+            "Stator": "22 × 7 mm",
+            "Poles": "12N14P (7 pole pairs)",
+            "No-load speed on 6S": "about 1750 × 25.2 V ≈ 44 000 rpm"
+          }
+        },
+        {
+          "name": "Bells (CW)",
+          "shape": "cylinder",
+          "radius": 13.8,
+          "height": 11,
+          "lift": 3,
+          "material": "gunmetal",
+          "color": "#3a4048",
+          "at": [79.5, 79.5],
+          "repeat": {
+            "count": 2,
+            "step": [-159.0, -159.0],
+            "names": ["Motor 1 bell", "Motor 4 bell"]
+          },
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, -3000],
+              [25, -11000],
+              [50, -19000],
+              [75, -25000],
+              [100, -29000]
+            ]
+          },
+          "detail": "motor.json",
+          "category": "Motor · rotor",
+          "info": "The bell turns clockwise seen from above; diagonal motors turn the same way, so the four torques cancel and the quad does not spin."
+        },
+        {
+          "name": "Prop shafts (CW)",
+          "shape": "cylinder",
+          "radius": 2.5,
+          "height": 9,
+          "lift": 14,
+          "material": "steel",
+          "at": [79.5, 79.5],
+          "repeat": {
+            "count": 2,
+            "step": [-159.0, -159.0]
+          },
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, -3000],
+              [25, -11000],
+              [50, -19000],
+              [75, -25000],
+              [100, -29000]
+            ]
+          },
+          "info": "5 mm shaft (M5 thread) the prop is clamped on."
+        },
+        {
+          "name": "Bells (CCW)",
+          "shape": "cylinder",
+          "radius": 13.8,
+          "height": 11,
+          "lift": 3,
+          "material": "gunmetal",
+          "color": "#3a4048",
+          "at": [79.5, -79.5],
+          "repeat": {
+            "count": 2,
+            "step": [-159.0, 159.0],
+            "names": ["Motor 2 bell", "Motor 3 bell"]
+          },
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, 3000],
+              [25, 11000],
+              [50, 19000],
+              [75, 25000],
+              [100, 29000]
+            ]
+          },
+          "detail": "motor.json",
+          "category": "Motor · rotor",
+          "info": "The bell turns anticlockwise seen from above; diagonal motors turn the same way, so the four torques cancel and the quad does not spin."
+        },
+        {
+          "name": "Prop shafts (CCW)",
+          "shape": "cylinder",
+          "radius": 2.5,
+          "height": 9,
+          "lift": 14,
+          "material": "steel",
+          "at": [79.5, -79.5],
+          "repeat": {
+            "count": 2,
+            "step": [-159.0, 159.0]
+          },
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, 3000],
+              [25, 11000],
+              [50, 19000],
+              [75, 25000],
+              [100, 29000]
+            ]
+          },
+          "info": "5 mm shaft (M5 thread) the prop is clamped on."
+        }
+      ],
+      "info": "Motor 1 rear right, 2 front right, 3 rear left, 4 front left: Betaflight’s order. 1 and 4 turn clockwise, 2 and 3 anticlockwise."
+    },
+    {
+      "name": "ESC",
+      "thickness": 0,
+      "base": 10,
+      "category": "Stack · bottom",
+      "parts": [
+        {
+          "name": "ESC board",
+          "shape": "box",
+          "size": [40.9, 1.6, 44.9],
+          "material": "pcb",
+          "color": "#0b2a17",
+          "detail": "esc.json",
+          "category": "ESC · 4-in-1",
+          "info": "Four motor drivers on one board. Each takes battery DC and makes three-phase AC for its motor, switching its six MOSFETs tens of thousands of times a second.",
+          "specs": {
+            "Model": "SpeedyBee 55A 3–6S OX32 4-in-1",
+            "Continuous": "55 A per motor",
+            "Burst": "70 A per motor",
+            "Input": "DShot300/600 from the FC",
+            "Mounting": "30.5 × 30.5 mm"
+          }
+        },
+        {
+          "name": "Motor 1 MOSFETs",
+          "shape": "box",
+          "size": [3.3, 1, 3.3],
+          "material": "chip",
+          "lift": 1.6,
+          "at": [7, 8],
+          "repeat": {
+            "count": 6,
+            "grid": [2, 3],
+            "step": [4.6, 4.4]
+          },
+          "category": "ESC · power stage",
+          "info": "Three half-bridges, one per phase of motor 1: two MOSFETs each, one to the battery +, one to −."
+        },
+        {
+          "name": "M1 pads",
+          "shape": "box",
+          "size": [3, 0.3, 2.2],
+          "material": "gold",
+          "lift": 1.6,
+          "at": [18.4, 10],
+          "repeat": {
+            "count": 3,
+            "step": [0, 4],
+            "names": ["M1 A", "M1 B", "M1 C"]
+          },
+          "info": "Where the three wires of motor 1 are soldered."
+        },
+        {
+          "name": "Motor 2 MOSFETs",
+          "shape": "box",
+          "size": [3.3, 1, 3.3],
+          "material": "chip",
+          "lift": 1.6,
+          "at": [7, -8],
+          "repeat": {
+            "count": 6,
+            "grid": [2, 3],
+            "step": [4.6, -4.4]
+          },
+          "category": "ESC · power stage",
+          "info": "Three half-bridges, one per phase of motor 2: two MOSFETs each, one to the battery +, one to −."
+        },
+        {
+          "name": "M2 pads",
+          "shape": "box",
+          "size": [3, 0.3, 2.2],
+          "material": "gold",
+          "lift": 1.6,
+          "at": [18.4, -10],
+          "repeat": {
+            "count": 3,
+            "step": [0, -4],
+            "names": ["M2 A", "M2 B", "M2 C"]
+          },
+          "info": "Where the three wires of motor 2 are soldered."
+        },
+        {
+          "name": "Motor 3 MOSFETs",
+          "shape": "box",
+          "size": [3.3, 1, 3.3],
+          "material": "chip",
+          "lift": 1.6,
+          "at": [-7, 8],
+          "repeat": {
+            "count": 6,
+            "grid": [2, 3],
+            "step": [-4.6, 4.4]
+          },
+          "category": "ESC · power stage",
+          "info": "Three half-bridges, one per phase of motor 3: two MOSFETs each, one to the battery +, one to −."
+        },
+        {
+          "name": "M3 pads",
+          "shape": "box",
+          "size": [3, 0.3, 2.2],
+          "material": "gold",
+          "lift": 1.6,
+          "at": [-18.4, 10],
+          "repeat": {
+            "count": 3,
+            "step": [0, 4],
+            "names": ["M3 A", "M3 B", "M3 C"]
+          },
+          "info": "Where the three wires of motor 3 are soldered."
+        },
+        {
+          "name": "Motor 4 MOSFETs",
+          "shape": "box",
+          "size": [3.3, 1, 3.3],
+          "material": "chip",
+          "lift": 1.6,
+          "at": [-7, -8],
+          "repeat": {
+            "count": 6,
+            "grid": [2, 3],
+            "step": [-4.6, -4.4]
+          },
+          "category": "ESC · power stage",
+          "info": "Three half-bridges, one per phase of motor 4: two MOSFETs each, one to the battery +, one to −."
+        },
+        {
+          "name": "M4 pads",
+          "shape": "box",
+          "size": [3, 0.3, 2.2],
+          "material": "gold",
+          "lift": 1.6,
+          "at": [-18.4, -10],
+          "repeat": {
+            "count": 3,
+            "step": [0, -4],
+            "names": ["M4 A", "M4 B", "M4 C"]
+          },
+          "info": "Where the three wires of motor 4 are soldered."
+        },
+        {
+          "name": "ESC MCUs",
+          "shape": "box",
+          "size": [3, 0.8, 3],
+          "material": "chip",
+          "lift": 1.6,
+          "at": [-6, -1.5],
+          "repeat": {
+            "count": 4,
+            "grid": [2, 2],
+            "step": [12, 3]
+          },
+          "category": "ESC · controller",
+          "info": "One small controller per motor reads the DShot commands and times the switching. SpeedyBee does not name the chip (labelled black box)."
+        },
+        {
+          "name": "ESC battery pads",
+          "shape": "box",
+          "size": [5, 0.3, 4],
+          "material": "gold",
+          "lift": 1.6,
+          "at": [-4, 19.5],
+          "repeat": {
+            "count": 2,
+            "step": [8, 0],
+            "names": ["ESC battery −", "ESC battery +"]
+          },
+          "info": "The battery leads land here: everything the quad uses comes in through these two pads."
+        },
+        {
+          "name": "ESC plug",
+          "shape": "box",
+          "size": [11, 2.9, 4.3],
+          "lift": 1.6,
+          "at": [0, -19],
+          "material": "plastic",
+          "color": "#b9b1a0",
+          "category": "Connector",
+          "info": "The 8-pin cable to the flight controller: battery voltage, ground, current sensor, telemetry and the four motor signals."
+        },
+        {
+          "name": "Capacitor 1000 µF 35 V",
+          "shape": "cylinder",
+          "radius": 5,
+          "height": 16,
+          "at": [-11, 31],
+          "material": "aluminium",
+          "color": "#2b3f6b",
+          "category": "Power filter",
+          "info": "Soldered across the battery pads. It soaks up the voltage spikes the ESC’s switching kicks back into the battery leads.",
+          "specs": {
+            "Type": "Low-ESR electrolytic",
+            "Capacitance": "1000 µF",
+            "Voltage": "35 V"
+          }
+        },
+        {
+          "name": "Stack grommets",
+          "shape": "cylinder",
+          "radius": 2.4,
+          "height": 6,
+          "material": "rubber",
+          "lift": 1.6,
+          "at": [-15.25, -15.25],
+          "repeat": {
+            "count": 4,
+            "grid": [2, 2],
+            "step": [30.5, 30.5]
+          },
+          "info": "Soft rubber between the boards: they keep motor vibration away from the gyro."
+        }
+      ],
+      "info": "Bottom board of the 30 × 30 stack: the four-in-one ESC."
+    },
+    {
+      "name": "Camera",
+      "thickness": 0,
+      "base": 2,
+      "category": "Video",
+      "info": "The FPV camera, between two side plates at the front.",
+      "parts": [
+        {
+          "name": "FPV camera",
+          "shape": "box",
+          "size": [19, 19, 19],
+          "round": 1.5,
+          "at": [0, -58],
+          "lift": 6,
+          "material": "plastic",
+          "color": "#1c1f23",
+          "category": "Video · analog",
+          "info": "A 19 mm micro camera (approx.). It sends analog video down one wire; the pilot sees it about as fast as light, with no frame buffering.",
+          "specs": {
+            "Size": "19 mm class",
+            "Output": "Composite video, PAL or NTSC",
+            "Power": "5 V from the FC (approx.)"
+          }
+        },
+        {
+          "name": "Lens",
+          "shape": "box",
+          "size": [12, 12, 9],
+          "round": 5.5,
+          "at": [0, -72],
+          "lift": 9.5,
+          "material": "gunmetal"
+        },
+        {
+          "name": "Lens glass",
+          "shape": "box",
+          "size": [8.5, 8.5, 0.8],
+          "round": 0.4,
+          "at": [0, -76.7],
+          "lift": 11.25,
+          "material": "glass",
+          "color": "#5d7fa8"
+        },
+        {
+          "name": "Camera side plates",
+          "shape": "box",
+          "size": [2, 26, 30],
+          "at": [-11.5, -58],
+          "material": "plastic",
+          "color": "#16181b",
+          "repeat": {
+            "count": 2,
+            "step": [23, 0]
+          },
+          "info": "Carbon side plates; the camera is screwed between them at an upward tilt (not drawn)."
+        }
+      ]
+    },
+    {
+      "name": "Flight controller",
+      "thickness": 0,
+      "base": 19,
+      "category": "Stack · middle",
+      "parts": [
+        {
+          "name": "FC board",
+          "shape": "box",
+          "size": [39, 1.6, 39],
+          "material": "pcb",
+          "color": "#0d3a1c",
+          "detail": "fc.json",
+          "category": "Flight controller",
+          "info": "The brain: it reads the gyro thousands of times a second, mixes in the pilot’s sticks and sends each motor a new speed.",
+          "specs": {
+            "Model": "SpeedyBee F405 V5",
+            "MCU": "STM32F405, 168 MHz",
+            "Gyro": "ICM42688P",
+            "OSD": "AT7456E",
+            "Firmware": "Betaflight"
+          }
+        },
+        {
+          "name": "MCU STM32F405",
+          "shape": "box",
+          "size": [10, 1.4, 10],
+          "material": "chip",
+          "lift": 1.6,
+          "at": [0, 0],
+          "marking": "STM32 F405",
+          "detail": "mcu.json",
+          "category": "Flight controller · MCU",
+          "info": "Runs Betaflight: the PID loop, the motor mixer, DShot out, CRSF in."
+        },
+        {
+          "name": "Gyro ICM42688P",
+          "shape": "box",
+          "size": [2.5, 0.91, 3],
+          "material": "chip",
+          "lift": 1.6,
+          "at": [0, -9],
+          "category": "Flight controller · sensor",
+          "info": "Measures rotation on three axes, read by the MCU over SPI."
+        },
+        {
+          "name": "OSD AT7456E",
+          "shape": "box",
+          "size": [5, 1, 5],
+          "material": "chip",
+          "lift": 1.6,
+          "at": [9, 0],
+          "marking": "AT7456E",
+          "category": "Flight controller · video",
+          "info": "Writes text (battery voltage, timer, warnings) over the camera picture before it goes to the VTX."
+        },
+        {
+          "name": "Blackbox flash",
+          "shape": "box",
+          "size": [6, 0.8, 5],
+          "material": "chip",
+          "lift": 1.6,
+          "at": [-9, -8],
+          "info": "16 MB log of every flight: gyro, sticks, motor outputs."
+        },
+        {
+          "name": "BEC inductors",
+          "shape": "box",
+          "size": [4, 2, 4],
+          "material": "gunmetal",
+          "lift": 1.6,
+          "at": [-3.5, 13],
+          "repeat": {
+            "count": 2,
+            "step": [7, 0]
+          },
+          "info": "Parts of the 5 V and 9 V converters that power the camera, receiver and VTX from the battery."
+        },
+        {
+          "name": "USB-C",
+          "shape": "port",
+          "port": "usbc",
+          "size": [7.3, 3.2, 9],
+          "facing": 180,
+          "lift": 1.6,
+          "at": [16, 9],
+          "info": "For setting up Betaflight from a computer."
+        },
+        {
+          "name": "FC plug",
+          "shape": "box",
+          "size": [11, 2.9, 4.3],
+          "lift": 1.6,
+          "at": [0, -15.5],
+          "material": "plastic",
+          "color": "#b9b1a0",
+          "category": "Connector",
+          "info": "The other end of the 8-pin cable from the ESC."
+        },
+        {
+          "name": "FC pads",
+          "shape": "box",
+          "size": [2, 0.12, 1.6],
+          "material": "gold",
+          "lift": 1.6,
+          "at": [-17.3, -15],
+          "repeat": {
+            "count": 11,
+            "step": [0, 2.9],
+            "names": [
+              "Camera video pad",
+              "Camera 5V pad",
+              "Camera GND pad",
+              "VTX video pad",
+              "VTX 9V pad",
+              "VTX GND pad",
+              "SmartAudio pad",
+              "RX 5V pad",
+              "RX GND pad",
+              "RX2 pad",
+              "TX2 pad"
+            ]
+          },
+          "info": "Solder pads for the camera, VTX and receiver (layout approx.)."
+        },
+        {
+          "name": "Status LEDs",
+          "shape": "box",
+          "size": [1, 0.4, 0.6],
+          "lift": 1.6,
+          "at": [12, -13],
+          "repeat": {
+            "count": 2,
+            "step": [2, 0]
+          },
+          "glow": true
+        },
+        {
+          "name": "Stack grommets (upper)",
+          "shape": "cylinder",
+          "radius": 2.4,
+          "height": 5,
+          "material": "rubber",
+          "lift": 1.6,
+          "at": [-15.25, -15.25],
+          "repeat": {
+            "count": 4,
+            "grid": [2, 2],
+            "step": [30.5, 30.5]
+          }
+        }
+      ]
+    },
+    {
+      "name": "VTX",
+      "thickness": 0,
+      "base": 27.2,
+      "category": "Stack · top",
+      "info": "The video transmitter on top of the stack.",
+      "parts": [
+        {
+          "name": "VTX board",
+          "shape": "box",
+          "size": [30, 1.2, 30],
+          "material": "pcb",
+          "color": "#0d2a3a",
+          "category": "Video · 5.8 GHz",
+          "info": "Puts the camera picture (with the OSD on it) on a 5.8 GHz channel for the pilot’s goggles (approx.: a typical analog VTX).",
+          "specs": {
+            "Band": "5.8 GHz",
+            "Output power": "switchable, typically 25–800 mW (approx.)",
+            "Control": "SmartAudio from the FC",
+            "Power": "9 V from the FC"
+          }
+        },
+        {
+          "name": "VTX shield",
+          "shape": "box",
+          "size": [18, 2.5, 18],
+          "lift": 1.2,
+          "at": [0, -2],
+          "material": "aluminium",
+          "info": "Metal can over the RF amplifier."
+        },
+        {
+          "name": "Antenna connector",
+          "shape": "box",
+          "size": [3, 2, 3],
+          "lift": 1.2,
+          "at": [0, 12],
+          "material": "gold"
+        },
+        {
+          "name": "VTX LED",
+          "shape": "box",
+          "size": [1, 0.4, 0.6],
+          "lift": 1.2,
+          "at": [11, -11],
+          "glow": "#ff3b3b"
+        }
+      ]
+    },
+    {
+      "name": "Top plate",
+      "thickness": 0,
+      "base": 34,
+      "category": "Frame · carbon fibre",
+      "parts": [
+        {
+          "name": "Top plate",
+          "shape": "outline",
+          "height": 2.5,
+          "finish": "carbon",
+          "color": "#16181b",
+          "points": [
+            [15.0, -44.0],
+            [17.07, -43.73],
+            [19.0, -42.93],
+            [20.66, -41.66],
+            [21.93, -40.0],
+            [22.73, -38.07],
+            [23.0, -36.0],
+            [23.0, 56.0],
+            [22.73, 58.07],
+            [21.93, 60.0],
+            [20.66, 61.66],
+            [19.0, 62.93],
+            [17.07, 63.73],
+            [15.0, 64.0],
+            [-15.0, 64.0],
+            [-17.07, 63.73],
+            [-19.0, 62.93],
+            [-20.66, 61.66],
+            [-21.93, 60.0],
+            [-22.73, 58.07],
+            [-23.0, 56.0],
+            [-23.0, -36.0],
+            [-22.73, -38.07],
+            [-21.93, -40.0],
+            [-20.66, -41.66],
+            [-19.0, -42.93],
+            [-17.07, -43.73],
+            [-15.0, -44.0]
+          ],
+          "cutouts": [
+            {
+              "at": [0, -20],
+              "radius": 5
+            },
+            {
+              "at": [-14, 58],
+              "radius": 2
+            },
+            {
+              "at": [14, 58],
+              "radius": 2
+            }
+          ],
+          "info": "Top plate: the battery is strapped on it."
+        },
+        {
+          "name": "Battery pad",
+          "shape": "box",
+          "size": [30, 1, 62],
+          "at": [0, 10],
+          "lift": 2.5,
+          "material": "rubber",
+          "info": "Grippy pad so the battery does not slide."
+        },
+        {
+          "name": "VTX antenna",
+          "shape": "cylinder",
+          "radius": 2.6,
+          "height": 34,
+          "at": [-14, 58],
+          "lift": 2.5,
+          "material": "plastic",
+          "color": "#1a1a1d",
+          "category": "Video · antenna",
+          "info": "Circularly polarised 5.8 GHz antenna (approx.)."
+        },
+        {
+          "name": "VTX antenna cap",
+          "shape": "cylinder",
+          "radius": 9,
+          "height": 8,
+          "at": [-14, 58],
+          "lift": 36.5,
+          "material": "plastic",
+          "color": "#8f1d18"
+        },
+        {
+          "name": "RX antenna",
+          "shape": "cylinder",
+          "radius": 0.7,
+          "height": 30,
+          "at": [14, 58],
+          "lift": 2.5,
+          "material": "plastic",
+          "color": "#77797c",
+          "category": "Radio · antenna",
+          "info": "2.4 GHz dipole for the receiver (approx.)."
+        }
+      ]
+    },
+    {
+      "name": "Battery",
+      "thickness": 0,
+      "base": 37.5,
+      "category": "Power",
+      "parts": [
+        {
+          "name": "Battery 6S",
+          "shape": "box",
+          "size": [38, 35, 76],
+          "round": 3,
+          "at": [0, 10],
+          "material": "plastic",
+          "color": "#22303d",
+          "detail": "battery.json",
+          "category": "Power · LiPo",
+          "info": "Six lithium-polymer cells in series. Everything on the quad runs from it; at full throttle it gives over 100 A.",
+          "specs": {
+            "Cells": "6S1P",
+            "Voltage": "25.2 V full, 22.2 V nominal",
+            "Capacity": "1200–1480 mAh",
+            "Weight": "approx. 200–240 g"
+          }
+        },
+        {
+          "name": "Battery strap",
+          "shape": "box",
+          "size": [42, 1.2, 20],
+          "lift": 35,
+          "at": [0, 10],
+          "material": "rubber",
+          "color": "#2d2f33"
+        },
+        {
+          "name": "Battery XT60",
+          "shape": "box",
+          "size": [15.8, 8.2, 14],
+          "round": 1,
+          "at": [8, 60],
+          "lift": 4,
+          "material": "plastic",
+          "color": "#a88a00",
+          "category": "Connector",
+          "info": "The battery’s XT60 plug (male pins inside the yellow body).",
+          "specs": {
+            "Rating": "60 A continuous"
+          }
+        },
+        {
+          "name": "XT60 (quad)",
+          "shape": "box",
+          "size": [15.8, 8.2, 14],
+          "round": 1,
+          "at": [8, 74.5],
+          "lift": 4,
+          "material": "plastic",
+          "color": "#9a7f00",
+          "category": "Connector",
+          "info": "The quad’s XT60 socket on its pigtail; unplug here to disarm completely."
+        },
+        {
+          "name": "Balance lead",
+          "shape": "box",
+          "size": [20, 5.8, 6],
+          "at": [-9, 54],
+          "lift": 22,
+          "material": "plastic",
+          "color": "#8f8b82",
+          "info": "Seven wires, one to each cell junction, used only by the charger to balance the cells."
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "thickness": 0,
+      "base": 22,
+      "category": "Propellers",
+      "parts": [
+        {
+          "name": "Props (CW)",
+          "shape": "fan",
+          "radius": 64.5,
+          "height": 6.5,
+          "blades": 3,
+          "blade": "prop",
+          "mirror": false,
+          "at": [79.5, 79.5],
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, -3000],
+              [25, -11000],
+              [50, -19000],
+              [75, -25000],
+              [100, -29000]
+            ]
+          },
+          "repeat": {
+            "count": 2,
+            "step": [-159.0, -159.0],
+            "names": ["Prop 1", "Prop 4"]
+          },
+          "material": "plastic",
+          "color": "#2f5f6e",
+          "category": "Propeller",
+          "info": "5.1-inch tri-blade. Turning, it pushes air down; thrust grows roughly with the square of its speed."
+        },
+        {
+          "name": "Prop nuts (CW)",
+          "shape": "cylinder",
+          "radius": 4.3,
+          "height": 5,
+          "lift": 6.5,
+          "at": [79.5, 79.5],
+          "material": "aluminium",
+          "color": "#b8342a",
+          "repeat": {
+            "count": 2,
+            "step": [-159.0, -159.0]
+          },
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, -3000],
+              [25, -11000],
+              [50, -19000],
+              [75, -25000],
+              [100, -29000]
+            ]
+          }
+        },
+        {
+          "name": "Props (CCW)",
+          "shape": "fan",
+          "radius": 64.5,
+          "height": 6.5,
+          "blades": 3,
+          "blade": "prop",
+          "mirror": true,
+          "at": [79.5, -79.5],
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, 3000],
+              [25, 11000],
+              [50, 19000],
+              [75, 25000],
+              [100, 29000]
+            ]
+          },
+          "repeat": {
+            "count": 2,
+            "step": [-159.0, 159.0],
+            "names": ["Prop 2", "Prop 3"]
+          },
+          "material": "plastic",
+          "color": "#2f5f6e",
+          "category": "Propeller",
+          "info": "5.1-inch tri-blade. Turning, it pushes air down; thrust grows roughly with the square of its speed."
+        },
+        {
+          "name": "Prop nuts (CCW)",
+          "shape": "cylinder",
+          "radius": 4.3,
+          "height": 5,
+          "lift": 6.5,
+          "at": [79.5, -79.5],
+          "material": "aluminium",
+          "color": "#b8342a",
+          "repeat": {
+            "count": 2,
+            "step": [-159.0, 159.0]
+          },
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, 3000],
+              [25, 11000],
+              [50, 19000],
+              [75, 25000],
+              [100, 29000]
+            ]
+          }
+        }
+      ],
+      "info": "Props on, from the top: 1 and 4 turn clockwise, 2 and 3 anticlockwise (props in)."
+    }
+  ],
+  "wires": [
+    {
+      "name": "Battery lead +",
+      "from": "Battery 6S",
+      "to": "Battery XT60",
+      "kind": "power",
+      "gauge": 3.3,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.033278688524590164],
+          [5, 0.04377049180327869],
+          [25, 0.09885245901639345],
+          [50, 0.26934426229508196],
+          [75, 0.610327868852459],
+          [100, 1]
+        ]
+      },
+      "via": [
+        [4, 52, 50],
+        [5, 47, 56]
+      ],
+      "info": "Red, 12 AWG. All the current for the quad leaves the battery here.",
+      "specs": {
+        "Current": "follows the throttle; over 100 A flat out"
+      }
+    },
+    {
+      "name": "Battery lead −",
+      "from": "Battery XT60",
+      "to": "Battery 6S",
+      "kind": "ground",
+      "gauge": 3.3,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.033278688524590164],
+          [5, 0.04377049180327869],
+          [25, 0.09885245901639345],
+          [50, 0.26934426229508196],
+          [75, 0.610327868852459],
+          [100, 1]
+        ]
+      },
+      "via": [
+        [11, 47, 56],
+        [12, 52, 50]
+      ],
+      "info": "Black, 12 AWG: the return path into the battery’s negative."
+    },
+    {
+      "name": "Pigtail +",
+      "from": "XT60 (quad)",
+      "to": "ESC battery +",
+      "kind": "power",
+      "gauge": 3.3,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.033278688524590164],
+          [5, 0.04377049180327869],
+          [25, 0.09885245901639345],
+          [50, 0.26934426229508196],
+          [75, 0.610327868852459],
+          [100, 1]
+        ]
+      },
+      "via": [
+        [6, 42, 84],
+        [5, 30, 76],
+        [4, 16, 52],
+        [4, 13, 26]
+      ],
+      "info": "Red 12 AWG from the XT60 socket to the ESC’s + pad."
+    },
+    {
+      "name": "Pigtail −",
+      "from": "ESC battery −",
+      "to": "XT60 (quad)",
+      "kind": "ground",
+      "gauge": 3.3,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.033278688524590164],
+          [5, 0.04377049180327869],
+          [25, 0.09885245901639345],
+          [50, 0.26934426229508196],
+          [75, 0.610327868852459],
+          [100, 1]
+        ]
+      },
+      "via": [
+        [-4, 13, 26],
+        [-1, 16, 52],
+        [10, 30, 76],
+        [10, 42, 84]
+      ],
+      "info": "Black 12 AWG from the ESC’s − pad back to the XT60."
+    },
+    {
+      "name": "Motor 1 phase A",
+      "from": "M1 A",
+      "to": "Motor 1 (rear right)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [22.4, 12.6, 10],
+        [23.76, 7.9, 21.5],
+        [50.63, 7.8, 48.37],
+        [68.61, 8.2, 66.35]
+      ],
+      "info": "One of motor 1’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 0
+    },
+    {
+      "name": "Motor 1 phase B",
+      "from": "M1 B",
+      "to": "Motor 1 (rear right)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [22.4, 12.6, 14],
+        [22.63, 7.9, 22.63],
+        [49.5, 7.8, 49.5],
+        [67.48, 8.2, 67.48]
+      ],
+      "info": "One of motor 1’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 1
+    },
+    {
+      "name": "Motor 1 phase C",
+      "from": "M1 C",
+      "to": "Motor 1 (rear right)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [22.4, 12.6, 18],
+        [21.5, 7.9, 23.76],
+        [48.37, 7.8, 50.63],
+        [66.35, 8.2, 68.61]
+      ],
+      "info": "One of motor 1’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 2
+    },
+    {
+      "name": "Motor 2 phase A",
+      "from": "M2 A",
+      "to": "Motor 2 (front right)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [22.4, 12.6, -10],
+        [21.5, 7.9, -23.76],
+        [48.37, 7.8, -50.63],
+        [66.35, 8.2, -68.61]
+      ],
+      "info": "One of motor 2’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 0
+    },
+    {
+      "name": "Motor 2 phase B",
+      "from": "M2 B",
+      "to": "Motor 2 (front right)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [22.4, 12.6, -14],
+        [22.63, 7.9, -22.63],
+        [49.5, 7.8, -49.5],
+        [67.48, 8.2, -67.48]
+      ],
+      "info": "One of motor 2’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 1
+    },
+    {
+      "name": "Motor 2 phase C",
+      "from": "M2 C",
+      "to": "Motor 2 (front right)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [22.4, 12.6, -18],
+        [23.76, 7.9, -21.5],
+        [50.63, 7.8, -48.37],
+        [68.61, 8.2, -66.35]
+      ],
+      "info": "One of motor 2’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 2
+    },
+    {
+      "name": "Motor 3 phase A",
+      "from": "M3 A",
+      "to": "Motor 3 (rear left)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [-22.4, 12.6, 10],
+        [-21.5, 7.9, 23.76],
+        [-48.37, 7.8, 50.63],
+        [-66.35, 8.2, 68.61]
+      ],
+      "info": "One of motor 3’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 0
+    },
+    {
+      "name": "Motor 3 phase B",
+      "from": "M3 B",
+      "to": "Motor 3 (rear left)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [-22.4, 12.6, 14],
+        [-22.63, 7.9, 22.63],
+        [-49.5, 7.8, 49.5],
+        [-67.48, 8.2, 67.48]
+      ],
+      "info": "One of motor 3’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 1
+    },
+    {
+      "name": "Motor 3 phase C",
+      "from": "M3 C",
+      "to": "Motor 3 (rear left)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [-22.4, 12.6, 18],
+        [-23.76, 7.9, 21.5],
+        [-50.63, 7.8, 48.37],
+        [-68.61, 8.2, 66.35]
+      ],
+      "info": "One of motor 3’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 2
+    },
+    {
+      "name": "Motor 4 phase A",
+      "from": "M4 A",
+      "to": "Motor 4 (front left)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [-22.4, 12.6, -10],
+        [-23.76, 7.9, -21.5],
+        [-50.63, 7.8, -48.37],
+        [-68.61, 8.2, -66.35]
+      ],
+      "info": "One of motor 4’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 0
+    },
+    {
+      "name": "Motor 4 phase B",
+      "from": "M4 B",
+      "to": "Motor 4 (front left)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [-22.4, 12.6, -14],
+        [-22.63, 7.9, -22.63],
+        [-49.5, 7.8, -49.5],
+        [-67.48, 8.2, -67.48]
+      ],
+      "info": "One of motor 4’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 1
+    },
+    {
+      "name": "Motor 4 phase C",
+      "from": "M4 C",
+      "to": "Motor 4 (front left)",
+      "kind": "phase",
+      "gauge": 1.5,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.0],
+          [5, 0.010526315789473684],
+          [25, 0.06578947368421052],
+          [50, 0.23684210526315788],
+          [75, 0.5789473684210527],
+          [100, 1.0]
+        ]
+      },
+      "via": [
+        [-22.4, 12.6, -18],
+        [-21.5, 7.9, -23.76],
+        [-48.37, 7.8, -50.63],
+        [-66.35, 8.2, -68.61]
+      ],
+      "info": "One of motor 4’s three wires (20 AWG, approx.). The ESC swings it between battery + and −, a third of a turn after the previous phase; the bell follows the turning field.",
+      "specs": {
+        "Electrical turns per motor turn": "7 (7 pole pairs)"
+      },
+      "phase": 2
+    },
+    {
+      "name": "FC battery voltage",
+      "from": "ESC plug",
+      "to": "FC plug",
+      "kind": "power",
+      "gauge": 0.6,
+      "level": 0.2,
+      "via": [
+        [-4.8, 15.5, -25],
+        [-4.8, 19, -25]
+      ],
+      "info": "Battery voltage up to the FC, which makes its own 5 V and 9 V from it."
+    },
+    {
+      "name": "Harness ground",
+      "from": "FC plug",
+      "to": "ESC plug",
+      "kind": "ground",
+      "gauge": 0.6,
+      "level": 0.2,
+      "via": [
+        [-3.2, 19, -25],
+        [-3.2, 15.5, -25]
+      ],
+      "info": "Ground shared by both boards."
+    },
+    {
+      "name": "Current sensor",
+      "from": "ESC plug",
+      "to": "FC plug",
+      "kind": "signal",
+      "gauge": 0.6,
+      "level": {
+        "by": "throttle",
+        "map": [
+          [0, 0.033278688524590164],
+          [5, 0.04377049180327869],
+          [25, 0.09885245901639345],
+          [50, 0.26934426229508196],
+          [75, 0.610327868852459],
+          [100, 1]
+        ]
+      },
+      "via": [
+        [-1.6, 15.5, -25],
+        [-1.6, 19, -25]
+      ],
+      "info": "An analog voltage from the ESC’s shunt amplifier: the FC turns it into amps and mAh used."
+    },
+    {
+      "name": "DShot motor 1",
+      "from": "FC plug",
+      "to": "ESC plug",
+      "kind": "data",
+      "gauge": 0.6,
+      "level": 1,
+      "via": [
+        [0.0, 19, -25],
+        [0.0, 15.5, -25]
+      ],
+      "info": "Digital throttle for one motor: a 16-bit frame (11-bit value, telemetry bit, checksum) at 600 kbit/s, sent every PID loop (thousands of times a second).",
+      "specs": {
+        "Protocol": "DShot600"
+      }
+    },
+    {
+      "name": "DShot motor 2",
+      "from": "FC plug",
+      "to": "ESC plug",
+      "kind": "data",
+      "gauge": 0.6,
+      "level": 1,
+      "via": [
+        [1.6, 19, -25],
+        [1.6, 15.5, -25]
+      ],
+      "info": "Digital throttle for one motor: a 16-bit frame (11-bit value, telemetry bit, checksum) at 600 kbit/s, sent every PID loop (thousands of times a second).",
+      "specs": {
+        "Protocol": "DShot600"
+      }
+    },
+    {
+      "name": "DShot motor 3",
+      "from": "FC plug",
+      "to": "ESC plug",
+      "kind": "data",
+      "gauge": 0.6,
+      "level": 1,
+      "via": [
+        [3.2, 19, -25],
+        [3.2, 15.5, -25]
+      ],
+      "info": "Digital throttle for one motor: a 16-bit frame (11-bit value, telemetry bit, checksum) at 600 kbit/s, sent every PID loop (thousands of times a second).",
+      "specs": {
+        "Protocol": "DShot600"
+      }
+    },
+    {
+      "name": "DShot motor 4",
+      "from": "FC plug",
+      "to": "ESC plug",
+      "kind": "data",
+      "gauge": 0.6,
+      "level": 1,
+      "via": [
+        [4.8, 19, -25],
+        [4.8, 15.5, -25]
+      ],
+      "info": "Digital throttle for one motor: a 16-bit frame (11-bit value, telemetry bit, checksum) at 600 kbit/s, sent every PID loop (thousands of times a second).",
+      "specs": {
+        "Protocol": "DShot600"
+      }
+    },
+    {
+      "name": "Camera video",
+      "from": "FPV camera",
+      "to": "Camera video pad",
+      "kind": "video",
+      "gauge": 0.7,
+      "level": 1,
+      "via": [
+        [-5.0, 22, -47],
+        [-21.0, 21, -28],
+        [-22.5, 20.8, -15.0]
+      ],
+      "info": "Analog picture from the camera into the FC, where the OSD chip writes text over it."
+    },
+    {
+      "name": "Camera 5 V",
+      "from": "Camera 5V pad",
+      "to": "FPV camera",
+      "kind": "power",
+      "gauge": 0.7,
+      "level": 0.3,
+      "via": [
+        [-22.5, 20.8, -12.1],
+        [-20.7, 21, -28],
+        [-2.8, 22, -47]
+      ],
+      "info": "5 V from the FC’s regulator."
+    },
+    {
+      "name": "Camera ground",
+      "from": "FPV camera",
+      "to": "Camera GND pad",
+      "kind": "ground",
+      "gauge": 0.7,
+      "level": 0.3,
+      "via": [
+        [-0.6, 22, -47],
+        [-20.4, 21, -28],
+        [-22.5, 20.8, -9.2]
+      ]
+    },
+    {
+      "name": "Video to VTX",
+      "from": "VTX video pad",
+      "to": "VTX board",
+      "kind": "video",
+      "gauge": 0.7,
+      "level": 1,
+      "via": [
+        [-22.5, 20.8, -6.3],
+        [-21, 25, -6.3],
+        [-17, 28.6, -6.3]
+      ],
+      "info": "The camera picture with the OSD text on it, on its way to the transmitter."
+    },
+    {
+      "name": "VTX 9 V",
+      "from": "VTX 9V pad",
+      "to": "VTX board",
+      "kind": "power",
+      "gauge": 0.7,
+      "level": 0.4,
+      "via": [
+        [-22.5, 20.8, -3.4],
+        [-21, 25, -3.4],
+        [-17, 28.6, -3.4]
+      ],
+      "info": "9 V from the FC’s second regulator."
+    },
+    {
+      "name": "VTX ground",
+      "from": "VTX board",
+      "to": "VTX GND pad",
+      "kind": "ground",
+      "gauge": 0.7,
+      "level": 0.4,
+      "via": [
+        [-17, 28.6, -0.5],
+        [-21, 25, -0.5],
+        [-22.5, 20.8, -0.5]
+      ]
+    },
+    {
+      "name": "SmartAudio",
+      "from": "SmartAudio pad",
+      "to": "VTX board",
+      "kind": "data",
+      "gauge": 0.7,
+      "level": 0.25,
+      "via": [
+        [-22.5, 20.8, 2.4],
+        [-21, 25, 2.4],
+        [-17, 28.6, 2.4]
+      ],
+      "info": "One-wire serial: Betaflight sets the VTX channel and power through it (approx.)."
+    },
+    {
+      "name": "CRSF uplink",
+      "from": "Receiver (ExpressLRS)",
+      "to": "RX2 pad",
+      "kind": "data",
+      "gauge": 0.6,
+      "level": 0.9,
+      "via": [
+        [-11.0, 7, 38],
+        [-21, 14, 19.1],
+        [-22.5, 20.8, 11.1]
+      ],
+      "info": "Stick positions and switches from the pilot, in CRSF frames.",
+      "specs": {
+        "Protocol": "CRSF",
+        "Baud rate": "420 000"
+      }
+    },
+    {
+      "name": "CRSF telemetry",
+      "from": "TX2 pad",
+      "to": "Receiver (ExpressLRS)",
+      "kind": "data",
+      "gauge": 0.6,
+      "level": 0.35,
+      "via": [
+        [-22.5, 20.8, 14.0],
+        [-21, 14, 22.0],
+        [-9.4, 7, 38]
+      ],
+      "info": "Battery voltage and link quality back to the pilot’s radio.",
+      "specs": {
+        "Protocol": "CRSF"
+      }
+    },
+    {
+      "name": "RX 5 V",
+      "from": "RX 5V pad",
+      "to": "Receiver (ExpressLRS)",
+      "kind": "power",
+      "gauge": 0.6,
+      "level": 0.25,
+      "via": [
+        [-22.5, 20.8, 5.3],
+        [-21, 14, 13.3],
+        [-7.8, 7, 38]
+      ],
+      "info": "5 V for the receiver."
+    },
+    {
+      "name": "RX ground",
+      "from": "Receiver (ExpressLRS)",
+      "to": "RX GND pad",
+      "kind": "ground",
+      "gauge": 0.6,
+      "level": 0.25,
+      "via": [
+        [-6.2, 7, 38],
+        [-21, 14, 16.2],
+        [-22.5, 20.8, 8.2]
+      ]
+    },
+    {
+      "name": "VTX coax",
+      "from": "Antenna connector",
+      "to": "VTX antenna",
+      "kind": "rf",
+      "gauge": 1.2,
+      "level": 1,
+      "via": [
+        [0, 31, 22],
+        [-6, 33, 48],
+        [-13, 36.6, 56]
+      ],
+      "info": "Thin coax to the antenna: 5.8 GHz carrying the picture."
+    },
+    {
+      "name": "RX antenna lead",
+      "from": "Receiver (ExpressLRS)",
+      "to": "RX antenna",
+      "kind": "rf",
+      "gauge": 0.8,
+      "level": 1,
+      "via": [
+        [7, 5, 56],
+        [13, 20, 58]
+      ],
+      "info": "2.4 GHz from the antenna into the receiver."
+    }
+  ]
+}
