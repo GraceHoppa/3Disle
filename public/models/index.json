@@ -1,22 +1,22 @@
 [
   {
-    "name": "Inside a 5\" FPV quad",
+    "name": "Inside an FPV flight controller",
     "file": "drone/tour.json",
-    "note": "Tour \u00b7 arrows"
+    "note": "Tour · arrows"
   },
   {
     "name": "Inside the RTX 5070 Ti",
     "file": "rtx5070ti/tour.json",
-    "note": "Tour \u00b7 arrows"
+    "note": "Tour · arrows"
   },
   {
     "name": "GeForce RTX 5070 Ti",
     "file": "rtx5070ti/card.json",
-    "note": "Real specs \u00b7 zoom tree"
+    "note": "Real specs · zoom tree"
   },
   {
     "name": "Google Pixel 6",
     "file": "devices/pixel6/device.json",
-    "note": "Real specs \u00b7 zoom tree"
+    "note": "Real specs · zoom tree"
   }
 ]

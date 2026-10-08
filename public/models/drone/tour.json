@@ -1,14 +1,6 @@
 {
-  "name": "Inside a 5\" FPV quad",
+  "name": "Inside an FPV flight controller",
   "levels": [
-    {
-      "file": "../../projects/drone/project.json",
-      "scale": "25 cm",
-      "title": "5-inch FPV quad",
-      "text": "A carbon frame about 25 cm across, four 2207 motors on 6S power, and a 30.5 mm flight stack in the middle. Prop tips sweep 5-inch (127 mm) circles.",
-      "caption": "Four motors, one stack, 22 volts.",
-      "into": "Flight controller"
-    },
     {
       "file": "fc.json",
       "scale": "36 mm",
@@ -21,12 +13,12 @@
       "file": "mcu.json",
       "scale": "10 mm",
       "title": "STM32F405 microcontroller",
-      "text": "A 10 \u00d7 10 mm LQFP64 package with 64 leads at 0.5 mm pitch. Inside, a 90 nm die carries a 168 MHz Cortex-M4F core, 1 MB of flash and 192 KB of RAM.",
+      "text": "A 10 × 10 mm LQFP64 package with 64 leads at 0.5 mm pitch. Inside, a 90 nm die carries a 168 MHz Cortex-M4F core, 1 MB of flash and 192 KB of RAM.",
       "caption": "The whole flight runs through 64 pins."
     }
   ],
-  "lead": "Three levels \u00b7 25 cm to 10 mm",
-  "subtitle": "From the whole quad down to the microcontroller that flies it: the flight controller reads its gyro thousands of times a second and answers with four motor commands.",
+  "lead": "Two levels · 36 mm to 10 mm",
+  "subtitle": "From a 5-inch quad’s flight controller down to the microcontroller that flies it: it reads its gyro thousands of times a second and answers with four motor commands.",
   "finale": {
     "title": "64 pins fly the quad.",
     "text": "Every stick input, gyro sample and motor command passes through this 10 mm chip."
