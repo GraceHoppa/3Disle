@@ -882,3 +882,80 @@ body.drag #gl {
 .covered #inspector {
   visibility: hidden;
 }
+
+/* ---------------------------------------------------------------- author's controls */
+
+#controls[hidden] {
+  display: none;
+}
+#controls {
+  position: fixed;
+  right: clamp(16px, 2.5vw, 32px);
+  bottom: 110px;
+  width: min(280px, calc(100vw - 32px));
+  padding: 14px 16px 12px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(3px);
+  font: 12px var(--mono);
+}
+#controls .control {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 10px;
+  margin-bottom: 12px;
+  color: var(--dim);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+#controls output {
+  color: var(--green-soft);
+  font-size: 15px;
+  letter-spacing: 0;
+}
+#controls input[type='range'] {
+  grid-column: 1 / -1;
+  width: 100%;
+  accent-color: var(--green);
+}
+#controls .readouts {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px 12px;
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+#controls dt {
+  color: var(--dim);
+}
+#controls dd {
+  margin: 0;
+  color: var(--white);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+#controls .note {
+  margin: 10px 0 0;
+  color: var(--faint);
+  font-size: 11px;
+}
+.covered #controls {
+  visibility: hidden;
+}
+@media (max-width: 600px) {
+  #controls {
+    top: max(96px, calc(env(safe-area-inset-top) + 80px));
+    bottom: auto;
+    padding: 10px 12px 8px;
+  }
+  #controls .readouts {
+    font-size: 11px;
+  }
+}
+/* With controls on the page, the ruler moves up and shortens to clear the panel. */
+body:has(#controls:not([hidden])) #ruler {
+  top: 96px;
+  height: max(160px, calc(100vh - 520px));
+  transform: none;
+}

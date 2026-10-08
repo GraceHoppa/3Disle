@@ -11,6 +11,9 @@ function homeOf(child: THREE.Object3D): THREE.Vector3 {
   return home;
 }
 
+/** The pieces that move apart: every direct child except the wiring, which follows its ends. */
+const pieces = (root: THREE.Object3D) => root.children.filter((c) => !c.userData.wires);
+
 /**
  * Move each direct child of `root` out from the model centre, along the line from
  * the model's bounding-box centre to the child's. `amount` 0 leaves the assembly
@@ -22,7 +25,7 @@ function homeOf(child: THREE.Object3D): THREE.Vector3 {
 export function explode(root: THREE.Object3D, amount: number) {
   if (!Number.isFinite(amount)) return;
 
-  const children = root.children;
+  const children = pieces(root);
   for (const child of children) child.position.copy(homeOf(child));
   if (children.length === 0 || amount === 0) return;
 
@@ -59,7 +62,7 @@ export function explode(root: THREE.Object3D, amount: number) {
 
 /** Put every direct child back on the position stored by `explode`. */
 export function restore(root: THREE.Object3D) {
-  for (const child of root.children) {
+  for (const child of pieces(root)) {
     const home = child.userData[HOME] as THREE.Vector3 | undefined;
     if (home) child.position.copy(home);
   }
@@ -74,7 +77,7 @@ export function restore(root: THREE.Object3D) {
  */
 export function explodeStack(root: THREE.Object3D, amount: number, axis = new THREE.Vector3(0, 1, 0)) {
   if (!Number.isFinite(amount)) return;
-  const children = root.children;
+  const children = pieces(root);
   for (const child of children) child.position.copy(homeOf(child));
   if (children.length < 2 || amount === 0) return;
 

@@ -4,6 +4,16 @@ import { buildAssembly, type AssemblySpec } from '../models/assembly';
 import { applyProject, isProject, projectScale } from '../models/project';
 import { disposeBvh, enableBvh } from '../models/bvh';
 import { explode, explodeStack } from '../models/explode';
+import {
+  evaluate,
+  formatReadout,
+  startValues,
+  type ControlSpec,
+  type ReadoutSpec,
+  type Value,
+  type Values,
+} from '../models/logic';
+import { refreshWires } from '../models/wires';
 import { measure } from '../models/frame';
 import { disposeObject } from '../lib/dispose';
 import { SectionCut, type Axis } from '../models/section';
@@ -69,6 +79,7 @@ function applySpread() {
   if (!model) return;
   spread(model, +slider.value);
   for (const [o, r] of room) o.position.add(r.now);
+  refreshWires(model);
   if (selected) fitBracket(selectBracket, boxOfTarget(selected), true);
 }
 
@@ -77,7 +88,9 @@ function makeRoom(part: THREE.Object3D | null) {
   // The top-level piece (layer, or project part) the selection belongs to.
   let top: THREE.Object3D | null = part;
   while (top && top.parent !== model) top = top.parent;
-  const pieces = model.children.filter((c) => c.visible);
+  // A wire belongs to no piece: the pieces stay put and the wire stays where it is.
+  if (top?.userData.wires) top = null;
+  const pieces = model.children.filter((c) => c.visible && !c.userData.wires);
   spread(model, +slider.value);
   const radius = measure(model).radius;
   const layered = spread === explodeStack;
@@ -167,6 +180,7 @@ function buildTags() {
   const candidates: { part: THREE.Object3D; size: number; box: THREE.Box3 }[] = [];
   model.traverse((o) => {
     if (o === model || !o.name || o.userData.slab || o.userData.sectionCap || !o.visible) return;
+    if (o.userData.wires || o.userData.wire) return; // wires are named on hover, not tagged
     const isPart = o.userData.part || (o.parent && o.parent !== model); // parts on layers, project parts
     if (!isPart || o.userData.scatter) return;
     const box = boxOf(o);
@@ -293,8 +307,13 @@ for (const b of axisButtons) {
 
 /** Parts with `spin` (fans, props) turn while shown; the stage keeps drawing while any do. */
 let spinners: THREE.Object3D[] = [];
-/** Data buses (links): their pulses advance while the flow speed is above zero. */
-let flows: THREE.ShaderMaterial[] = [];
+/** Turns are shown this many times slower than real: a 30 000 rpm prop would strobe on screen. */
+const SPIN_SLOWDOWN = 64;
+type FlowUniforms = { uTime: { value: number }; uSpeed: { value: number }; uLevel?: { value: number } };
+/** Buses and wires: their pulses advance while the flow speed is above zero. */
+let flows: FlowUniforms[] = [];
+/** Buses and wires whose `level` may follow a control. */
+let levelled: { level: Value; uniforms: FlowUniforms }[] = [];
 const FLOW_SPEEDS = [
   ['Off', 0],
   ['Slow', 0.3],
@@ -306,14 +325,21 @@ let spunAt = 0;
 let flowTime = 0;
 tickers.add((now) => {
   const speed = FLOW_SPEEDS[flowAt][1];
-  if (!spinners.length && !(flows.length && speed)) return false;
+  const rpms = spinners.map((o) => evaluate(o.userData.spin as Value, values));
+  const turning = rpms.some((r) => r !== 0);
+  if (!turning && !(flows.length && speed)) {
+    spunAt = 0;
+    return false;
+  }
   const dt = spunAt ? Math.min((now - spunAt) / 1000, 0.1) : 0;
   spunAt = now;
-  for (const o of spinners) o.rotation.y += ((o.userData.spin as number) / 60) * Math.PI * 2 * dt;
+  spinners.forEach((o, i) => {
+    o.rotation.y += (rpms[i] / 60 / SPIN_SLOWDOWN) * Math.PI * 2 * dt;
+  });
   flowTime += dt;
-  for (const m of flows) {
-    m.uniforms.uTime.value = flowTime;
-    m.uniforms.uSpeed.value = speed;
+  for (const u of flows) {
+    u.uTime.value = flowTime;
+    u.uSpeed.value = speed;
   }
   return true;
 });
@@ -321,7 +347,7 @@ const flowButton = document.getElementById('flow')!;
 flowButton.addEventListener('click', () => {
   flowAt = (flowAt + 1) % FLOW_SPEEDS.length;
   flowButton.textContent = `Flow · ${FLOW_SPEEDS[flowAt][0]}`;
-  for (const m of flows) m.uniforms.uSpeed.value = FLOW_SPEEDS[flowAt][1];
+  for (const u of flows) u.uSpeed.value = FLOW_SPEEDS[flowAt][1];
   spunAt = 0;
   render();
 });
@@ -342,8 +368,22 @@ function show(next: THREE.Object3D, name: string, layered: boolean, arrive = 1) 
   spunAt = 0;
   next.traverse((o) => o.userData.spin && spinners.push(o));
   flows = [];
-  next.traverse((o) => o.userData.flow && flows.push((o as THREE.Mesh).material as THREE.ShaderMaterial));
+  levelled = [];
+  next.traverse((o) => {
+    const mesh = o as THREE.Mesh;
+    const uniforms: FlowUniforms | undefined = o.userData.flow
+      ? ((mesh.material as THREE.ShaderMaterial).uniforms as unknown as FlowUniforms)
+      : o.userData.wire
+        ? ((mesh.material as THREE.Material).userData.uniforms as FlowUniforms)
+        : undefined;
+    if (!uniforms) return;
+    flows.push(uniforms);
+    if (o.userData.level !== undefined && uniforms.uLevel)
+      levelled.push({ level: o.userData.level as Value, uniforms });
+  });
   flowButton.hidden = !flows.length;
+  if (next.userData.missing) console.warn(`${name}: wires name no part called ${next.userData.missing.join(', ')}`);
+  buildControls(next);
   spread = layered ? explodeStack : explode;
   room.clear();
   roomMoving = false;
@@ -360,6 +400,74 @@ function show(next: THREE.Object3D, name: string, layered: boolean, arrive = 1) 
   drawHud();
   buildTags();
   render();
+}
+
+// ---------------------------------------------------------------- controls
+
+/**
+ * The author's controls (sliders) and live readouts. Values are kept by control id across
+ * levels, so the throttle set on the quad is still set inside its motor.
+ */
+let values: Values = {};
+let readouts: { spec: ReadoutSpec; el: HTMLElement }[] = [];
+const controlsPanel = document.getElementById('controls')!;
+
+function applyValues() {
+  for (const l of levelled) l.uniforms.uLevel!.value = evaluate(l.level, values, 1);
+  for (const r of readouts) r.el.textContent = formatReadout(r.spec, evaluate(r.spec, values));
+  render();
+}
+
+function buildControls(root: THREE.Object3D) {
+  const controls = (root.userData.controls as ControlSpec[] | undefined) ?? [];
+  const specs = (root.userData.readouts as ReadoutSpec[] | undefined) ?? [];
+  values = { ...values, ...startValues(controls, values) };
+  controlsPanel.replaceChildren();
+  readouts = [];
+  controlsPanel.hidden = !controls.length && !specs.length;
+  for (const c of controls) {
+    const row = document.createElement('label');
+    row.className = 'control';
+    const name = document.createElement('span');
+    name.textContent = c.label;
+    const out = document.createElement('output');
+    const input = document.createElement('input');
+    input.type = 'range';
+    input.min = String(c.min ?? 0);
+    input.max = String(c.max ?? 100);
+    input.step = String(c.step ?? 1);
+    input.value = String(values[c.id]);
+    input.dataset.control = c.id;
+    if (c.info) row.title = c.info;
+    const show = () => (out.textContent = formatReadout({ unit: c.unit }, values[c.id]));
+    input.addEventListener('input', () => {
+      values[c.id] = +input.value;
+      show();
+      applyValues();
+    });
+    show();
+    row.append(name, out, input);
+    controlsPanel.append(row);
+  }
+  if (specs.length) {
+    const list = document.createElement('dl');
+    list.className = 'readouts';
+    for (const spec of specs) {
+      const dt = document.createElement('dt');
+      dt.textContent = spec.label;
+      const dd = document.createElement('dd');
+      list.append(dt, dd);
+      readouts.push({ spec, el: dd });
+    }
+    controlsPanel.append(list);
+  }
+  if (spinners.length && controls.length) {
+    const note = document.createElement('p');
+    note.className = 'note';
+    note.textContent = `Turns shown ${SPIN_SLOWDOWN}× slower than real`;
+    controlsPanel.append(note);
+  }
+  applyValues();
 }
 
 /** Turn file bytes into a scene object. `url` is where the file came from, for relative paths inside it. */

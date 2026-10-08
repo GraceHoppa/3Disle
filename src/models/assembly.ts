@@ -3,6 +3,8 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { mulberry32 } from '../lib/random';
 import { buildLink } from './links';
+import type { ControlSpec, ReadoutSpec, Value } from './logic';
+import { buildWires, type WireKind, type WireSpec } from './wires';
 import {
   paintPattern,
   paintSurface,
@@ -21,12 +23,20 @@ export interface AssemblySpec {
   /** Footprint of every slab: width (x) and depth (z). */
   footprint: [number, number];
   layers: LayerSpec[];
+  /** Wires in 3D between any parts, on any layers, with what flows in them. */
+  wires?: WireSpec[];
+  /** Sliders the visitor moves; rules (`{ by, map }`) in spin, wire and link levels follow them. */
+  controls?: ControlSpec[];
+  /** Live numbers shown with the controls. */
+  readouts?: ReadoutSpec[];
 }
 
 export interface LayerSpec {
   name: string;
   /** Slab thickness; 0 for a layer that only carries parts. */
   thickness: number;
+  /** Where the layer starts, mm above the first layer's bottom; default: above the tallest part below. */
+  base?: number;
   color?: string;
   /** Surface preset; see MATERIALS. `color` tints it. */
   material?: MaterialName;
@@ -59,6 +69,10 @@ export interface LinkSpec {
   /** Trace width in mm (default 0.4). */
   width?: number;
   color?: string;
+  /** What it carries, for its colour and pulses: data (default), power, ground, phase, video, rf. */
+  kind?: WireKind;
+  /** How much flows, 0..1: a number or a rule on a control (default 1). */
+  level?: Value;
   info?: string;
   category?: string;
   specs?: Record<string, string>;
@@ -82,8 +96,13 @@ export interface PartSpec {
   blades?: number;
   /** fan: a band joining the blade tips. */
   ring?: boolean;
-  /** Spin around the vertical axis while shown, in revolutions per minute (fans, props, rotors). */
-  spin?: number;
+  /** Spin around the vertical axis while shown, in revolutions per minute (fans, props, rotors);
+   *  negative turns the other way. A rule makes it follow a control (throttle → rpm). */
+  spin?: Value;
+  /** fan: blades of the opposite hand, for props that turn the other way. */
+  mirror?: boolean;
+  /** fan: `prop` draws slim propeller blades on a small hub instead of a fan's wide ones. */
+  blade?: 'fan' | 'prop';
   /** Sprinkle copies at random over an area centred on `at`: [width, depth] in mm. Count comes from repeat.count. */
   scatter?: [number, number];
   /** box: [width, height, depth]. */
@@ -212,9 +231,12 @@ const tag = (
  */
 export async function buildAssembly(spec: AssemblySpec, load?: FileLoader): Promise<THREE.Group> {
   const root = tag(new THREE.Group(), spec.name) as THREE.Group;
+  if (spec.controls?.length) root.userData.controls = spec.controls;
+  if (spec.readouts?.length) root.userData.readouts = spec.readouts;
   const [w, d] = spec.footprint;
   let y = 0;
   for (const layer of spec.layers) {
+    if (layer.base !== undefined && Number.isFinite(layer.base)) y = layer.base;
     // The slab itself stays unnamed, so picking it selects the whole layer (slab plus parts).
     const group = tag(new THREE.Group(), layer.name, layer.info, {
       category: layer.category ?? 'Layer',
@@ -244,7 +266,7 @@ export async function buildAssembly(spec: AssemblySpec, load?: FileLoader): Prom
       if (bus)
         group.add(
           tag(bus, link.name ?? `${link.from} bus`, link.info, {
-            category: link.category ?? 'Data bus',
+            category: link.category ?? (link.kind && link.kind !== 'data' ? 'Power path' : 'Data bus'),
             specs: link.specs,
           }),
         );
@@ -253,6 +275,11 @@ export async function buildAssembly(spec: AssemblySpec, load?: FileLoader): Prom
     const top = group.children.length ? new THREE.Box3().setFromObject(group, true).max.y - y : 0;
     root.add(group);
     y += Math.max(layer.thickness, top);
+  }
+  if (spec.wires?.length) {
+    const { group, missing } = buildWires(root, spec.wires);
+    root.add(group);
+    if (missing.length) root.userData.missing = missing;
   }
   return root;
 }
@@ -284,7 +311,8 @@ async function buildPart(
     h = bh;
   } else if (part.shape === 'fan') {
     h = part.height ?? 1;
-    geometry = fanGeometry(part.radius ?? 10, h, part.blades ?? 7, part.ring);
+    geometry = fanGeometry(part.radius ?? 10, h, part.blades ?? 7, part.ring, part.blade);
+    if (part.mirror) mirrorX(geometry);
   } else if (part.shape === 'outline') {
     h = part.height ?? 1;
     geometry = outlineGeometry(part.points ?? [], h, part.cutouts ?? []);
@@ -530,8 +558,16 @@ const seedOf = (s: string) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0))
  * A fan or propeller: a hub and curved, pitched blades, centred on the origin, `height` thick.
  * One geometry, so it draws in one call and spins as one piece.
  */
-export function fanGeometry(radius: number, height: number, blades: number, ring = false) {
-  const hub = radius * 0.3;
+export function fanGeometry(
+  radius: number,
+  height: number,
+  blades: number,
+  ring = false,
+  blade: 'fan' | 'prop' = 'fan',
+) {
+  const prop = blade === 'prop';
+  // A prop's hub is small and its blades slim: widest a third of the way out, narrow at the tip.
+  const hub = radius * (prop ? 0.11 : 0.3);
   const parts: THREE.BufferGeometry[] = [new THREE.CylinderGeometry(hub, hub, height, 32)];
   const sweep = (Math.PI * 2) / blades;
   for (let b = 0; b < blades; b++) {
@@ -540,8 +576,14 @@ export function fanGeometry(radius: number, height: number, blades: number, ring
     const steps = 10;
     const edge = (t: number, side: number) => {
       const r = hub * 0.95 + (radius * (ring ? 0.97 : 1) - hub * 0.95) * t;
-      const width = 0.45 + 0.4 * t; // share of the slot the blade covers
-      const a = sweep * (0.5 + (side - 0.5) * width) + t * sweep * 0.3;
+      const width = prop
+        ? ((0.5 + 0.8 * Math.sin(Math.PI * Math.min(1, t * 1.4 + 0.15))) *
+            Math.min(1, (1 - t) * 6 + 0.25) *
+            radius *
+            0.17) /
+          Math.max(r * sweep, 1e-6) // a chord in mm, as a share of the slot at this radius
+        : 0.45 + 0.4 * t; // share of the slot the blade covers
+      const a = sweep * (0.5 + (side - 0.5) * width) + t * sweep * (prop ? 0.08 : 0.3);
       return new THREE.Vector2(Math.cos(a) * r, Math.sin(a) * r);
     };
     shape.moveTo(edge(0, 0).x, edge(0, 0).y);
@@ -574,6 +616,31 @@ export function fanGeometry(radius: number, height: number, blades: number, ring
   const merged = mergeGeometries(parts.map((g) => (g.index ? g.toNonIndexed() : g)));
   merged.computeVertexNormals();
   return merged;
+}
+
+/** Mirror a geometry left to right, keeping its faces facing out. */
+export function mirrorX(g: THREE.BufferGeometry) {
+  g.scale(-1, 1, 1);
+  const index = g.index;
+  if (index) {
+    for (let i = 0; i < index.count; i += 3) {
+      const b = index.getX(i + 1);
+      index.setX(i + 1, index.getX(i + 2));
+      index.setX(i + 2, b);
+    }
+  } else {
+    for (const attr of Object.values(g.attributes) as THREE.BufferAttribute[]) {
+      for (let i = 0; i < attr.count; i += 3) {
+        for (let k = 0; k < attr.itemSize; k++) {
+          const b = attr.getComponent(i + 1, k);
+          attr.setComponent(i + 1, k, attr.getComponent(i + 2, k));
+          attr.setComponent(i + 2, k, b);
+        }
+      }
+    }
+  }
+  g.computeVertexNormals();
+  return g;
 }
 
 /** A slab with round openings: the footprint rectangle minus circles, extruded to its thickness, centred like a box. */

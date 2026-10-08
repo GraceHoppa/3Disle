@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { route45 } from '../lib/canvas';
 import type { Footprint } from './surfaces';
 import type { LinkSpec } from './assembly';
+import { WIRE_KINDS } from './wires';
 
 /** One routed trace: points in the slab's plane (x, z), mm. */
 export type Path = [number, number][];
@@ -89,6 +90,7 @@ export function flowMaterial(color = '#76b900') {
     uniforms: {
       uTime: { value: 0 },
       uSpeed: { value: 1 },
+      uLevel: { value: 1 },
       uColor: { value: new THREE.Color(color) },
     },
     side: THREE.DoubleSide,
@@ -106,13 +108,15 @@ export function flowMaterial(color = '#76b900') {
     fragmentShader: /* glsl */ `
       uniform float uTime;
       uniform float uSpeed;
+      uniform float uLevel;
       uniform vec3 uColor;
       varying float vAlong;
       varying float vLane;
       void main() {
-        float p = fract(vAlong * 2.0 - uTime * uSpeed * 0.6 + vLane);
+        float p = fract(vAlong * 2.0 - uTime * uSpeed * (0.25 + 0.75 * uLevel) * 0.6 + vLane);
         float pulse = smoothstep(0.0, 0.03, p) * (1.0 - smoothstep(0.03, 0.16, p));
-        gl_FragColor = vec4(uColor * (0.35 + pulse * 3.5 * step(0.001, uSpeed)), 1.0);
+        float idle = mix(0.12, 0.35, clamp(uLevel, 0.0, 1.0));
+        gl_FragColor = vec4(uColor * (idle + pulse * 3.5 * uLevel * step(0.001, uSpeed)), 1.0);
       }
     `,
   });
@@ -122,7 +126,9 @@ export function flowMaterial(color = '#76b900') {
 export function buildLink(link: LinkSpec, prints: Footprint[], y: number) {
   const paths = linkPaths(link, prints);
   if (!paths.length) return null;
-  const mesh = new THREE.Mesh(ribbonGeometry(paths, link.width ?? 0.4, y), flowMaterial(link.color));
+  const color = link.color ?? (link.kind ? WIRE_KINDS[link.kind].glow : undefined);
+  const mesh = new THREE.Mesh(ribbonGeometry(paths, link.width ?? 0.4, y), flowMaterial(color));
   mesh.userData.flow = true;
+  mesh.userData.level = link.level ?? 1;
   return mesh;
 }
