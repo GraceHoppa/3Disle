@@ -7,7 +7,7 @@
   "layers": [
     {
       "name": "Solder balls",
-      "category": "Package \u00b7 contacts",
+      "category": "Package · contacts",
       "thickness": 0,
       "info": "Ball grid array joining the package to the card's PCB. Only the outer rows are drawn; ball count and pitch are approximate.",
       "specs": {
@@ -36,14 +36,14 @@
           },
           "material": "steel",
           "color": "#c8ccd2",
-          "category": "Package \u00b7 contacts",
+          "category": "Package · contacts",
           "info": "Solder balls that join the package to the board. Pitch and count are approximate (not published)."
         }
       ]
     },
     {
       "name": "Bottom build-up",
-      "category": "Substrate \u00b7 layer",
+      "category": "Substrate · layer",
       "thickness": 0.25,
       "material": "default",
       "info": "Fine copper wiring layers that spread the die's connections out to the balls. Layer count approximate.",
@@ -52,7 +52,7 @@
     },
     {
       "name": "Core",
-      "category": "Substrate \u00b7 layer",
+      "category": "Substrate · layer",
       "thickness": 0.8,
       "material": "fibreglass",
       "info": "Stiff glass-fibre core with copper-plated through-holes; keeps the package flat.",
@@ -63,7 +63,7 @@
     },
     {
       "name": "Top build-up",
-      "category": "Substrate \u00b7 layer",
+      "category": "Substrate · layer",
       "thickness": 0.25,
       "material": "default",
       "info": "Densest wiring, directly under the die: memory, PCIe and display lanes fan out from here.",
@@ -72,10 +72,10 @@
     },
     {
       "name": "Solder mask",
-      "category": "Substrate \u00b7 layer",
+      "category": "Substrate · layer",
       "thickness": 0.05,
       "material": "pcb",
-      "color": "#2f5a3c",
+      "color": "#2d4a1e",
       "info": "Lacquer on top of the substrate; the die bumps land through openings in it.",
       "parts": [
         {
@@ -98,7 +98,7 @@
             ]
           },
           "material": "gold",
-          "category": "Package \u00b7 bumps",
+          "category": "Package · bumps",
           "info": "Microscopic solder bumps under the die (flip-chip). Pitch and count approximate."
         },
         {
@@ -122,7 +122,7 @@
             ]
           },
           "material": "ceramic",
-          "category": "Package \u00b7 power",
+          "category": "Package · power",
           "info": "Small ceramic capacitors that keep the die's supply steady during load spikes."
         },
         {
@@ -138,7 +138,7 @@
             -20.5
           ],
           "material": "steel",
-          "category": "Package \u00b7 mechanical",
+          "category": "Package · mechanical",
           "info": "Metal ring around the die that stops the bare (lid-less) package from warping. Shape approximate; one side drawn."
         }
       ]
@@ -150,7 +150,7 @@
       "info": "The GB203 die, mounted face-down with no heatspreader; the cooler touches it directly.",
       "detail": "die.json",
       "specs": {
-        "Size": "378 mm\u00b2",
+        "Size": "378 mm²",
         "Transistors": "45.6 billion",
         "Process": "TSMC 4N"
       },
@@ -165,15 +165,14 @@
           ],
           "round": 0.05,
           "lift": 0.08,
-          "material": "chip",
-          "color": "#3a4150",
-          "category": "GPU \u00b7 Blackwell",
-          "info": "Bare silicon die. 19.6 \u00d7 19.3 mm is an approximation matching the published 378 mm\u00b2 area. Dive in for its layers and floorplan.",
+          "material": "die",
+          "category": "GPU · Blackwell",
+          "info": "Bare silicon die. 19.6 × 19.3 mm is an approximation matching the published 378 mm² area. Dive in for its layers and floorplan.",
           "detail": "die.json",
           "specs": {
-            "Area": "378 mm\u00b2",
-            "Edges": "~19.6 \u00d7 19.3 mm (approx.)",
-            "Density": "~121 M transistors/mm\u00b2"
+            "Area": "378 mm²",
+            "Edges": "~19.6 × 19.3 mm (approx.)",
+            "Density": "~121 M transistors/mm²"
           }
         }
       ]

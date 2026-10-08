@@ -37,7 +37,7 @@
           "at": [-45, 0],
           "round": 0.5,
           "material": "pcb",
-          "color": "#2f5a3c",
+          "color": "#2d4a1e",
           "category": "GPU · package",
           "info": "Organic substrate the GB203 die is flip-chip mounted on. Size approximate. Dive in for its layers.",
           "detail": "package.json",

@@ -133,18 +133,26 @@ export interface PartSpec {
 
 export type FileLoader = (url: string) => Promise<THREE.Object3D>;
 
-/** Surface presets, so a model looks like what it is made of without tuning numbers. */
+/**
+ * Surface presets, so a model looks like what it is made of without tuning numbers. Metals,
+ * PCB, plastic and mould take GPU → Atom's values (L1Card, L2Pcb).
+ */
 export const MATERIALS = {
   default: { color: '#9aa3ad', metalness: 0.2, roughness: 0.6 },
-  pcb: { color: '#0d3a1c', metalness: 0, roughness: 0.62, clearcoat: 0.15, clearcoatRoughness: 0.5 },
-  copper: { color: '#b0673c', metalness: 1, roughness: 0.38 },
-  gold: { color: '#e3b55c', metalness: 1, roughness: 0.28 },
-  aluminium: { color: '#9aa4b0', metalness: 1, roughness: 0.5 },
+  pcb: { color: '#0d3a1c', metalness: 0.1, roughness: 0.55 },
+  copper: { color: '#d07a45', metalness: 1, roughness: 0.28 },
+  gold: { color: '#ffc35a', metalness: 1, roughness: 0.22 },
+  aluminium: { color: '#c3c8cf', metalness: 1, roughness: 0.32 },
   steel: { color: '#8d939b', metalness: 1, roughness: 0.45 },
-  chip: { color: '#15171a', metalness: 0.15, roughness: 0.5 },
-  plastic: { color: '#1b1e22', metalness: 0, roughness: 0.62 },
+  /** Dark painted metal, like a cooler shroud. */
+  gunmetal: { color: '#24282d', metalness: 0.85, roughness: 0.34 },
+  chip: { color: '#0c0d0e', metalness: 0.3, roughness: 0.42 },
+  /** Bare silicon: a polished, mirror-like die. */
+  die: { color: '#8c96a6', metalness: 1, roughness: 0.08 },
+  plastic: { color: '#0b0d0f', metalness: 0.1, roughness: 0.55 },
   rubber: { color: '#16181b', metalness: 0, roughness: 0.92 },
-  ceramic: { color: '#d9d3c5', metalness: 0, roughness: 0.7 },
+  /** Ceramic capacitor bodies (MLCC tan), as in GPU → Atom. */
+  ceramic: { color: '#b08a5a', metalness: 0.2, roughness: 0.5 },
   fibreglass: { color: '#c9b77a', metalness: 0, roughness: 0.75 },
   /** Epoxy mould compound, drawn see-through so the die shows. */
   resin: { color: '#2a2d33', metalness: 0, roughness: 0.55, transparent: true, opacity: 0.4 },

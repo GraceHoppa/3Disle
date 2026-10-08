@@ -24,14 +24,16 @@ show(object): dispose the old model, add the new one, BVH for picking (bvh.ts),
               redraw HUD, story parts, labels
    ▼
 stage.ts render(): renders on demand. Each frame: camera glide, tickers (spin, flow pulses,
-              make-room easing, labels, field of view), OrbitControls damping, key / rim light
-              follow the camera, PostFX (the post chain from GPU → Atom) draws. Keeps going
-              only while something moves.
+              make-room easing, labels, field of view), OrbitControls damping, PostFX (the
+              post chain from GPU → Atom) draws. Keeps going only while something moves.
 ```
 
-`stage.ts` is shared by the viewer and the editor: renderer, room environment, a key light that
-casts soft shadows (`PCFShadowMap` + `radius`), a cool rim light, OrbitControls with damping and
-zoom toward the cursor, camera glides (`flyTo`) and `frame3q` (a three-quarter view that fits the
+`stage.ts` is shared by the viewer and the editor: renderer (GPU → Atom's pixel-ratio rule:
+at least 1.5×, at most 1.75× on high tier), room environment at full strength, and GPU → Atom's
+card lights (hemisphere, white key, green rim, green glow from below), fixed in the world and
+scaled to each model by `placeLights()`; the rig is turned so it sits relative to our default view
+the way the reference's sits relative to its camera. No shadows (the reference has none).
+OrbitControls with the reference's damping and speeds, zoom toward the cursor, camera glides (`flyTo`) and `frame3q` (a three-quarter view that fits the
 model). Dev builds expose `window.__viewer` (camera, controls, scene) for tests.
 
 ### Building an assembly (`src/models/assembly.ts`)
@@ -165,10 +167,12 @@ levels, so the engine has its own loader, tour and story.
 - `GLTFLoader` with an embedded data URI needs browser APIs (`ProgressEvent`) in Node: test with
   a packed GLB instead.
 - Moving GLB objects into groups changes what `getObjectByName` finds: index names first.
-- three r186 removed `PCFSoftShadowMap` (falls back with a warning): use `PCFShadowMap` + `radius`.
 - Raycasts ignore `visible`: filter hidden objects yourself.
-- Glossy flat surfaces mirror a camera-mounted light as a white hotspot: key light sits above
-  and behind the camera; plastics/PCBs are matte; mould uses `resin`, not `glass`.
+- A light rig copied from a scene with a different camera glares: GPU → Atom's green rim, used
+  as is, reflected off the card's top straight into our camera. Turn the rig with the view.
+- Colours in model files were picked for the old, dim lights (key 0.55): after moving to the
+  reference's lights (key 2.2) pale colours wash out; prefer the reference's material colours.
+- Mould uses `resin`, not `glass`.
 - Additive X-Ray on big stacked panels saturates to white: dim the shell colour.
 - Corner brackets sized as 22 % of a 300 mm layer run across the screen: `tight` mode.
 - Labels pushed up past each other build a tower when zoomed out: give up after two nudges, and
