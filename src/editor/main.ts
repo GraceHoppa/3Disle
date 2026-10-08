@@ -1,6 +1,13 @@
 import * as THREE from 'three';
 import { formatOf, parseModel } from '../models/load';
-import { applyProject, listNodes, parseSpecs, type ProjectPart, type ProjectSpec } from '../models/project';
+import {
+  applyProject,
+  listNodes,
+  parseSpecs,
+  projectScale,
+  type ProjectPart,
+  type ProjectSpec,
+} from '../models/project';
 import { disposeObject } from '../lib/dispose';
 import { createStage } from '../viewer/stage';
 import '../viewer/viewer.css';
@@ -39,7 +46,7 @@ async function showModel(bytes: ArrayBuffer, fileName: string) {
   if (format !== 'glb' && format !== 'gltf')
     throw new Error('The editor works with GLB / glTF files (Blender: File → Export → glTF 2.0)');
   const next = await parseModel(bytes, format, fileName.replace(/\.[^.]+$/, ''));
-  if ((spec.units ?? 'm') === 'm') next.scale.multiplyScalar(1000); // glTF metres -> engine mm
+  next.scale.multiplyScalar(projectScale(spec)); // file units -> engine mm
   if (model) {
     scene.remove(model);
     disposeObject(model, new Set([scene.environment!]));

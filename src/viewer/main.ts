@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { formatOf, loadModel, parseModel, type Credit } from '../models/load';
 import { buildAssembly, type AssemblySpec } from '../models/assembly';
-import { applyProject, isProject } from '../models/project';
+import { applyProject, isProject, projectScale } from '../models/project';
 import { disposeBvh, enableBvh } from '../models/bvh';
 import { explode, explodeStack } from '../models/explode';
 import { measure } from '../models/frame';
@@ -379,7 +379,7 @@ async function fromBytes(data: ArrayBuffer, fileName: string, url?: URL) {
       if (!url) throw new Error('Open projects from the model list, so their model file can be found');
       const model = await loadModel(new URL(spec.model, url).href);
       // glTF is in metres; the engine works in millimetres.
-      if ((spec.units ?? 'm') === 'm') model.scale.multiplyScalar(1000);
+      model.scale.multiplyScalar(projectScale(spec));
       const { root, missing } = applyProject(model, spec);
       if (missing.length) console.warn(`${spec.name}: no objects named ${missing.join(', ')}`);
       return { object: root, name: spec.name, layered: false };

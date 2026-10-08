@@ -12,6 +12,8 @@ export interface ProjectSpec {
   model: string;
   /** Units of the model file: glTF and Blender use metres (the default); the engine shows mm. */
   units?: 'm' | 'mm';
+  /** Extra factor for files saved at the wrong size (e.g. 0.005 for one drawn 200× too big). */
+  scale?: number;
   /** Who made the model file; defaults to the credit inside the file, if it has one. */
   credit?: Credit;
   parts: ProjectPart[];
@@ -26,6 +28,12 @@ export interface ProjectPart {
   specs?: Record<string, string>;
   /** Zoom branch: another project or assembly file showing this part in detail. */
   detail?: string;
+}
+
+/** Factor from the model file's units to the engine's millimetres. */
+export function projectScale(spec: Pick<ProjectSpec, 'units' | 'scale'>) {
+  const scale = spec.scale !== undefined && Number.isFinite(spec.scale) && spec.scale > 0 ? spec.scale : 1;
+  return ((spec.units ?? 'm') === 'm' ? 1000 : 1) * scale;
 }
 
 export const isProject = (spec: unknown): spec is ProjectSpec =>

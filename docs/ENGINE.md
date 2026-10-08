@@ -66,7 +66,8 @@ A layer has `name`, `thickness` (0 for a layer that only carries parts), and opt
 **2. Project** (`public/projects/<name>/project.json`, `src/models/project.ts`). A GLB (from
 Blender, a CAD export, a download) plus a list of parts, each grouping some of the GLB's named
 objects (`nodes`), with the same info / specs / detail fields. `units` is `"m"` (the default,
-scaled ×1000) or `"mm"`. Made in `editor.html`, no code.
+scaled ×1000) or `"mm"`; `scale` fixes a file saved at the wrong size (e.g. `0.005` for one
+drawn 200× too big). Made in `editor.html`, no code.
 
 **Credits.** A GLB that carries `asset.extras` with `author` and `license` (Sketchfab downloads
 do, with `title` and `source`) is credited automatically; a project can set its own

@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
-import { applyProject, isProject, listNodes, parseSpecs, type ProjectSpec } from '../../src/models/project';
+import {
+  applyProject,
+  isProject,
+  listNodes,
+  parseSpecs,
+  projectScale,
+  type ProjectSpec,
+} from '../../src/models/project';
 import { creditOf } from '../../src/models/load';
 
 /** A flat model like a Blender export: named meshes, one of them inside a named group. */
@@ -138,5 +145,19 @@ describe('credits', () => {
     expect(applyProject(model, spec).root.userData.credit.author).toBe('chiwei');
     const own = { author: 'me', license: 'CC0' };
     expect(applyProject(new THREE.Group(), { ...spec, credit: own }).root.userData.credit).toEqual(own);
+  });
+});
+
+describe('projectScale', () => {
+  it('turns metres into millimetres and applies a size fix on top', () => {
+    expect(projectScale({})).toBe(1000);
+    expect(projectScale({ units: 'mm' })).toBe(1);
+    expect(projectScale({ scale: 0.005 })).toBe(5);
+  });
+
+  it('ignores a scale that is not a positive number', () => {
+    expect(projectScale({ scale: 0 })).toBe(1000);
+    expect(projectScale({ scale: -2 })).toBe(1000);
+    expect(projectScale({ scale: Number.NaN })).toBe(1000);
   });
 });
