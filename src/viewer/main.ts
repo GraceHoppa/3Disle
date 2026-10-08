@@ -410,6 +410,10 @@ interface Tour {
   /** Landing card: a short line above the title, and a sentence under it. */
   lead?: string;
   subtitle?: string;
+  /** Landing title as separate lines (default: the tour's name). */
+  heading?: string[];
+  /** Acts the levels group into (numbered I, II, III … on the landing card). */
+  acts?: { title: string; levels?: number[] }[];
   /** Shown after the last level. */
   finale?: { title: string; text?: string };
   levels: TourLevel[];
@@ -773,8 +777,42 @@ function buildRuler() {
   });
 }
 
+const landingUp = () => !landing.hidden && !landing.classList.contains('leaving');
 /** While the landing or finale card is up, the rest of the interface steps back. */
-const cover = () => document.body.classList.toggle('covered', !landing.hidden || !finale.hidden);
+const cover = () => document.body.classList.toggle('covered', landingUp() || !finale.hidden);
+
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+
+/** Fill the landing card from the tour: lead, title lines, subtitle, the acts line. */
+function fillLanding(t: Tour) {
+  landing.querySelector('.lead')!.textContent = t.lead ?? `${t.levels.length} levels`;
+  const h1 = landing.querySelector('h1')!;
+  const lines = t.heading?.length ? t.heading : [t.name];
+  h1.replaceChildren(...lines.flatMap((line, i) => (i ? [document.createElement('br'), line] : [line])));
+  landing.querySelector('.sub')!.textContent = t.subtitle ?? '';
+  const acts = landing.querySelector<HTMLElement>('.acts')!;
+  acts.replaceChildren(
+    ...(t.acts ?? []).map((a, i) => {
+      const li = document.createElement('li');
+      const n = document.createElement('b');
+      n.textContent = ROMAN[i] ?? String(i + 1);
+      li.append(n, a.title);
+      return li;
+    }),
+  );
+  acts.hidden = !t.acts?.length;
+}
+
+/** The landing fades out (0.7 s, as in GPU → Atom) while the scene takes over. */
+function closeLanding() {
+  if (!landingUp()) return;
+  landing.classList.add('leaving');
+  cover();
+  setTimeout(() => {
+    landing.hidden = true;
+    landing.classList.remove('leaving');
+  }, 700);
+}
 
 function drawStory(onTour = true) {
   ruler.hidden = !tour;
@@ -785,9 +823,8 @@ function drawStory(onTour = true) {
   [...ruler.children].forEach((li, i) => li.setAttribute('aria-current', String(onTour && i === tour!.at)));
   if (!landingShown && tour.at === 0 && !new URLSearchParams(location.search).has('nointro')) {
     landingShown = true;
-    landing.querySelector('.lead')!.textContent = tour.lead ?? `${tour.levels.length} levels`;
-    landing.querySelector('h1')!.textContent = tour.name;
-    landing.querySelector('.sub')!.textContent = tour.subtitle ?? '';
+    fillLanding(tour);
+    landing.classList.remove('leaving');
     landing.hidden = false;
     cover();
     (document.getElementById('start-tour') as HTMLButtonElement).focus();
@@ -803,13 +840,15 @@ function showFinale() {
 }
 
 document.getElementById('start-tour')!.addEventListener('click', () => {
-  landing.hidden = true;
-  cover();
+  closeLanding();
   setAuto(true);
 });
-document.getElementById('explore-own')!.addEventListener('click', () => {
-  landing.hidden = true;
-  cover();
+document.getElementById('explore-own')!.addEventListener('click', () => closeLanding());
+// On the landing: Enter starts the tour, Esc explores (a focused button handles its own Enter).
+window.addEventListener('keydown', (e) => {
+  if (!landingUp()) return;
+  if (e.key === 'Enter' && !(e.target instanceof HTMLButtonElement)) document.getElementById('start-tour')!.click();
+  if (e.key === 'Escape') document.getElementById('explore-own')!.click();
 });
 document.getElementById('finale-close')!.addEventListener('click', () => {
   finale.hidden = true;

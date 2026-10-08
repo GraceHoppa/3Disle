@@ -76,7 +76,9 @@ corner with a link to the source, as CC BY licenses require.
 
 **3. Tour** (`tour.json`). A guided path through levels: each level names a model file, its
 scale, title, text, caption, and which part to zoom into next (`into`). The arrows and Auto walk
-it. Optional `lead` and `subtitle` fill the landing card, `finale: { title, text }` the end card.
+it. Optional `lead`, `heading` (title lines) and `subtitle` fill the landing card, `acts:
+[{ title, levels }]` number the tour's parts I, II, III on it, and `finale: { title, text }` fills
+the end card. On the landing, Enter starts the tour and Esc explores.
 
 ```json
 {

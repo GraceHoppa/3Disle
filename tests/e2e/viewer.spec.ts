@@ -29,7 +29,8 @@ test('a tour opens on its landing card; the last ▶ opens the finale', async ({
   const errors = collectErrors(page);
   await page.goto('/viewer.html?model=rtx5070ti/tour.json');
   await expect(page.locator('#landing')).toBeVisible({ timeout: 90_000 });
-  await expect(page.locator('#landing h1')).toHaveText('Inside the GeForce RTX 5070 Ti');
+  await expect(page.locator('#landing h1')).toHaveText('Inside the\nGeForce RTX 5070 Ti', { useInnerText: true });
+  await expect(page.locator('#landing .acts li')).toHaveText(['IThe board', 'IIThe silicon']);
   await expect(page.locator('#ruler li')).toHaveCount(4);
   await page.locator('#explore-own').click();
   await expect(page.locator('#landing')).toBeHidden();
@@ -159,6 +160,21 @@ test('level text rises into place on a level change, and stays still with reduce
   await page.keyboard.press('ArrowRight');
   await expect(page.locator('#hud .ttl')).toHaveText('Main PCB', { timeout: 60_000 });
   expect(await moving()).toEqual([0, 0, 0]);
+});
+
+test('on the landing, Esc explores and Enter starts the tour', async ({ page }) => {
+  await page.goto('/viewer.html?model=rtx5070ti/tour.json');
+  await expect(page.locator('#landing')).toBeVisible({ timeout: 90_000 });
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#landing')).toBeHidden();
+  await expect(page.locator('#auto')).toHaveAttribute('aria-pressed', 'false');
+
+  await page.goto('/viewer.html?model=rtx5070ti/tour.json');
+  await expect(page.locator('#landing')).toBeVisible({ timeout: 90_000 });
+  await page.locator('body').focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#landing')).toBeHidden();
+  await expect(page.locator('#auto')).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('a bad file shows an error instead of breaking the page', async ({ page }) => {
