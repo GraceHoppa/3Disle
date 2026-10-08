@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { formatOf, loadModel, parseModel } from '../models/load';
 import { buildAssembly, type AssemblySpec } from '../models/assembly';
-import { genericPackage } from '../models/chip';
 import { applyProject, isProject } from '../models/project';
 import { disposeBvh, enableBvh } from '../models/bvh';
 import { explode, explodeStack } from '../models/explode';
@@ -433,26 +432,9 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
  * part while the view dims, the next model loads meanwhile, then it arrives from far away and
  * the camera keeps flying in: one continuous dive.
  */
-/** A chip with no detail model of its own still opens: into a generic package interior. */
-const isChip = (o: THREE.Object3D) => o.userData.material === 'chip';
-
 async function dive(part: THREE.Object3D, box = boxOf(part), name = part.name) {
   const file = part.userData.detail as string | undefined;
   if (file) return diveTo({ ...fromUrl(file, trail.at(-1)?.url ?? base), name }, box);
-  if (!isChip(part)) return;
-  const s = box.getSize(new THREE.Vector3());
-  const spec = genericPackage({
-    name,
-    size: [s.x, s.y, s.z],
-    specs: part.userData.specs as Record<string, string> | undefined,
-    info: part.userData.info as string | undefined,
-  });
-  const entry: Entry = {
-    name: spec.name,
-    note: 'Generic package', // no url: a generated level is not a file, and not a tour stop
-    load: async () => ({ object: await buildAssembly(spec), name: spec.name, layered: true }),
-  };
-  return diveTo(entry, box);
 }
 
 async function diveTo(entry: Entry, box: THREE.Box3 | null, name?: string) {
@@ -1055,7 +1037,7 @@ function focus(t: Target | THREE.Object3D | null, glide = true) {
       return li;
     }),
   );
-  diveButton.hidden = !part.userData.detail && !isChip(part);
+  diveButton.hidden = !part.userData.detail;
 
   if (glide) {
     const pose = focusPose(box, camera.fov, camera.aspect, camera.position);
