@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { Credit } from './load';
 
 /**
  * A project turns a model file (GLB from Blender, say) into an explorable object without code:
@@ -11,6 +12,8 @@ export interface ProjectSpec {
   model: string;
   /** Units of the model file: glTF and Blender use metres (the default); the engine shows mm. */
   units?: 'm' | 'mm';
+  /** Who made the model file; defaults to the credit inside the file, if it has one. */
+  credit?: Credit;
   parts: ProjectPart[];
 }
 
@@ -47,6 +50,8 @@ export function applyProject(model: THREE.Object3D, spec: ProjectSpec) {
   model.updateWorldMatrix(true, true);
   const root = new THREE.Group();
   root.name = spec.name;
+  const credit = spec.credit ?? model.userData.credit;
+  if (credit) root.userData.credit = credit;
   const missing: string[] = [];
   const claimed = new Set<THREE.Object3D>();
   // Look names up before anything moves: once moved into a part, an object is no longer under `model`.

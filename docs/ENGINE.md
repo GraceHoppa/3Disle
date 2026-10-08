@@ -68,6 +68,11 @@ Blender, a CAD export, a download) plus a list of parts, each grouping some of t
 objects (`nodes`), with the same info / specs / detail fields. `units` is `"m"` (the default,
 scaled ×1000) or `"mm"`. Made in `editor.html`, no code.
 
+**Credits.** A GLB that carries `asset.extras` with `author` and `license` (Sketchfab downloads
+do, with `title` and `source`) is credited automatically; a project can set its own
+`credit: { title, author, license, source }` instead. The viewer shows it in the bottom-right
+corner with a link to the source, as CC BY licenses require.
+
 **3. Tour** (`tour.json`). A guided path through levels: each level names a model file, its
 scale, title, text, caption, and which part to zoom into next (`into`). The arrows and Auto walk
 it. Optional `lead` and `subtitle` fill the landing card, `finale: { title, text }` the end card.

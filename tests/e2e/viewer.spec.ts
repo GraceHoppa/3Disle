@@ -17,7 +17,7 @@ test('lists the models and opens the drone tour first', async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto('/viewer.html');
   await loaded(page);
-  await expect(page.locator('#builtin button')).toHaveCount(7);
+  await expect(page.locator('#builtin button')).toHaveCount(8);
   await expect(page.locator('#counter')).toHaveText('01 / 02');
   await expect(page.locator('#hud .ttl')).toHaveText('SpeedyBee F405 V5 flight controller');
   await expect(page.locator('#xray')).toBeHidden();
@@ -125,6 +125,20 @@ test('labels never overlap each other and stay under the landing card', async ({
       const overlap = a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
       expect(overlap, `tags ${i} and ${j} overlap`).toBe(false);
     }
+});
+
+test('a project from a downloaded GLB shows its parts by name and credits its author', async ({ page }) => {
+  const errors = collectErrors(page);
+  await page.goto('/viewer.html?model=projects/motor/project.json');
+  await loaded(page);
+  await expect(page.locator('#credit')).toContainText('chiwei');
+  await expect(page.locator('#credit')).toContainText('CC-BY-4.0');
+  await expect(page.locator('#credit a')).toHaveAttribute('href', /sketchfab\.com/);
+  await page.keyboard.press('l');
+  const names = await page.locator('.tag:not([hidden])').allTextContents();
+  expect(names).toContain('Bell');
+  expect(names.some((n) => /Object_|polySurface|Cylinder_/.test(n))).toBe(false);
+  expect(errors).toEqual([]);
 });
 
 test('a bad file shows an error instead of breaking the page', async ({ page }) => {

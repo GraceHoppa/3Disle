@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { formatOf, loadModel, parseModel } from '../models/load';
+import { formatOf, loadModel, parseModel, type Credit } from '../models/load';
 import { buildAssembly, type AssemblySpec } from '../models/assembly';
 import { applyProject, isProject } from '../models/project';
 import { disposeBvh, enableBvh } from '../models/bvh';
@@ -21,6 +21,22 @@ import './viewer.css';
 const canvas = document.getElementById('gl') as HTMLCanvasElement;
 const title = document.getElementById('title')!;
 const status = document.getElementById('status')!;
+const creditLine = document.getElementById('credit')!;
+
+/** Show who made the model, with a link to its source, or nothing when it carries no credit. */
+function showCredit(credit: Credit | undefined) {
+  creditLine.hidden = !credit;
+  if (!credit) return creditLine.replaceChildren();
+  const what = credit.title ? `“${credit.title}”` : 'Model';
+  const link = document.createElement('a');
+  link.textContent = `${what} by ${credit.author}`;
+  if (credit.source && /^https?:\/\//.test(credit.source)) {
+    link.href = credit.source;
+    link.target = '_blank';
+    link.rel = 'noopener';
+  }
+  creditLine.replaceChildren(link, ` · ${credit.license}`);
+}
 const tip = document.getElementById('tip')!;
 
 const { renderer, scene, camera, controls, render, flyTo, frame3q, tickers } = createStage(canvas);
@@ -339,6 +355,7 @@ function show(next: THREE.Object3D, name: string, layered: boolean, arrive = 1) 
 
   title.textContent = name;
   document.title = `${name} · Model Viewer`;
+  showCredit(next.userData.credit as Credit | undefined);
   status.textContent = '';
   drawHud();
   buildTags();

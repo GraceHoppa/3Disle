@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
 import { applyProject, isProject, listNodes, parseSpecs, type ProjectSpec } from '../../src/models/project';
+import { creditOf } from '../../src/models/load';
 
 /** A flat model like a Blender export: named meshes, one of them inside a named group. */
 function model() {
@@ -102,5 +103,40 @@ describe('parseSpecs', () => {
       Ratio: '16:9',
       Current: '55 A',
     });
+  });
+});
+
+describe('credits', () => {
+  const sketchfab = {
+    extras: {
+      author: 'chiwei (https://sketchfab.com/chiwei2333)',
+      license: 'CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)',
+      source: 'https://sketchfab.com/3d-models/x',
+      title: 'Brushless Motor',
+    },
+  };
+
+  it('reads author, license, title and source from a glTF asset, without the URLs in brackets', () => {
+    expect(creditOf(sketchfab)).toEqual({
+      author: 'chiwei',
+      license: 'CC-BY-4.0',
+      source: 'https://sketchfab.com/3d-models/x',
+      title: 'Brushless Motor',
+    });
+  });
+
+  it('has no credit without both an author and a license', () => {
+    expect(creditOf(undefined)).toBeNull();
+    expect(creditOf({ extras: { author: 'someone' } })).toBeNull();
+    expect(creditOf({ extras: { author: '  ', license: 'MIT' } })).toBeNull();
+  });
+
+  it('a project keeps the file’s credit unless it names its own', () => {
+    const model = new THREE.Group();
+    model.userData.credit = creditOf(sketchfab);
+    const spec: ProjectSpec = { name: 'm', model: 'm.glb', parts: [] };
+    expect(applyProject(model, spec).root.userData.credit.author).toBe('chiwei');
+    const own = { author: 'me', license: 'CC0' };
+    expect(applyProject(new THREE.Group(), { ...spec, credit: own }).root.userData.credit).toEqual(own);
   });
 });

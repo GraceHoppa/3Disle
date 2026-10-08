@@ -422,6 +422,21 @@ input[type='range'] {
   text-transform: uppercase;
   text-align: center;
 }
+/* Who made the model on screen (from its file or project), as its license asks. */
+#credit {
+  position: fixed;
+  right: 16px;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  max-width: min(60vw, 420px);
+  margin: 0;
+  color: var(--dim);
+  font: 10px/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  text-align: right;
+}
+#credit a {
+  color: inherit;
+}
 body.drag #gl {
   outline: 1px dashed var(--green);
   outline-offset: -16px;

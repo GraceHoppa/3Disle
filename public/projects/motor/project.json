@@ -1,0 +1,84 @@
+{
+  "name": "Brushless outrunner motor",
+  "model": "motor.glb",
+  "parts": [
+    {
+      "name": "Bell",
+      "nodes": ["Cylinder_008"],
+      "category": "Rotor",
+      "info": "The outer can that spins. It carries the magnets on its inside wall and turns the shaft; on a drone the propeller is mounted on top of it."
+    },
+    {
+      "name": "Magnets",
+      "nodes": ["Empty_003"],
+      "category": "Rotor",
+      "info": "Permanent magnets glued around the inside of the bell, alternating north and south. The stator's changing field pulls them round. This model has 10; real FPV motors typically have 14 (approx.)."
+    },
+    {
+      "name": "Shaft",
+      "nodes": ["Cylinder_011"],
+      "category": "Rotor",
+      "info": "Steel shaft fixed to the bell, running through the two bearings in the stator."
+    },
+    {
+      "name": "Windings",
+      "nodes": ["Cube_002"],
+      "category": "Stator",
+      "info": "Copper coils around the stator teeth, in three phases. The ESC switches current through them in turn, which makes a rotating magnetic field."
+    },
+    {
+      "name": "Stator core",
+      "nodes": ["Cube_008"],
+      "category": "Stator",
+      "info": "Laminated iron teeth that carry the coils and guide their magnetic field toward the magnets (approx.: identified from the shape)."
+    },
+    {
+      "name": "Base",
+      "nodes": ["polySurface9"],
+      "category": "Stator",
+      "info": "The fixed base that holds the stator and the bearing tube; it bolts to the frame (approx.)."
+    },
+    {
+      "name": "Base pins",
+      "nodes": ["polySurface2"],
+      "category": "Stator",
+      "info": "Eight small pins or screws in the base (approx.: identified from the shape)."
+    },
+    {
+      "name": "Upper bearing",
+      "nodes": ["group7"],
+      "category": "Bearings",
+      "info": "Ball bearing: inner and outer race, a ring of balls and a cage keeping them apart. It lets the shaft spin with little friction."
+    },
+    {
+      "name": "Lower bearing",
+      "nodes": ["group8"],
+      "category": "Bearings",
+      "info": "The second ball bearing, at the bottom of the bearing tube."
+    },
+    {
+      "name": "Retaining screw",
+      "nodes": ["Screw"],
+      "category": "Bearings",
+      "info": "Holds the shaft in the bearings from below (approx.)."
+    },
+    {
+      "name": "Phase leads",
+      "nodes": ["BezierCurve_002"],
+      "category": "Wiring",
+      "info": "Three wires, one per phase, from the windings to the ESC. Swapping any two reverses the direction of rotation."
+    },
+    {
+      "name": "Lead sleeve",
+      "nodes": ["BezierCurve_003"],
+      "category": "Wiring",
+      "info": "Sleeve where the leads leave the motor (approx.)."
+    },
+    {
+      "name": "Bullet connectors",
+      "nodes": ["Contact", "Contact1", "Contact2"],
+      "category": "Wiring",
+      "info": "Gold-plated bullet plugs on the ends of the leads, for connecting to the ESC."
+    }
+  ]
+}
