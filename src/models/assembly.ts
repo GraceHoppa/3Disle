@@ -555,7 +555,7 @@ export function fanGeometry(radius: number, height: number, blades: number, ring
     const mid = -b * sweep - sweep * 0.65;
     const axis = new THREE.Vector3(Math.cos(mid), 0, -Math.sin(mid));
     blade.applyMatrix4(new THREE.Matrix4().makeRotationAxis(axis, 0.22));
-    parts.push(blade.toNonIndexed());
+    parts.push(blade.index ? blade.toNonIndexed() : blade);
   }
   if (ring) {
     // A band joining the blade tips.
@@ -649,7 +649,9 @@ export function portGeometry(kind: 'dp' | 'hdmi' | 'usbc', w: number, h: number,
   merged.rotateY(Math.PI / 2);
   merged.translate(-w / 2, 0, 0);
   merged.clearGroups();
-  const n1 = shell.toNonIndexed().getAttribute('position').count + back.toNonIndexed().getAttribute('position').count;
+  // Vertices once unindexed: the index length when there is one, else the position count.
+  const count = (g: THREE.BufferGeometry) => g.index?.count ?? g.getAttribute('position').count;
+  const n1 = count(shell) + count(back);
   merged.addGroup(0, n1, 0);
   merged.addGroup(n1, Infinity, 1);
   merged.computeVertexNormals();
