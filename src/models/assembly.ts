@@ -3,7 +3,6 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { mulberry32 } from '../lib/random';
 import { buildLink } from './links';
-import { presetLinks } from './flows';
 import {
   paintPattern,
   paintSurface,
@@ -43,8 +42,6 @@ export interface LayerSpec {
   parts?: PartSpec[];
   /** Data buses drawn on this layer between its parts, with pulses running along them. */
   links?: LinkSpec[];
-  /** Standard flows drawn between parts by their `role` (see flows.ts): 'gpu-board', 'gpu-die'. */
-  flows?: string;
   /** Round openings through the slab (fan openings, shaft and screw holes): centre [x, z] and radius, mm. */
   holes?: { at: [number, number]; radius: number }[];
 }
@@ -110,8 +107,6 @@ export interface PartSpec {
   detail?: string;
   /** Centre of the part's base on the slab's top face, relative to the slab centre: [x, z]. */
   at?: [number, number];
-  /** What the part is, for preset flows: power-in, vrm, gpu, memory, pcie, display, memory-controller, l2, gpc, io. */
-  role?: string;
   /** Silicon structure painted on the part's top (die floorplan blocks): see paintPattern. */
   pattern?: PatternKind;
   /** sm-grid: columns × rows of SM tiles (default 2 × 6). */
@@ -236,7 +231,7 @@ export async function buildAssembly(spec: AssemblySpec, load?: FileLoader): Prom
     for (const part of layer.parts ?? []) {
       group.add(await buildPart(part, layer.thickness, load, prints));
     }
-    for (const link of [...(layer.links ?? []), ...presetLinks(layer, Math.max(w, d))]) {
+    for (const link of layer.links ?? []) {
       const bus = buildLink(link, prints, layer.thickness + 0.03);
       if (bus)
         group.add(

@@ -4,7 +4,7 @@
   "layers": [
     {
       "name": "Bottom copper + mask",
-      "category": "Board \u00b7 layer",
+      "category": "Board · layer",
       "thickness": 0.1,
       "material": "pcb",
       "color": "#14181c",
@@ -16,7 +16,7 @@
     },
     {
       "name": "Board core",
-      "category": "Board \u00b7 layer",
+      "category": "Board · layer",
       "thickness": 1.4,
       "material": "fibreglass",
       "info": "Glass-fibre and epoxy core with the inner power and signal planes (layer count not published; approximate).",
@@ -24,7 +24,7 @@
     },
     {
       "name": "Top copper + mask",
-      "category": "Board \u00b7 layer",
+      "category": "Board · layer",
       "thickness": 0.1,
       "material": "pcb",
       "color": "#14181c",
@@ -38,14 +38,13 @@
           "round": 0.5,
           "material": "pcb",
           "color": "#2f5a3c",
-          "category": "GPU \u00b7 package",
+          "category": "GPU · package",
           "info": "Organic substrate the GB203 die is flip-chip mounted on. Size approximate. Dive in for its layers.",
           "detail": "package.json",
           "specs": {
-            "Package size": "~45 \u00d7 45 mm (approx.)",
+            "Package size": "~45 × 45 mm (approx.)",
             "Mount": "BGA to the PCB"
-          },
-          "role": "gpu"
+          }
         },
         {
           "name": "GB203-300 GPU",
@@ -56,13 +55,13 @@
           "round": 0.1,
           "material": "chip",
           "color": "#3a4150",
-          "category": "GPU \u00b7 Blackwell",
+          "category": "GPU · Blackwell",
           "info": "The graphics chip: a cut-down GB203 with 70 of 84 SMs enabled. Dive in to see its package.",
           "detail": "package.json",
           "specs": {
             "Architecture": "Blackwell",
             "Process": "TSMC 4N",
-            "Die size": "378 mm\u00b2",
+            "Die size": "378 mm²",
             "Transistors": "45.6 billion",
             "SMs enabled": "70 of 84",
             "CUDA cores": "8960",
@@ -84,16 +83,15 @@
           },
           "round": 0.3,
           "material": "chip",
-          "category": "Memory \u00b7 GDDR7",
+          "category": "Memory · GDDR7",
           "info": "One of eight 2 GB GDDR7 chips (Samsung or SK hynix depending on batch). Positions around the GPU are approximate.",
           "specs": {
             "Capacity": "2 GB (16 Gbit)",
             "Speed": "28 Gbps per pin",
             "Bus width": "32-bit",
             "Bandwidth": "112 GB/s",
-            "Package": "~12 \u00d7 14 mm BGA (approx.)"
-          },
-          "role": "memory"
+            "Package": "~12 × 14 mm BGA (approx.)"
+          }
         },
         {
           "name": "GDDR7 memory (bottom row)",
@@ -107,16 +105,15 @@
           },
           "round": 0.3,
           "material": "chip",
-          "category": "Memory \u00b7 GDDR7",
+          "category": "Memory · GDDR7",
           "info": "One of eight 2 GB GDDR7 chips (Samsung or SK hynix depending on batch). Positions around the GPU are approximate.",
           "specs": {
             "Capacity": "2 GB (16 Gbit)",
             "Speed": "28 Gbps per pin",
             "Bus width": "32-bit",
             "Bandwidth": "112 GB/s",
-            "Package": "~12 \u00d7 14 mm BGA (approx.)"
-          },
-          "role": "memory"
+            "Package": "~12 × 14 mm BGA (approx.)"
+          }
         },
         {
           "name": "GDDR7 memory (left column)",
@@ -130,16 +127,15 @@
           },
           "round": 0.3,
           "material": "chip",
-          "category": "Memory \u00b7 GDDR7",
+          "category": "Memory · GDDR7",
           "info": "One of eight 2 GB GDDR7 chips (Samsung or SK hynix depending on batch). Positions around the GPU are approximate.",
           "specs": {
             "Capacity": "2 GB (16 Gbit)",
             "Speed": "28 Gbps per pin",
             "Bus width": "32-bit",
             "Bandwidth": "112 GB/s",
-            "Package": "~12 \u00d7 14 mm BGA (approx.)"
-          },
-          "role": "memory"
+            "Package": "~12 × 14 mm BGA (approx.)"
+          }
         },
         {
           "name": "DrMOS power stages",
@@ -154,9 +150,8 @@
           "round": 0.3,
           "material": "chip",
           "color": "#33383f",
-          "category": "Power \u00b7 VRM",
-          "info": "DrMOS power stages (per MSI) that turn 12 V into the ~1 V the GPU runs on. Phase count and placement approximate; MSI does not publish them.",
-          "role": "vrm"
+          "category": "Power · VRM",
+          "info": "DrMOS power stages (per MSI) that turn 12 V into the ~1 V the GPU runs on. Phase count and placement approximate; MSI does not publish them."
         },
         {
           "name": "Chokes",
@@ -170,7 +165,7 @@
           "round": 0.6,
           "material": "steel",
           "color": "#4a4f57",
-          "category": "Power \u00b7 VRM",
+          "category": "Power · VRM",
           "info": "Inductors that smooth each phase's current. Count approximate."
         },
         {
@@ -184,24 +179,23 @@
             "step": [0, 24]
           },
           "material": "aluminium",
-          "category": "Power \u00b7 filtering",
+          "category": "Power · filtering",
           "info": "Bulk capacitors on the 12 V input. Count approximate."
         },
         {
-          "name": "12V-2\u00d76 power connector",
+          "name": "12V-2×6 power connector",
           "shape": "box",
           "size": [20, 6, 9],
           "at": [60, -55],
           "round": 0.5,
           "material": "plastic",
-          "category": "Power \u00b7 input",
-          "info": "Single 16-pin 12V-2\u00d76 connector (NVIDIA allows 2\u00d7 8-pin via adapter). Position approximate.",
+          "category": "Power · input",
+          "info": "Single 16-pin 12V-2×6 connector (NVIDIA allows 2× 8-pin via adapter). Position approximate.",
           "specs": {
-            "Connector": "16-pin 12V-2\u00d76 \u00d71",
+            "Connector": "16-pin 12V-2×6 ×1",
             "Board power": "300 W",
             "Recommended PSU": "750 W"
-          },
-          "role": "power-in"
+          }
         },
         {
           "name": "Fuses",
@@ -213,7 +207,7 @@
             "step": [8, 0]
           },
           "material": "ceramic",
-          "category": "Power \u00b7 protection",
+          "category": "Power · protection",
           "info": "Extra fuses MSI adds on the 12 V input."
         },
         {
@@ -227,14 +221,13 @@
             "names": ["DisplayPort 1", "DisplayPort 2", "DisplayPort 3"]
           },
           "material": "steel",
-          "category": "I/O \u00b7 display",
+          "category": "I/O · display",
           "info": "DisplayPort 2.1b outputs on the bracket edge.",
           "specs": {
             "Version": "2.1b",
-            "Max resolution": "7680 \u00d7 4320"
+            "Max resolution": "7680 × 4320"
           },
-          "port": "dp",
-          "role": "display"
+          "port": "dp"
         },
         {
           "name": "HDMI 2.1b",
@@ -242,13 +235,12 @@
           "size": [9, 6, 16],
           "at": [-146, 22],
           "material": "steel",
-          "category": "I/O \u00b7 display",
+          "category": "I/O · display",
           "info": "HDMI 2.1b output; up to 4K 480 Hz or 8K 120 Hz with DSC. Up to 4 displays at once across all outputs.",
           "specs": {
             "Version": "2.1b"
           },
-          "port": "hdmi",
-          "role": "display"
+          "port": "hdmi"
         },
         {
           "name": "PCIe 5.0 x16 fingers",
@@ -260,17 +252,16 @@
             "step": [1, 0]
           },
           "material": "gold",
-          "category": "I/O \u00b7 PCIe",
+          "category": "I/O · PCIe",
           "info": "Gold edge contacts for the PCI Express 5.0 x16 slot (pin layout simplified).",
           "specs": {
             "Interface": "PCIe 5.0 x16"
-          },
-          "role": "pcie"
+          }
         },
         {
           "name": "MLCC capacitors",
           "shape": "box",
-          "size": [1.0, 0.5, 0.5],
+          "size": [1, 0.5, 0.5],
           "material": "ceramic",
           "color": "#c9a27a",
           "at": [-45, 0],
@@ -300,10 +291,10 @@
           "lanes": 8,
           "width": 0.35,
           "color": "#76b900",
-          "category": "Data \u00b7 memory",
-          "info": "8 independent 32-bit channels, one per GDDR7 chip: 8 \u00d7 32 = 256 bits. Lanes drawn per chip are representative, not all 32.",
+          "category": "Data · memory",
+          "info": "8 independent 32-bit channels, one per GDDR7 chip: 8 × 32 = 256 bits. Lanes drawn per chip are representative, not all 32.",
           "specs": {
-            "Width": "256-bit (8 \u00d7 32-bit)",
+            "Width": "256-bit (8 × 32-bit)",
             "Speed": "28 Gbps per pin",
             "Bandwidth": "896 GB/s"
           }
@@ -315,7 +306,7 @@
           "lanes": 16,
           "width": 0.3,
           "color": "#5aa9ff",
-          "category": "Data \u00b7 host",
+          "category": "Data · host",
           "info": "16 PCIe lanes to the motherboard slot, each running at 32 GT/s (PCIe 5.0).",
           "specs": {
             "Lanes": "16",
@@ -330,22 +321,22 @@
           "lanes": 4,
           "width": 0.3,
           "color": "#e8edf2",
-          "category": "Data \u00b7 display",
+          "category": "Data · display",
           "info": "Each DisplayPort 2.1b and HDMI 2.1b output uses 4 high-speed lanes. Up to 4 displays at once.",
           "specs": {
-            "Outputs": "3\u00d7 DP 2.1b, 1\u00d7 HDMI 2.1b",
-            "Max resolution": "7680 \u00d7 4320"
+            "Outputs": "3× DP 2.1b, 1× HDMI 2.1b",
+            "Max resolution": "7680 × 4320"
           }
         },
         {
           "name": "12 V input",
-          "from": "12V-2\u00d76 power connector",
+          "from": "12V-2×6 power connector",
           "to": "DrMOS power stages",
           "lanes": 6,
           "width": 0.6,
           "color": "#ffb347",
           "category": "Power",
-          "info": "12 V from the power supply enters through the 16-pin 12V-2\u00d76 connector and feeds the power stages.",
+          "info": "12 V from the power supply enters through the 16-pin 12V-2×6 connector and feeds the power stages.",
           "specs": {
             "Board power": "300 W",
             "Recommended PSU": "750 W"
@@ -360,9 +351,37 @@
           "color": "#ffb347",
           "category": "Power",
           "info": "The power stages step 12 V down to the roughly 1 V the GPU core runs on, phase by phase. Phase count drawn is approximate."
+        },
+        {
+          "name": "Memory bus",
+          "from": "GB203 package substrate",
+          "to": [
+            "Memory chip 1",
+            "Memory chip 2",
+            "Memory chip 3",
+            "Memory chip 4",
+            "Memory chip 5",
+            "Memory chip 6",
+            "Memory chip 7",
+            "Memory chip 8"
+          ],
+          "lanes": 4,
+          "width": 0.364,
+          "color": "#76b900",
+          "category": "Data · memory",
+          "info": "Each memory chip has its own channel to the GPU; textures, frames and model data stream over them."
+        },
+        {
+          "name": "PCIe link",
+          "from": "GB203 package substrate",
+          "to": ["PCIe 5.0 x16 fingers"],
+          "lanes": 4,
+          "width": 0.364,
+          "color": "#5aa9ff",
+          "category": "Data · host",
+          "info": "Commands and data from the CPU arrive over the PCIe lanes of the slot."
         }
-      ],
-      "flows": "gpu-board"
+      ]
     }
   ]
 }

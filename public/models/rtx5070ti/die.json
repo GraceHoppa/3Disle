@@ -4,7 +4,7 @@
   "layers": [
     {
       "name": "Silicon substrate",
-      "category": "Die \u00b7 bulk",
+      "category": "Die · bulk",
       "thickness": 0.6,
       "material": "chip",
       "color": "#4a5263",
@@ -12,7 +12,7 @@
     },
     {
       "name": "Transistor layer",
-      "category": "Die \u00b7 front end",
+      "category": "Die · front end",
       "thickness": 0.02,
       "material": "chip",
       "color": "#6b5bd6",
@@ -21,33 +21,33 @@
       "specs": {
         "Transistors": "45.6 billion",
         "Process": "TSMC 4N (5 nm class, NVIDIA-tuned)",
-        "Density": "~121 M/mm\u00b2"
+        "Density": "~121 M/mm²"
       }
     },
     {
       "name": "Local wiring",
-      "category": "Die \u00b7 metal stack",
+      "category": "Die · metal stack",
       "thickness": 0.02,
       "material": "copper",
       "info": "Finest copper lines linking neighbouring transistors. Metal layer count and pitches are not published; approximate."
     },
     {
       "name": "Intermediate wiring",
-      "category": "Die \u00b7 metal stack",
+      "category": "Die · metal stack",
       "thickness": 0.04,
       "material": "copper",
       "info": "Wider lines connecting blocks such as SMs to the L2 cache."
     },
     {
       "name": "Global wiring",
-      "category": "Die \u00b7 metal stack",
+      "category": "Die · metal stack",
       "thickness": 0.06,
       "material": "copper",
       "info": "Thick top metal for power distribution and long-distance signals across the die."
     },
     {
       "name": "Pads",
-      "category": "Die \u00b7 contacts",
+      "category": "Die · contacts",
       "thickness": 0.01,
       "material": "steel",
       "info": "Landing pads where the C4 bumps join the package. One row drawn.",
@@ -69,7 +69,7 @@
     },
     {
       "name": "Floorplan",
-      "category": "Die \u00b7 floorplan",
+      "category": "Die · floorplan",
       "thickness": 0,
       "info": "Rough block layout of the full GB203, seen through the stack. Block positions and sizes are illustrative, not traced from a die shot; the counts are real.",
       "specs": {
@@ -93,7 +93,7 @@
           },
           "material": "chip",
           "color": "#3d5a46",
-          "category": "Die \u00b7 GPC",
+          "category": "Die · GPC",
           "info": "Graphics Processing Cluster: raster engine plus 6 TPCs of 2 SMs each. The 5070 Ti fuses off one whole GPC and one more TPC (70 of 84 SMs); which ones varies per chip and is not published.",
           "specs": {
             "TPCs per GPC": "6",
@@ -101,7 +101,6 @@
             "CUDA cores per SM": "128",
             "Enabled on 5070 Ti": "6 of 7 GPCs, 70 of 84 SMs total"
           },
-          "role": "gpc",
           "pattern": "sm-grid",
           "cells": [2, 6]
         },
@@ -117,7 +116,7 @@
           },
           "material": "chip",
           "color": "#3d5a46",
-          "category": "Die \u00b7 GPC",
+          "category": "Die · GPC",
           "info": "Graphics Processing Cluster: raster engine plus 6 TPCs of 2 SMs each. The 5070 Ti fuses off one whole GPC and one more TPC (70 of 84 SMs); which ones varies per chip and is not published.",
           "specs": {
             "TPCs per GPC": "6",
@@ -125,7 +124,6 @@
             "CUDA cores per SM": "128",
             "Enabled on 5070 Ti": "6 of 7 GPCs, 70 of 84 SMs total"
           },
-          "role": "gpc",
           "pattern": "sm-grid",
           "cells": [2, 6]
         },
@@ -136,13 +134,12 @@
           "at": [0, 0],
           "material": "chip",
           "color": "#3b4f6b",
-          "category": "Die \u00b7 cache",
+          "category": "Die · cache",
           "info": "Shared L2 cache between the GPCs and the memory controllers. On the 5070 Ti, 48 of the 64 MB are enabled.",
           "specs": {
             "Full GB203": "64 MB",
             "RTX 5070 Ti": "48 MB"
           },
-          "role": "l2",
           "pattern": "sram"
         },
         {
@@ -157,14 +154,13 @@
           },
           "material": "copper",
           "glow": true,
-          "category": "Die \u00b7 memory PHY",
+          "category": "Die · memory PHY",
           "info": "32-bit GDDR7 controller and PHY at the die edge, each driving one memory chip. Edge placement approximate.",
           "specs": {
             "Width": "32-bit",
             "Memory": "GDDR7, 28 Gbps on 5070 Ti",
             "Bandwidth": "112 GB/s each"
           },
-          "role": "memory-controller",
           "pattern": "phy",
           "color": "#6b5a3b"
         },
@@ -180,14 +176,13 @@
           },
           "material": "copper",
           "glow": true,
-          "category": "Die \u00b7 memory PHY",
+          "category": "Die · memory PHY",
           "info": "32-bit GDDR7 controller and PHY at the die edge, each driving one memory chip. Edge placement approximate.",
           "specs": {
             "Width": "32-bit",
             "Memory": "GDDR7, 28 Gbps on 5070 Ti",
             "Bandwidth": "112 GB/s each"
           },
-          "role": "memory-controller",
           "pattern": "phy",
           "color": "#6b5a3b"
         },
@@ -198,17 +193,117 @@
           "at": [0, 8.6],
           "material": "chip",
           "color": "#5a4a5f",
-          "category": "Die \u00b7 I/O",
+          "category": "Die · I/O",
           "info": "PCIe 5.0 x16 interface, display engine (DisplayPort 2.1b / HDMI 2.1b) and video encode/decode. Grouped into one block; position approximate.",
           "specs": {
             "Host": "PCIe 5.0 x16",
             "Display": "DP 2.1b, HDMI 2.1b"
           },
-          "role": "io",
           "pattern": "logic"
         }
       ],
-      "flows": "gpu-die"
+      "links": [
+        {
+          "name": "Memory traffic",
+          "from": "Memory controller 1",
+          "to": ["L2 cache"],
+          "lanes": 4,
+          "width": 0.03,
+          "color": "#76b900",
+          "category": "Data · memory",
+          "info": "Memory controllers on the edge of the die move data between the memory chips and the shared L2 cache."
+        },
+        {
+          "name": "Memory traffic",
+          "from": "Memory controller 2",
+          "to": ["L2 cache"],
+          "lanes": 4,
+          "width": 0.03,
+          "color": "#76b900",
+          "category": "Data · memory",
+          "info": "Memory controllers on the edge of the die move data between the memory chips and the shared L2 cache."
+        },
+        {
+          "name": "Memory traffic",
+          "from": "Memory controller 3",
+          "to": ["L2 cache"],
+          "lanes": 4,
+          "width": 0.03,
+          "color": "#76b900",
+          "category": "Data · memory",
+          "info": "Memory controllers on the edge of the die move data between the memory chips and the shared L2 cache."
+        },
+        {
+          "name": "Memory traffic",
+          "from": "Memory controller 4",
+          "to": ["L2 cache"],
+          "lanes": 4,
+          "width": 0.03,
+          "color": "#76b900",
+          "category": "Data · memory",
+          "info": "Memory controllers on the edge of the die move data between the memory chips and the shared L2 cache."
+        },
+        {
+          "name": "Memory traffic",
+          "from": "Memory controller 5",
+          "to": ["L2 cache"],
+          "lanes": 4,
+          "width": 0.03,
+          "color": "#76b900",
+          "category": "Data · memory",
+          "info": "Memory controllers on the edge of the die move data between the memory chips and the shared L2 cache."
+        },
+        {
+          "name": "Memory traffic",
+          "from": "Memory controller 6",
+          "to": ["L2 cache"],
+          "lanes": 4,
+          "width": 0.03,
+          "color": "#76b900",
+          "category": "Data · memory",
+          "info": "Memory controllers on the edge of the die move data between the memory chips and the shared L2 cache."
+        },
+        {
+          "name": "Memory traffic",
+          "from": "Memory controller 7",
+          "to": ["L2 cache"],
+          "lanes": 4,
+          "width": 0.03,
+          "color": "#76b900",
+          "category": "Data · memory",
+          "info": "Memory controllers on the edge of the die move data between the memory chips and the shared L2 cache."
+        },
+        {
+          "name": "Memory traffic",
+          "from": "Memory controller 8",
+          "to": ["L2 cache"],
+          "lanes": 4,
+          "width": 0.03,
+          "color": "#76b900",
+          "category": "Data · memory",
+          "info": "Memory controllers on the edge of the die move data between the memory chips and the shared L2 cache."
+        },
+        {
+          "name": "Work to the clusters",
+          "from": "L2 cache",
+          "to": ["GPC 1", "GPC 2", "GPC 3", "GPC 4", "GPC 5", "GPC 6", "GPC 7"],
+          "lanes": 4,
+          "width": 0.03,
+          "color": "#76b900",
+          "category": "Data · compute",
+          "info": "The L2 cache feeds every graphics processing cluster; results flow back the same way."
+        },
+        {
+          "name": "Host and display",
+          "from": "PCIe, display and media engines",
+          "to": ["L2 cache"],
+          "lanes": 4,
+          "width": 0.03,
+          "color": "#5aa9ff",
+          "category": "Data · host",
+          "info": "PCIe, display and media engines reach the rest of the chip through the L2."
+        }
+      ]
     }
   ]
 }
