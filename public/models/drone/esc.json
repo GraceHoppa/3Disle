@@ -1,0 +1,317 @@
+{
+  "name": "SpeedyBee OX32 55A 4-in-1 ESC",
+  "footprint": [44.9, 40.9],
+  "layers": [
+    {
+      "name": "Bottom side",
+      "thickness": 0.1,
+      "material": "pcb",
+      "color": "#121417",
+      "category": "Board · layer",
+      "info": "Black solder mask over the bottom copper."
+    },
+    {
+      "name": "Board core (heavy copper)",
+      "thickness": 1.6,
+      "material": "fibreglass",
+      "category": "Board · layer",
+      "info": "Multi-layer FR-4 with thick copper planes to carry up to 220 A in total. Layer count approx.",
+      "specs": {
+        "Size": "40.9 × 44.9 × 8.0 mm (incl. heatsink)",
+        "Weight": "19.1 g",
+        "Mounting": "30.5 × 30.5 mm, Ø4 mm"
+      }
+    },
+    {
+      "name": "Top side",
+      "thickness": 0.1,
+      "material": "pcb",
+      "color": "#121417",
+      "surface": "pcb",
+      "category": "Board · layer",
+      "info": "Four motor channels, one per corner. Motor numbering follows the Betaflight quad-X default; exact positions approx.",
+      "specs": {
+        "Input": "3–6S LiPo",
+        "Continuous": "55 A × 4",
+        "Burst": "70 A × 4",
+        "Protocol": "DShot300/600",
+        "Firmware": "OX32"
+      },
+      "parts": [
+        {
+          "name": "Motor 1",
+          "shape": "box",
+          "size": [5, 1, 6],
+          "round": 0.15,
+          "at": [9.5, 4],
+          "material": "chip",
+          "color": "#2a2d31",
+          "repeat": {
+            "count": 3,
+            "step": [0, 6.5],
+            "names": ["Motor 1 phase A", "Motor 1 phase B", "Motor 1 phase C"]
+          },
+          "category": "Power stage",
+          "info": "One half-bridge per motor phase (high- and low-side MOSFET). Three phases drive one motor. Package type and count approx.",
+          "specs": {
+            "Continuous": "55 A",
+            "Burst": "70 A"
+          }
+        },
+        {
+          "name": "Motor 2",
+          "shape": "box",
+          "size": [5, 1, 6],
+          "round": 0.15,
+          "at": [9.5, -17],
+          "material": "chip",
+          "color": "#2a2d31",
+          "repeat": {
+            "count": 3,
+            "step": [0, 6.5],
+            "names": ["Motor 2 phase A", "Motor 2 phase B", "Motor 2 phase C"]
+          },
+          "category": "Power stage",
+          "info": "One half-bridge per motor phase (high- and low-side MOSFET). Three phases drive one motor. Package type and count approx.",
+          "specs": {
+            "Continuous": "55 A",
+            "Burst": "70 A"
+          }
+        },
+        {
+          "name": "Motor 3",
+          "shape": "box",
+          "size": [5, 1, 6],
+          "round": 0.15,
+          "at": [-9.5, 4],
+          "material": "chip",
+          "color": "#2a2d31",
+          "repeat": {
+            "count": 3,
+            "step": [0, 6.5],
+            "names": ["Motor 3 phase A", "Motor 3 phase B", "Motor 3 phase C"]
+          },
+          "category": "Power stage",
+          "info": "One half-bridge per motor phase (high- and low-side MOSFET). Three phases drive one motor. Package type and count approx.",
+          "specs": {
+            "Continuous": "55 A",
+            "Burst": "70 A"
+          }
+        },
+        {
+          "name": "Motor 4",
+          "shape": "box",
+          "size": [5, 1, 6],
+          "round": 0.15,
+          "at": [-9.5, -17],
+          "material": "chip",
+          "color": "#2a2d31",
+          "repeat": {
+            "count": 3,
+            "step": [0, 6.5],
+            "names": ["Motor 4 phase A", "Motor 4 phase B", "Motor 4 phase C"]
+          },
+          "category": "Power stage",
+          "info": "One half-bridge per motor phase (high- and low-side MOSFET). Three phases drive one motor. Package type and count approx.",
+          "specs": {
+            "Continuous": "55 A",
+            "Burst": "70 A"
+          }
+        },
+        {
+          "name": "ESC MCUs",
+          "shape": "box",
+          "size": [4, 0.8, 4],
+          "round": 0.1,
+          "at": [0, -12],
+          "material": "chip",
+          "repeat": {
+            "count": 4,
+            "step": [0, 4.5],
+            "names": ["MCU motor 1", "MCU motor 2", "MCU motor 3", "MCU motor 4"]
+          },
+          "category": "Microcontroller",
+          "info": "32-bit microcontrollers running OX32 firmware; each commutates one motor. Chip model and count not published; approx."
+        },
+        {
+          "name": "Gate drivers",
+          "shape": "box",
+          "size": [3, 0.8, 3],
+          "at": [-4.5, -12],
+          "material": "chip",
+          "repeat": {
+            "count": 4,
+            "step": [0, 4.5]
+          },
+          "category": "Power stage",
+          "info": "Turn the MCU’s logic signals into the gate current that switches the MOSFETs fast. Approx."
+        },
+        {
+          "name": "Current sense shunt",
+          "shape": "box",
+          "size": [6.3, 0.6, 3.2],
+          "at": [0, 6.5],
+          "material": "steel",
+          "category": "Sensor",
+          "info": "Low-ohm resistor in the battery path; the voltage across it measures total current. Package (2512) approx.",
+          "specs": {
+            "Betaflight scale": "27",
+            "Betaflight offset": "-2644"
+          }
+        },
+        {
+          "name": "Current sense amplifier",
+          "shape": "box",
+          "size": [2, 0.9, 2],
+          "at": [4.5, 6.5],
+          "material": "chip",
+          "category": "Sensor",
+          "info": "Amplifies the shunt voltage for the flight controller’s ADC."
+        },
+        {
+          "name": "TVS diode",
+          "shape": "box",
+          "size": [3.5, 1, 2.5],
+          "at": [0, 10.5],
+          "material": "chip",
+          "category": "Protection",
+          "info": "Clamps voltage spikes from motor braking before they reach the MOSFETs."
+        },
+        {
+          "name": "Capacitor footprint",
+          "shape": "box",
+          "size": [3, 0.1, 2],
+          "at": [-3, 13.5],
+          "material": "gold",
+          "repeat": {
+            "count": 2,
+            "step": [6, 0],
+            "names": ["Cap −", "Cap +"]
+          },
+          "category": "Pads",
+          "info": "Pads for the supplied 1000 µF capacitor (often soldered to the battery leads instead)."
+        },
+        {
+          "name": "Battery pads",
+          "shape": "box",
+          "size": [5, 0.1, 4],
+          "at": [-4, 17.5],
+          "material": "gold",
+          "repeat": {
+            "count": 2,
+            "step": [8, 0],
+            "names": ["BAT −", "BAT +"]
+          },
+          "category": "Pads",
+          "info": "Main power input from the XT60 lead (12 AWG)."
+        },
+        {
+          "name": "Motor 1 pads",
+          "shape": "box",
+          "size": [3, 0.1, 2.2],
+          "at": [20.5, 11.4],
+          "material": "gold",
+          "repeat": {
+            "count": 3,
+            "step": [0, 2.8],
+            "names": ["M1 A", "M1 B", "M1 C"]
+          },
+          "category": "Pads",
+          "info": "Three phase wires from the motor solder here; swap any two to reverse direction (or flip it in software)."
+        },
+        {
+          "name": "Motor 2 pads",
+          "shape": "box",
+          "size": [3, 0.1, 2.2],
+          "at": [20.5, -17],
+          "material": "gold",
+          "repeat": {
+            "count": 3,
+            "step": [0, 2.8],
+            "names": ["M2 A", "M2 B", "M2 C"]
+          },
+          "category": "Pads",
+          "info": "Three phase wires from the motor solder here; swap any two to reverse direction (or flip it in software)."
+        },
+        {
+          "name": "Motor 3 pads",
+          "shape": "box",
+          "size": [3, 0.1, 2.2],
+          "at": [-20.5, 11.4],
+          "material": "gold",
+          "repeat": {
+            "count": 3,
+            "step": [0, 2.8],
+            "names": ["M3 A", "M3 B", "M3 C"]
+          },
+          "category": "Pads",
+          "info": "Three phase wires from the motor solder here; swap any two to reverse direction (or flip it in software)."
+        },
+        {
+          "name": "Motor 4 pads",
+          "shape": "box",
+          "size": [3, 0.1, 2.2],
+          "at": [-20.5, -17],
+          "material": "gold",
+          "repeat": {
+            "count": 3,
+            "step": [0, 2.8],
+            "names": ["M4 A", "M4 B", "M4 C"]
+          },
+          "category": "Pads",
+          "info": "Three phase wires from the motor solder here; swap any two to reverse direction (or flip it in software)."
+        },
+        {
+          "name": "FC connector",
+          "shape": "box",
+          "size": [11, 2.9, 4.3],
+          "round": 0.3,
+          "at": [0, -17.5],
+          "material": "plastic",
+          "color": "#e9e4d6",
+          "category": "Connector",
+          "info": "8-pin SH 1.0 mm socket; the cable to the flight controller."
+        },
+        {
+          "name": "Mounting holes",
+          "shape": "cylinder",
+          "radius": 2.6,
+          "height": 0.05,
+          "material": "gold",
+          "repeat": {
+            "count": 4,
+            "around": 21.57,
+            "startAngle": 45,
+            "names": ["Hole SE", "Hole SW", "Hole NW", "Hole NE"]
+          },
+          "category": "Mounting",
+          "info": "30.5 × 30.5 mm pattern, Ø4 mm side-opening holes for M3 bolts."
+        }
+      ]
+    },
+    {
+      "name": "Heatsink",
+      "thickness": 0,
+      "category": "Cooling",
+      "info": "Aluminium plates over the MOSFET columns spread heat into the airflow. Shape approx.",
+      "parts": [
+        {
+          "name": "Heatsink plates",
+          "shape": "box",
+          "size": [6, 1.5, 40],
+          "round": 0.4,
+          "at": [-9.5, 0],
+          "material": "aluminium",
+          "color": "#2b2e33",
+          "repeat": {
+            "count": 2,
+            "step": [19, 0],
+            "names": ["Left heatsink", "Right heatsink"]
+          },
+          "category": "Cooling",
+          "info": "Anodised aluminium."
+        }
+      ]
+    }
+  ]
+}

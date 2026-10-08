@@ -1,0 +1,217 @@
+{
+  "name": "Google Pixel 6",
+  "footprint": [74.8, 158.6],
+  "sources": [
+    "https://support.google.com/pixelphone/answer/7158570",
+    "https://www.ifixit.com/Device/Google_Pixel_6",
+    "https://www.ifixit.com/Guide/Google+Pixel+6+Battery+Replacement/148798",
+    "https://www.techinsights.com/ko/node/34777",
+    "https://en.wikipedia.org/wiki/Google_Tensor"
+  ],
+  "layers": [
+    {
+      "name": "Camera bar",
+      "thickness": 0,
+      "category": "Housing",
+      "info": "The full-width camera visor that sticks out of the back. Not counted in Google's 8.9 mm depth; height and depth approximate.",
+      "parts": [
+        {
+          "name": "Camera visor",
+          "shape": "box",
+          "size": [74.8, 2.5, 20],
+          "at": [0, -52],
+          "round": 1.2,
+          "material": "aluminium",
+          "color": "#1c1d20",
+          "category": "Housing",
+          "info": "Black glass and aluminium bar over the rear cameras and flash."
+        }
+      ]
+    },
+    {
+      "name": "Back glass",
+      "thickness": 0.6,
+      "material": "glass",
+      "color": "#3a3c40",
+      "category": "Housing",
+      "info": "Corning Gorilla Glass 6 back (Stormy Black tint shown); lets the wireless charger through.",
+      "specs": {
+        "Material": "Corning Gorilla Glass 6",
+        "Colours": "Stormy Black, Kinda Coral, Sorta Seafoam",
+        "Rating": "IP68"
+      }
+    },
+    {
+      "name": "Wireless charging coil",
+      "thickness": 0,
+      "category": "Charging",
+      "parts": [
+        {
+          "name": "Qi charging coil",
+          "shape": "cylinder",
+          "radius": 20,
+          "height": 0.4,
+          "at": [0, 15],
+          "material": "copper",
+          "category": "Charging",
+          "info": "Receive coil glued to the back glass, feeding an IDT P9412 receiver IC. Size approximate.",
+          "specs": { "Wireless charging": "up to 21 W (Pixel Stand 2)", "Receiver IC": "IDT P9412" }
+        }
+      ]
+    },
+    {
+      "name": "Mid-frame",
+      "thickness": 1,
+      "material": "aluminium",
+      "color": "#2b2c2f",
+      "category": "Frame",
+      "info": "Aluminium frame that carries the battery, both boards and the cameras. The screen is glued on the other side and comes off first in iFixit's guides.",
+      "specs": { "Height": "158.6 mm", "Width": "74.8 mm", "Depth": "8.9 mm", "Weight": "207 g" },
+      "parts": [
+        {
+          "name": "Battery",
+          "shape": "box",
+          "size": [64, 4.3, 78],
+          "at": [0, 18],
+          "round": 1.2,
+          "material": "plastic",
+          "color": "#2d3138",
+          "category": "Battery",
+          "info": "Li-ion pouch cell in the middle of the frame. Cell dimensions approximate.",
+          "specs": { "Typical": "4614 mAh", "Minimum": "4524 mAh", "Wired charging": "up to 30 W" }
+        },
+        {
+          "name": "Main board",
+          "shape": "box",
+          "size": [70, 0.8, 45],
+          "at": [0, -55],
+          "round": 1,
+          "material": "pcb",
+          "category": "Board",
+          "detail": "board.json",
+          "info": "Stacked logic board under the camera bar: Tensor, memory, storage, modem and power chips. Dive in. Outline approximate.",
+          "specs": { "SoC": "Google Tensor (GS101)", "RAM": "8 GB LPDDR5", "Storage": "128 / 256 GB UFS 3.1" }
+        },
+        {
+          "name": "Google Tensor (under shield)",
+          "shape": "box",
+          "size": [15, 1.3, 15],
+          "at": [-12, -50],
+          "lift": 0.8,
+          "round": 0.3,
+          "material": "chip",
+          "category": "SoC",
+          "detail": "board.json",
+          "info": "Tensor SoC with LPDDR5 stacked on top (PoP). Position approximate.",
+          "specs": { "Process": "Samsung 5 nm", "CPU": "2x X1 + 2x A76 + 4x A55" }
+        },
+        {
+          "name": "50 MP main camera",
+          "shape": "cylinder",
+          "radius": 7,
+          "height": 4.3,
+          "at": [24, -64],
+          "material": "chip",
+          "category": "Camera",
+          "info": "Wide camera. Widely reported to use a Samsung GN1 sensor (not on Google's spec page, approximate).",
+          "specs": { "Resolution": "50 MP", "Pixel": "1.2 um", "Aperture": "f/1.85" }
+        },
+        {
+          "name": "12 MP ultrawide camera",
+          "shape": "cylinder",
+          "radius": 4.5,
+          "height": 3.5,
+          "at": [8, -64],
+          "material": "chip",
+          "category": "Camera",
+          "info": "Ultrawide camera.",
+          "specs": { "Resolution": "12 MP", "Aperture": "f/2.2", "FoV": "114 deg" }
+        },
+        {
+          "name": "8 MP front camera",
+          "shape": "cylinder",
+          "radius": 2.5,
+          "height": 3,
+          "at": [0, -72],
+          "material": "chip",
+          "category": "Camera",
+          "info": "Selfie camera behind the punch-hole.",
+          "specs": { "Resolution": "8 MP", "Aperture": "f/2.0" }
+        },
+        {
+          "name": "Sub board",
+          "shape": "box",
+          "size": [60, 0.8, 14],
+          "at": [-4, 68],
+          "round": 1,
+          "material": "pcb",
+          "category": "Board",
+          "info": "Daughterboard with the USB-C port and bottom microphone, linked to the main board by a flex cable (outline approximate)."
+        },
+        {
+          "name": "USB-C port",
+          "shape": "box",
+          "size": [9, 3.2, 7],
+          "at": [0, 74],
+          "round": 1.5,
+          "material": "steel",
+          "category": "Connector",
+          "info": "USB-C 3.2 port."
+        },
+        {
+          "name": "Loudspeaker",
+          "shape": "box",
+          "size": [18, 3.5, 10],
+          "at": [24, 68],
+          "round": 1,
+          "material": "plastic",
+          "category": "Speaker",
+          "info": "Bottom loudspeaker; the earpiece acts as the second stereo speaker (size approximate)."
+        },
+        {
+          "name": "Haptic motor",
+          "shape": "box",
+          "size": [9, 3, 16],
+          "at": [-26, 66],
+          "round": 1,
+          "material": "steel",
+          "category": "Haptics",
+          "info": "Linear haptic actuator driven by a Cirrus Logic CS40L25 (position approximate)."
+        }
+      ]
+    },
+    {
+      "name": "Display",
+      "thickness": 1.2,
+      "material": "chip",
+      "color": "#0d0e10",
+      "category": "Display",
+      "info": "OLED panel, glued to the frame; the optical fingerprint sensor reads through it.",
+      "specs": {
+        "Size": "6.4 in (163 mm)",
+        "Resolution": "1080 x 2400, 411 ppi",
+        "Refresh": "up to 90 Hz",
+        "Aspect": "20:9"
+      },
+      "parts": [
+        {
+          "name": "Lit OLED area",
+          "shape": "box",
+          "size": [66.7, 0.05, 148.2],
+          "material": "glass",
+          "glow": "#d8e4ff",
+          "category": "Display",
+          "info": "Active area of the 6.4-inch OLED."
+        }
+      ]
+    },
+    {
+      "name": "Cover glass",
+      "thickness": 0.7,
+      "material": "glass",
+      "category": "Glass",
+      "info": "Front glass. Thickness approximate.",
+      "specs": { "Material": "Corning Gorilla Glass Victus" }
+    }
+  ]
+}

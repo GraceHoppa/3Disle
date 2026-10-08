@@ -1,0 +1,73 @@
+{
+  "name": "Google Tensor package (PoP)",
+  "footprint": [15, 15],
+  "layers": [
+    {
+      "name": "Tensor package substrate",
+      "thickness": 0.35,
+      "material": "pcb",
+      "color": "#4d3f26",
+      "category": "Chip package",
+      "info": "Laminate substrate under the flip-chip die. Package size approximate.",
+      "parts": [
+        {
+          "name": "Google Tensor die",
+          "shape": "box",
+          "size": [10.38, 0.2, 10.43],
+          "round": 0.05,
+          "material": "chip",
+          "color": "#3f4656",
+          "category": "Die",
+          "info": "Tensor (GS101): Samsung-built SoC derived from an Exynos design, with Google's TPU and ISP blocks.",
+          "specs": {
+            "Die size": "10.38 x 10.43 mm (108.26 mm2)",
+            "Process": "Samsung 5 nm (5LPE)",
+            "CPU": "2x Cortex-X1 2.80 GHz + 2x Cortex-A76 2.25 GHz + 4x Cortex-A55 1.80 GHz",
+            "GPU": "Arm Mali-G78 MP20",
+            "AI": "Google TPU",
+            "Introduced": "2021, Pixel 6 / 6 Pro"
+          }
+        },
+        {
+          "name": "PoP interconnect balls",
+          "shape": "cylinder",
+          "radius": 0.18,
+          "height": 0.3,
+          "at": [-6.8, -6.9],
+          "repeat": { "count": 28, "step": [0.5, 0] },
+          "material": "steel",
+          "category": "Interconnect",
+          "info": "Solder balls around the die that carry the memory bus up to the stacked DRAM (one row shown)."
+        }
+      ]
+    },
+    {
+      "name": "LPDDR5 package substrate",
+      "thickness": 0.2,
+      "material": "pcb",
+      "color": "#4d3f26",
+      "category": "Chip package",
+      "info": "Bottom of the stacked memory package.",
+      "parts": [
+        {
+          "name": "LPDDR5 dies",
+          "shape": "box",
+          "size": [11, 0.08, 10],
+          "material": "chip",
+          "color": "#555b66",
+          "category": "Memory die",
+          "info": "Stack of DRAM dies (count and size approximate).",
+          "specs": { "Type": "LPDDR5" }
+        }
+      ]
+    },
+    {
+      "name": "LPDDR5 mold cap",
+      "thickness": 0.5,
+      "material": "chip",
+      "category": "Memory",
+      "info": "Epoxy mould over the DRAM; the top face of the chip visible on the board. The Pixel 6 Pro unit had Micron 12 GB (MT62F1536M64D8CH-031); the Pixel 6 has 8 GB, vendor unconfirmed.",
+      "specs": { "Capacity": "8 GB (Pixel 6)", "Type": "LPDDR5" }
+    }
+  ]
+}

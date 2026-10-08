@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Editor</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <canvas id="gl"></canvas>
+    <header class="bar">
+      <input id="project-name" aria-label="Project name" value="Untitled" />
+      <label class="ed-btn">
+        Open GLB
+        <input id="file" type="file" accept=".glb,.gltf" hidden />
+      </label>
+      <select id="projects" aria-label="Open a project"></select>
+      <button id="save" class="ed-btn" type="button">Save</button>
+      <a id="view" class="ed-btn" hidden target="_blank">Open in viewer ↗</a>
+    </header>
+    <aside class="ed-left" aria-label="Objects">
+      <h2>Objects in the model</h2>
+      <div id="tree"></div>
+    </aside>
+    <aside class="ed-right" aria-label="Parts">
+      <h2>Parts</h2>
+      <div class="ed-actions">
+        <button id="new-part" type="button">New part from selection</button>
+        <button id="add-to-part" type="button">Add selection to part</button>
+        <button id="delete-part" type="button">Delete part</button>
+      </div>
+      <div id="parts"></div>
+      <form id="part-form" hidden>
+        <label>Name <input name="name" /></label>
+        <label>Category <input name="category" placeholder="Electronics · power" /></label>
+        <label
+          >Info <textarea name="info" placeholder="What it is and what it does (from a datasheet)"></textarea>
+        </label>
+        <label>Specs <textarea name="specs" placeholder="Voltage: 12 V&#10;Current: 55 A"></textarea></label>
+        <label>Zoom branch <input name="detail" placeholder="../../models/drone/fc.json" /></label>
+        <h2>Objects</h2>
+        <p id="part-nodes"></p>
+      </form>
+    </aside>
+    <p id="status" role="status"></p>
+    <script type="module" src="/src/editor/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,182 @@
+{
+  "name": "GB203 package",
+  "footprint": [
+    45,
+    45
+  ],
+  "layers": [
+    {
+      "name": "Solder balls",
+      "category": "Package \u00b7 contacts",
+      "thickness": 0,
+      "info": "Ball grid array joining the package to the card's PCB. Only the outer rows are drawn; ball count and pitch are approximate.",
+      "specs": {
+        "Type": "BGA",
+        "Pitch": "~1 mm (approx.)"
+      },
+      "parts": [
+        {
+          "name": "BGA solder balls",
+          "shape": "sphere",
+          "radius": 0.3,
+          "at": [
+            -21,
+            -21
+          ],
+          "repeat": {
+            "count": 0,
+            "grid": [
+              43,
+              43
+            ],
+            "step": [
+              1,
+              1
+            ]
+          },
+          "material": "steel",
+          "color": "#c8ccd2",
+          "category": "Package \u00b7 contacts",
+          "info": "Solder balls that join the package to the board. Pitch and count are approximate (not published)."
+        }
+      ]
+    },
+    {
+      "name": "Bottom build-up",
+      "category": "Substrate \u00b7 layer",
+      "thickness": 0.25,
+      "material": "default",
+      "info": "Fine copper wiring layers that spread the die's connections out to the balls. Layer count approximate.",
+      "surface": "traces",
+      "color": "#2a1d15"
+    },
+    {
+      "name": "Core",
+      "category": "Substrate \u00b7 layer",
+      "thickness": 0.8,
+      "material": "fibreglass",
+      "info": "Stiff glass-fibre core with copper-plated through-holes; keeps the package flat.",
+      "specs": {
+        "Holes": "copper-plated vias"
+      },
+      "surface": "laminate"
+    },
+    {
+      "name": "Top build-up",
+      "category": "Substrate \u00b7 layer",
+      "thickness": 0.25,
+      "material": "default",
+      "info": "Densest wiring, directly under the die: memory, PCIe and display lanes fan out from here.",
+      "surface": "traces",
+      "color": "#2a1d15"
+    },
+    {
+      "name": "Solder mask",
+      "category": "Substrate \u00b7 layer",
+      "thickness": 0.05,
+      "material": "pcb",
+      "color": "#2f5a3c",
+      "info": "Lacquer on top of the substrate; the die bumps land through openings in it.",
+      "parts": [
+        {
+          "name": "C4 bumps",
+          "shape": "sphere",
+          "radius": 0.05,
+          "at": [
+            -9.5,
+            -9.4
+          ],
+          "repeat": {
+            "count": 0,
+            "grid": [
+              96,
+              94
+            ],
+            "step": [
+              0.2,
+              0.2
+            ]
+          },
+          "material": "gold",
+          "category": "Package \u00b7 bumps",
+          "info": "Microscopic solder bumps under the die (flip-chip). Pitch and count approximate."
+        },
+        {
+          "name": "Decoupling capacitors",
+          "shape": "box",
+          "size": [
+            1,
+            0.5,
+            0.5
+          ],
+          "round": 0.08,
+          "at": [
+            -18,
+            17
+          ],
+          "repeat": {
+            "count": 10,
+            "step": [
+              4,
+              0
+            ]
+          },
+          "material": "ceramic",
+          "category": "Package \u00b7 power",
+          "info": "Small ceramic capacitors that keep the die's supply steady during load spikes."
+        },
+        {
+          "name": "Stiffener frame",
+          "shape": "box",
+          "size": [
+            40,
+            1,
+            2
+          ],
+          "at": [
+            0,
+            -20.5
+          ],
+          "material": "steel",
+          "category": "Package \u00b7 mechanical",
+          "info": "Metal ring around the die that stops the bare (lid-less) package from warping. Shape approximate; one side drawn."
+        }
+      ]
+    },
+    {
+      "name": "Die",
+      "category": "Silicon",
+      "thickness": 0,
+      "info": "The GB203 die, mounted face-down with no heatspreader; the cooler touches it directly.",
+      "detail": "die.json",
+      "specs": {
+        "Size": "378 mm\u00b2",
+        "Transistors": "45.6 billion",
+        "Process": "TSMC 4N"
+      },
+      "parts": [
+        {
+          "name": "GB203 die",
+          "shape": "box",
+          "size": [
+            19.6,
+            0.75,
+            19.3
+          ],
+          "round": 0.05,
+          "lift": 0.08,
+          "material": "chip",
+          "color": "#3a4150",
+          "category": "GPU \u00b7 Blackwell",
+          "info": "Bare silicon die. 19.6 \u00d7 19.3 mm is an approximation matching the published 378 mm\u00b2 area. Dive in for its layers and floorplan.",
+          "detail": "die.json",
+          "specs": {
+            "Area": "378 mm\u00b2",
+            "Edges": "~19.6 \u00d7 19.3 mm (approx.)",
+            "Density": "~121 M transistors/mm\u00b2"
+          }
+        }
+      ]
+    }
+  ]
+}

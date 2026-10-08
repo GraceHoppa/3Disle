@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teardown Engine</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <main class="home">
+      <header>
+        <h1>Teardown engine</h1>
+        <p>
+          Real hardware, taken apart layer by layer from its datasheets. Pick a tour to be guided down, or a model to
+          explore on your own.
+        </p>
+      </header>
+      <section aria-labelledby="h-tours">
+        <h2 id="h-tours">Tours</h2>
+        <ul id="tours" class="cards"></ul>
+      </section>
+      <section aria-labelledby="h-models">
+        <h2 id="h-models">Models</h2>
+        <ul id="models" class="cards"></ul>
+      </section>
+      <section aria-labelledby="h-tools">
+        <h2 id="h-tools">Tools</h2>
+        <ul class="links">
+          <li><a href="editor.html">Editor</a> <span>turn a GLB into an explorable project</span></li>
+          <li>
+            <a href="https://olehhavrilko.github.io/3dgpuanimation/">GPU → Atom</a>
+            <span>the hand-built descent this engine follows, by Oleh Havrilko</span>
+          </li>
+        </ul>
+      </section>
+    </main>
+    <script type="module" src="/src/home/main.ts"></script>
+  </body>
+</html>

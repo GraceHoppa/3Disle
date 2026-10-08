@@ -1,0 +1,424 @@
+{
+  "name": "MSI GeForce RTX 5070 Ti 16G Ventus 3X OC",
+  "footprint": [303, 121],
+  "sources": [
+    "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/",
+    "https://storage-asset.msi.com/datasheet/vga/kr/GeForce-RTX-5070-Ti-16G-VENTUS-3X-OC.pdf",
+    "https://club386.com/msi-geforce-rtx-5070-ti-ventus-3x-review",
+    "https://www.techpowerup.com/gpu-specs/geforce-rtx-5070-ti.c4243",
+    "https://www.techpowerup.com/gpu-specs/nvidia-gb203.g1073",
+    "https://www.notebookcheck.net/Nvidia-GeForce-RTX-5080-Benchmarks-and-Specs.935679.0.html",
+    "https://www.profesionalreview.com/2025/04/28/rtx-5070-ti-gddr7-sk-hynix-34-gbps/"
+  ],
+  "layers": [
+    {
+      "name": "Backplate",
+      "category": "Card \u00b7 backplate",
+      "thickness": 1.5,
+      "material": "aluminium",
+      "color": "#25282d",
+      "info": "Matte black metal backplate that stiffens the board. Drawn full length; the real one follows the cooler outline.",
+      "specs": {
+        "Material": "metal (MSI: \"Metal Backplate\")"
+      },
+      "surface": "brushed"
+    },
+    {
+      "name": "Bottom copper + mask",
+      "category": "Board \u00b7 layer",
+      "thickness": 0.1,
+      "material": "pcb",
+      "color": "#14181c",
+      "info": "Bottom solder mask over the bottom copper. Approximate: the real board has many more inner copper layers, and the PCB is shorter than the 303 mm cooler; the slab is drawn at cooler length.",
+      "specs": {
+        "Copper": "2 oz (MSI marketing)"
+      },
+      "surface": "pcb"
+    },
+    {
+      "name": "Board core",
+      "category": "Board \u00b7 layer",
+      "thickness": 1.4,
+      "material": "fibreglass",
+      "info": "Glass-fibre and epoxy core with the inner power and signal planes (layer count not published; approximate).",
+      "surface": "laminate"
+    },
+    {
+      "name": "Top copper + mask",
+      "category": "Board \u00b7 main PCB",
+      "thickness": 0.1,
+      "material": "pcb",
+      "color": "#14181c",
+      "info": "Top solder mask; every component sits on it. Placement below is a plausible layout, not a traced copy of the MSI board.",
+      "parts": [
+        {
+          "name": "GB203 package substrate",
+          "shape": "box",
+          "size": [45, 1, 45],
+          "at": [-45, 0],
+          "round": 0.5,
+          "material": "pcb",
+          "color": "#2f5a3c",
+          "category": "GPU \u00b7 package",
+          "info": "Organic substrate the GB203 die is flip-chip mounted on. Size approximate. Dive in for its layers.",
+          "detail": "package.json",
+          "specs": {
+            "Package size": "~45 \u00d7 45 mm (approx.)",
+            "Mount": "BGA to the PCB"
+          },
+          "role": "gpu"
+        },
+        {
+          "name": "GB203-300 GPU",
+          "shape": "box",
+          "size": [19.6, 0.75, 19.3],
+          "at": [-45, 0],
+          "lift": 1,
+          "round": 0.1,
+          "material": "chip",
+          "color": "#3a4150",
+          "category": "GPU \u00b7 Blackwell",
+          "info": "The graphics chip: a cut-down GB203 with 70 of 84 SMs enabled. Dive in to see its package.",
+          "detail": "package.json",
+          "specs": {
+            "Architecture": "Blackwell",
+            "Process": "TSMC 4N",
+            "Die size": "378 mm\u00b2",
+            "Transistors": "45.6 billion",
+            "SMs enabled": "70 of 84",
+            "CUDA cores": "8960",
+            "Tensor / RT cores": "280 (5th gen) / 70 (4th gen)",
+            "L2 cache": "48 MB",
+            "Boost clock": "2452 MHz reference, 2482 MHz on this OC card",
+            "TGP": "300 W"
+          }
+        },
+        {
+          "name": "GDDR7 memory (top row)",
+          "shape": "box",
+          "size": [14, 1.1, 12],
+          "at": [-63, -38],
+          "repeat": {
+            "count": 3,
+            "step": [18, 0],
+            "names": ["Memory chip 1", "Memory chip 2", "Memory chip 3"]
+          },
+          "round": 0.3,
+          "material": "chip",
+          "category": "Memory \u00b7 GDDR7",
+          "info": "One of eight 2 GB GDDR7 chips (Samsung or SK hynix depending on batch). Positions around the GPU are approximate.",
+          "specs": {
+            "Capacity": "2 GB (16 Gbit)",
+            "Speed": "28 Gbps per pin",
+            "Bus width": "32-bit",
+            "Bandwidth": "112 GB/s",
+            "Package": "~12 \u00d7 14 mm BGA (approx.)"
+          },
+          "role": "memory"
+        },
+        {
+          "name": "GDDR7 memory (bottom row)",
+          "shape": "box",
+          "size": [14, 1.1, 12],
+          "at": [-63, 38],
+          "repeat": {
+            "count": 3,
+            "step": [18, 0],
+            "names": ["Memory chip 4", "Memory chip 5", "Memory chip 6"]
+          },
+          "round": 0.3,
+          "material": "chip",
+          "category": "Memory \u00b7 GDDR7",
+          "info": "One of eight 2 GB GDDR7 chips (Samsung or SK hynix depending on batch). Positions around the GPU are approximate.",
+          "specs": {
+            "Capacity": "2 GB (16 Gbit)",
+            "Speed": "28 Gbps per pin",
+            "Bus width": "32-bit",
+            "Bandwidth": "112 GB/s",
+            "Package": "~12 \u00d7 14 mm BGA (approx.)"
+          },
+          "role": "memory"
+        },
+        {
+          "name": "GDDR7 memory (left column)",
+          "shape": "box",
+          "size": [12, 1.1, 14],
+          "at": [-82, -9],
+          "repeat": {
+            "count": 2,
+            "step": [0, 18],
+            "names": ["Memory chip 7", "Memory chip 8"]
+          },
+          "round": 0.3,
+          "material": "chip",
+          "category": "Memory \u00b7 GDDR7",
+          "info": "One of eight 2 GB GDDR7 chips (Samsung or SK hynix depending on batch). Positions around the GPU are approximate.",
+          "specs": {
+            "Capacity": "2 GB (16 Gbit)",
+            "Speed": "28 Gbps per pin",
+            "Bus width": "32-bit",
+            "Bandwidth": "112 GB/s",
+            "Package": "~12 \u00d7 14 mm BGA (approx.)"
+          },
+          "role": "memory"
+        },
+        {
+          "name": "DrMOS power stages",
+          "shape": "box",
+          "size": [5, 1, 6],
+          "at": [-10, -42],
+          "repeat": {
+            "count": 8,
+            "step": [0, 12],
+            "names": ["Phase 1", "Phase 2", "Phase 3", "Phase 4", "Phase 5", "Phase 6", "Phase 7", "Phase 8"]
+          },
+          "round": 0.3,
+          "material": "chip",
+          "color": "#33383f",
+          "category": "Power \u00b7 VRM",
+          "info": "DrMOS power stages (per MSI) that turn 12 V into the ~1 V the GPU runs on. Phase count and placement approximate; MSI does not publish them.",
+          "role": "vrm"
+        },
+        {
+          "name": "Chokes",
+          "shape": "box",
+          "size": [7, 4.5, 7],
+          "at": [0, -42],
+          "repeat": {
+            "count": 8,
+            "step": [0, 12]
+          },
+          "round": 0.6,
+          "material": "steel",
+          "color": "#4a4f57",
+          "category": "Power \u00b7 VRM",
+          "info": "Inductors that smooth each phase's current. Count approximate."
+        },
+        {
+          "name": "Capacitors",
+          "shape": "cylinder",
+          "radius": 2.5,
+          "height": 6,
+          "at": [12, -36],
+          "repeat": {
+            "count": 4,
+            "step": [0, 24]
+          },
+          "material": "aluminium",
+          "category": "Power \u00b7 filtering",
+          "info": "Bulk capacitors on the 12 V input. Count approximate."
+        },
+        {
+          "name": "12V-2\u00d76 power connector",
+          "shape": "box",
+          "size": [20, 6, 9],
+          "at": [60, -55],
+          "round": 0.5,
+          "material": "plastic",
+          "category": "Power \u00b7 input",
+          "info": "Single 16-pin 12V-2\u00d76 connector (NVIDIA allows 2\u00d7 8-pin via adapter). Position approximate.",
+          "specs": {
+            "Connector": "16-pin 12V-2\u00d76 \u00d71",
+            "Board power": "300 W",
+            "Recommended PSU": "750 W"
+          },
+          "role": "power-in"
+        },
+        {
+          "name": "Fuses",
+          "shape": "box",
+          "size": [3, 1, 1.6],
+          "at": [52, -46],
+          "repeat": {
+            "count": 3,
+            "step": [8, 0]
+          },
+          "material": "ceramic",
+          "category": "Power \u00b7 protection",
+          "info": "Extra fuses MSI adds on the 12 V input."
+        },
+        {
+          "name": "DisplayPort 2.1b",
+          "shape": "port",
+          "size": [9, 6, 16],
+          "at": [-146, -42],
+          "repeat": {
+            "count": 3,
+            "step": [0, 20],
+            "names": ["DisplayPort 1", "DisplayPort 2", "DisplayPort 3"]
+          },
+          "material": "steel",
+          "category": "I/O \u00b7 display",
+          "info": "DisplayPort 2.1b outputs on the bracket edge.",
+          "specs": {
+            "Version": "2.1b",
+            "Max resolution": "7680 \u00d7 4320"
+          },
+          "port": "dp",
+          "role": "display"
+        },
+        {
+          "name": "HDMI 2.1b",
+          "shape": "port",
+          "size": [9, 6, 16],
+          "at": [-146, 22],
+          "material": "steel",
+          "category": "I/O \u00b7 display",
+          "info": "HDMI 2.1b output; up to 4K 480 Hz or 8K 120 Hz with DSC. Up to 4 displays at once across all outputs.",
+          "specs": {
+            "Version": "2.1b"
+          },
+          "port": "hdmi",
+          "role": "display"
+        },
+        {
+          "name": "PCIe 5.0 x16 fingers",
+          "shape": "box",
+          "size": [0.7, 0.05, 7],
+          "at": [-130, 57],
+          "repeat": {
+            "count": 82,
+            "step": [1, 0]
+          },
+          "material": "gold",
+          "category": "I/O \u00b7 PCIe",
+          "info": "Gold edge contacts for the PCI Express 5.0 x16 slot (pin layout simplified).",
+          "specs": {
+            "Interface": "PCIe 5.0 x16"
+          },
+          "role": "pcie"
+        },
+        {
+          "name": "MLCC capacitors",
+          "shape": "box",
+          "size": [1.0, 0.5, 0.5],
+          "material": "ceramic",
+          "color": "#c9a27a",
+          "at": [-45, 0],
+          "scatter": [120, 100],
+          "repeat": {
+            "count": 320
+          },
+          "category": "Passives",
+          "info": "Small ceramic capacitors that smooth the GPU's supply. Real boards carry hundreds; count and positions here are approximate."
+        }
+      ],
+      "surface": "pcb",
+      "links": [
+        {
+          "name": "GDDR7 memory bus",
+          "from": "GB203 package substrate",
+          "to": [
+            "Memory chip 1",
+            "Memory chip 2",
+            "Memory chip 3",
+            "Memory chip 4",
+            "Memory chip 5",
+            "Memory chip 6",
+            "Memory chip 7",
+            "Memory chip 8"
+          ],
+          "lanes": 8,
+          "width": 0.35,
+          "category": "Memory \u00b7 bus",
+          "info": "Each of the 8 GDDR7 chips has its own 32-bit channel to the GPU: 8 \u00d7 32 = 256 bits. Pulses run GPU \u2192 memory.",
+          "specs": {
+            "Width": "256-bit (8 \u00d7 32-bit)",
+            "Speed": "28 Gbps per pin",
+            "Bandwidth": "896 GB/s"
+          }
+        }
+      ],
+      "detail": "pcb.json",
+      "flows": "gpu-board"
+    },
+    {
+      "name": "Heatsink",
+      "category": "Cooler \u00b7 heatsink",
+      "thickness": 3,
+      "material": "copper",
+      "color": "#b9b2a6",
+      "info": "Nickel-plated copper baseplate over the GPU and memory, square \"Core Pipes\" and an aluminium fin stack. Drawn full length.",
+      "parts": [
+        {
+          "name": "Core Pipes",
+          "shape": "box",
+          "size": [260, 6, 7],
+          "at": [0, -30],
+          "repeat": {
+            "count": 5,
+            "step": [0, 15]
+          },
+          "round": 1,
+          "material": "copper",
+          "category": "Cooler \u00b7 heatpipes",
+          "info": "Heatpipes with a square section where they meet the baseplate (MSI \"Core Pipes\"). Count approximate."
+        },
+        {
+          "name": "Fins",
+          "shape": "box",
+          "size": [0.8, 24, 112],
+          "at": [-141, 0],
+          "lift": 6,
+          "repeat": {
+            "count": 95,
+            "step": [3, 0]
+          },
+          "material": "aluminium",
+          "category": "Cooler \u00b7 fins",
+          "info": "Thin aluminium fins giving the air a large surface. Count approximate."
+        }
+      ]
+    },
+    {
+      "name": "Shroud",
+      "category": "Cooler \u00b7 shroud",
+      "thickness": 3,
+      "material": "plastic",
+      "info": "Plastic cover that channels the fans' air through the fins. Card total: 303 \u00d7 121 \u00d7 49 mm, 1073 g.",
+      "specs": {
+        "Card size": "303 \u00d7 121 \u00d7 49 mm",
+        "Weight": "1073 g",
+        "Slots": "~2.5 (approx.)"
+      },
+      "parts": [
+        {
+          "name": "TORX FAN 5.0",
+          "shape": "fan",
+          "radius": 46,
+          "height": 4,
+          "at": [-100, 0],
+          "repeat": {
+            "count": 3,
+            "step": [100, 0],
+            "names": ["Fan 1", "Fan 2", "Fan 3"]
+          },
+          "material": "plastic",
+          "category": "Cooler \u00b7 fan",
+          "info": "MSI TORX FAN 5.0: pairs of blades are linked by ring arcs to steady the airflow (MSI). Blade count and speed shown are approximate.",
+          "specs": {
+            "Diameter": "~92 mm (approx.)"
+          },
+          "blades": 7,
+          "spin": 900,
+          "ring": true,
+          "lift": -3.5
+        }
+      ],
+      "holes": [
+        {
+          "at": [-100, 0],
+          "radius": 47
+        },
+        {
+          "at": [0, 0],
+          "radius": 47
+        },
+        {
+          "at": [100, 0],
+          "radius": 47
+        }
+      ]
+    }
+  ]
+}

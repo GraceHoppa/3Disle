@@ -1,0 +1,42 @@
+{
+  "name": "Inside the GeForce RTX 5070 Ti",
+  "lead": "Four levels \u00b7 30 cm to 20 mm",
+  "subtitle": "From the whole MSI card down to the GB203 die: 45.6 billion transistors on 378 mm\u00b2 of silicon, fed by 8 memory chips and 300 W.",
+  "finale": {
+    "title": "70 of 84 SMs, switched on.",
+    "text": "The 5070 Ti enables 70 of the GB203's 84 streaming multiprocessors: 8,960 CUDA cores. Which ones are switched off varies from chip to chip."
+  },
+  "levels": [
+    {
+      "file": "card.json",
+      "scale": "30 cm",
+      "title": "GeForce RTX 5070 Ti",
+      "text": "MSI Ventus 3X OC: 303 \u00d7 121 mm, three fans over a fin stack, 300 W board power.",
+      "caption": "Three fans, one chip, 300 watts.",
+      "into": "Top copper + mask"
+    },
+    {
+      "file": "pcb.json",
+      "scale": "25 cm",
+      "title": "Main PCB",
+      "text": "The GB203 sits in the middle, ringed by 8 GDDR7 chips on a 256-bit bus (896 GB/s). Power enters at the 12V-2\u00d76 connector and is stepped down for the core.",
+      "caption": "Power in, bytes out.",
+      "into": "GB203 package substrate"
+    },
+    {
+      "file": "package.json",
+      "scale": "45 mm",
+      "title": "GB203 package",
+      "text": "A flip-chip package: the die sits face-down on layers of copper wiring that fan its connections out to the solder balls underneath.",
+      "caption": "Fanning out thousands of connections.",
+      "into": "GB203 die"
+    },
+    {
+      "file": "die.json",
+      "scale": "20 mm",
+      "title": "GB203 die",
+      "text": "TSMC 4N, 378 mm\u00b2, 45.6 billion transistors: 7 GPCs around 64 MB of L2 cache, with memory controllers on the edges.",
+      "caption": "Where the work happens."
+    }
+  ]
+}

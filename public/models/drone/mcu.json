@@ -1,0 +1,365 @@
+{
+  "name": "STM32F405 in LQFP64",
+  "footprint": [12, 12],
+  "layers": [
+    {
+      "name": "Leads",
+      "thickness": 0,
+      "category": "Package \u00b7 layer",
+      "info": "64 gull-wing leads, 16 per side, soldered to the board. Pin 1 is top of the left side; numbering runs anticlockwise.",
+      "specs": {
+        "Pins": "64",
+        "Pitch": "0.5 mm",
+        "Body + leads": "12 \u00d7 12 mm"
+      },
+      "parts": [
+        {
+          "shape": "box",
+          "material": "steel",
+          "color": "#c9ccd0",
+          "category": "Lead",
+          "info": "Tin-plated copper-alloy gull-wing lead, 0.5 mm pitch.",
+          "name": "Left pins 1\u201316",
+          "size": [1, 0.15, 0.22],
+          "at": [-5.5, -3.75],
+          "repeat": {
+            "count": 16,
+            "step": [0, 0.5],
+            "names": [
+              "Pin 1 VBAT",
+              "Pin 2 PC13",
+              "Pin 3 PC14",
+              "Pin 4 PC15",
+              "Pin 5 PH0-OSC_IN",
+              "Pin 6 PH1-OSC_OUT",
+              "Pin 7 NRST",
+              "Pin 8 PC0",
+              "Pin 9 PC1",
+              "Pin 10 PC2",
+              "Pin 11 PC3",
+              "Pin 12 VSSA",
+              "Pin 13 VDDA",
+              "Pin 14 PA0",
+              "Pin 15 PA1",
+              "Pin 16 PA2"
+            ]
+          }
+        },
+        {
+          "shape": "box",
+          "material": "steel",
+          "color": "#c9ccd0",
+          "category": "Lead",
+          "info": "Tin-plated copper-alloy gull-wing lead, 0.5 mm pitch.",
+          "name": "Bottom pins 17\u201332",
+          "size": [0.22, 0.15, 1],
+          "at": [-3.75, 5.5],
+          "repeat": {
+            "count": 16,
+            "step": [0.5, 0],
+            "names": [
+              "Pin 17 PA3",
+              "Pin 18 VSS",
+              "Pin 19 VDD",
+              "Pin 20 PA4",
+              "Pin 21 PA5",
+              "Pin 22 PA6",
+              "Pin 23 PA7",
+              "Pin 24 PC4",
+              "Pin 25 PC5",
+              "Pin 26 PB0",
+              "Pin 27 PB1",
+              "Pin 28 PB2-BOOT1",
+              "Pin 29 PB10",
+              "Pin 30 PB11",
+              "Pin 31 VCAP_1",
+              "Pin 32 VDD"
+            ]
+          }
+        },
+        {
+          "shape": "box",
+          "material": "steel",
+          "color": "#c9ccd0",
+          "category": "Lead",
+          "info": "Tin-plated copper-alloy gull-wing lead, 0.5 mm pitch.",
+          "name": "Right pins 33\u201348",
+          "size": [1, 0.15, 0.22],
+          "at": [5.5, 3.75],
+          "repeat": {
+            "count": 16,
+            "step": [0, -0.5],
+            "names": [
+              "Pin 33 PB12",
+              "Pin 34 PB13",
+              "Pin 35 PB14",
+              "Pin 36 PB15",
+              "Pin 37 PC6",
+              "Pin 38 PC7",
+              "Pin 39 PC8",
+              "Pin 40 PC9",
+              "Pin 41 PA8",
+              "Pin 42 PA9",
+              "Pin 43 PA10",
+              "Pin 44 PA11",
+              "Pin 45 PA12",
+              "Pin 46 PA13",
+              "Pin 47 VCAP_2",
+              "Pin 48 VDD"
+            ]
+          }
+        },
+        {
+          "shape": "box",
+          "material": "steel",
+          "color": "#c9ccd0",
+          "category": "Lead",
+          "info": "Tin-plated copper-alloy gull-wing lead, 0.5 mm pitch.",
+          "name": "Top pins 49\u201364",
+          "size": [0.22, 0.15, 1],
+          "at": [3.75, -5.5],
+          "repeat": {
+            "count": 16,
+            "step": [-0.5, 0],
+            "names": [
+              "Pin 49 PA14",
+              "Pin 50 PA15",
+              "Pin 51 PC10",
+              "Pin 52 PC11",
+              "Pin 53 PC12",
+              "Pin 54 PD2",
+              "Pin 55 PB3",
+              "Pin 56 PB4",
+              "Pin 57 PB5",
+              "Pin 58 PB6",
+              "Pin 59 PB7",
+              "Pin 60 BOOT0",
+              "Pin 61 PB8",
+              "Pin 62 PB9",
+              "Pin 63 VSS",
+              "Pin 64 VDD"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lower mould",
+      "thickness": 0,
+      "category": "Package \u00b7 layer",
+      "info": "Epoxy mould compound (silica-filled) under the leadframe.",
+      "parts": [
+        {
+          "name": "Mould compound, lower half",
+          "shape": "box",
+          "size": [10, 0.5, 10],
+          "round": 0.1,
+          "material": "plastic",
+          "category": "Mould compound",
+          "info": "Black silica-filled epoxy.",
+          "color": "#1b1e22"
+        }
+      ]
+    },
+    {
+      "name": "Leadframe",
+      "thickness": 0,
+      "category": "Package \u00b7 layer",
+      "info": "Stamped copper-alloy frame: a central paddle carries the die, fingers fan out to the leads. Paddle size approx.",
+      "parts": [
+        {
+          "name": "Die paddle",
+          "shape": "box",
+          "size": [6, 0.13, 6],
+          "material": "copper",
+          "category": "Leadframe",
+          "info": "The die is glued to this pad with silver-filled epoxy. Size approx."
+        },
+        {
+          "shape": "box",
+          "material": "copper",
+          "category": "Leadframe",
+          "info": "Inner lead finger inside the mould; a gold bond wire lands on its tip.",
+          "name": "Left fingers",
+          "size": [1.4, 0.13, 0.2],
+          "at": [-4.2, -3.75],
+          "repeat": {
+            "count": 16,
+            "step": [0, 0.5]
+          }
+        },
+        {
+          "shape": "box",
+          "material": "copper",
+          "category": "Leadframe",
+          "info": "Inner lead finger inside the mould; a gold bond wire lands on its tip.",
+          "name": "Bottom fingers",
+          "size": [0.2, 0.13, 1.4],
+          "at": [-3.75, 4.2],
+          "repeat": {
+            "count": 16,
+            "step": [0.5, 0]
+          }
+        },
+        {
+          "shape": "box",
+          "material": "copper",
+          "category": "Leadframe",
+          "info": "Inner lead finger inside the mould; a gold bond wire lands on its tip.",
+          "name": "Right fingers",
+          "size": [1.4, 0.13, 0.2],
+          "at": [4.2, 3.75],
+          "repeat": {
+            "count": 16,
+            "step": [0, -0.5]
+          }
+        },
+        {
+          "shape": "box",
+          "material": "copper",
+          "category": "Leadframe",
+          "info": "Inner lead finger inside the mould; a gold bond wire lands on its tip.",
+          "name": "Top fingers",
+          "size": [0.2, 0.13, 1.4],
+          "at": [3.75, -4.2],
+          "repeat": {
+            "count": 16,
+            "step": [-0.5, 0]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Die",
+      "thickness": 0,
+      "category": "Package \u00b7 layer",
+      "info": "The silicon itself, with bond wires to the leadframe. Die size and thickness are not published; values approx.",
+      "specs": {
+        "Process": "90 nm (ST)",
+        "Core": "Arm Cortex-M4F with FPU",
+        "Clock": "168 MHz, 210 DMIPS",
+        "Flash": "1 MB",
+        "SRAM": "192 KB + 4 KB backup"
+      },
+      "parts": [
+        {
+          "name": "Silicon die",
+          "shape": "box",
+          "size": [4.5, 0.3, 4.5],
+          "material": "aluminium",
+          "color": "#5a6170",
+          "category": "Die",
+          "info": "Cortex-M4F core, 1 MB flash, 192 KB SRAM, ADCs, timers and serial peripherals on one die. Size approx.",
+          "specs": {
+            "Process": "90 nm",
+            "Clock": "168 MHz",
+            "ART Accelerator": "0-wait-state flash execution",
+            "Die size": "approx. 4.5 \u00d7 4.5 mm"
+          }
+        },
+        {
+          "shape": "box",
+          "material": "gold",
+          "category": "Bond wire",
+          "info": "Gold (or copper) bond wire, roughly 20\u201325 \u00b5m thick (approx.), from die pad to lead finger.",
+          "name": "Bond wires, left",
+          "size": [1.7, 0.03, 0.03],
+          "at": [-3, -3],
+          "lift": 0.25,
+          "repeat": {
+            "count": 16,
+            "step": [0, 0.4]
+          }
+        },
+        {
+          "shape": "box",
+          "material": "gold",
+          "category": "Bond wire",
+          "info": "Gold (or copper) bond wire, roughly 20\u201325 \u00b5m thick (approx.), from die pad to lead finger.",
+          "name": "Bond wires, bottom",
+          "size": [0.03, 0.03, 1.7],
+          "at": [-3, 3],
+          "lift": 0.25,
+          "repeat": {
+            "count": 16,
+            "step": [0.4, 0]
+          }
+        },
+        {
+          "shape": "box",
+          "material": "gold",
+          "category": "Bond wire",
+          "info": "Gold (or copper) bond wire, roughly 20\u201325 \u00b5m thick (approx.), from die pad to lead finger.",
+          "name": "Bond wires, right",
+          "size": [1.7, 0.03, 0.03],
+          "at": [3, 3],
+          "lift": 0.25,
+          "repeat": {
+            "count": 16,
+            "step": [0, -0.4]
+          }
+        },
+        {
+          "shape": "box",
+          "material": "gold",
+          "category": "Bond wire",
+          "info": "Gold (or copper) bond wire, roughly 20\u201325 \u00b5m thick (approx.), from die pad to lead finger.",
+          "name": "Bond wires, top",
+          "size": [0.03, 0.03, 1.7],
+          "at": [3, -3],
+          "lift": 0.25,
+          "repeat": {
+            "count": 16,
+            "step": [-0.4, 0]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Upper mould",
+      "thickness": 0,
+      "category": "Package \u00b7 layer",
+      "info": "The top of the epoxy body; laser-marked with part number and date code.",
+      "specs": {
+        "Body": "10 \u00d7 10 mm",
+        "Body thickness": "1.4 mm",
+        "Max height": "1.6 mm"
+      },
+      "parts": [
+        {
+          "name": "Mould compound, upper half",
+          "shape": "box",
+          "size": [10, 0.5, 10],
+          "round": 0.1,
+          "material": "chip",
+          "category": "Mould compound",
+          "info": "Black silica-filled epoxy; protects the die and wires.",
+          "marking": "STM32F405 RGT6"
+        },
+        {
+          "name": "Pin 1 dimple",
+          "shape": "cylinder",
+          "radius": 0.4,
+          "height": 0.02,
+          "at": [-3.9, -3.9],
+          "lift": 0.5,
+          "material": "plastic",
+          "color": "#2a2e34",
+          "category": "Marking",
+          "info": "Marks the corner next to pin 1."
+        },
+        {
+          "name": "Laser marking",
+          "shape": "box",
+          "size": [6, 0.01, 2],
+          "at": [0, 1],
+          "lift": 0.5,
+          "material": "ceramic",
+          "color": "#6d7178",
+          "category": "Marking",
+          "info": "\u201cSTM32F405RGT6\u201d plus date code and ST logo."
+        }
+      ]
+    }
+  ]
+}

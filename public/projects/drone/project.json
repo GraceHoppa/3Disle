@@ -1,0 +1,147 @@
+{
+  "name": "5\" FPV quad",
+  "model": "drone.glb",
+  "units": "m",
+  "parts": [
+    {
+      "name": "Frame",
+      "category": "Airframe",
+      "info": "Deadcat carbon frame: front arms swept wide so the props stay out of the camera's view.",
+      "nodes": [
+        "Plate_Bottom",
+        "Plate_Top",
+        "Arm_FL",
+        "Arm_FR",
+        "Arm_RL",
+        "Arm_RR",
+        "Standoff_1",
+        "Standoff_2",
+        "Standoff_3",
+        "Standoff_4"
+      ]
+    },
+    {
+      "name": "Flight controller",
+      "category": "Electronics",
+      "info": "SpeedyBee F405 V5: the brain. Reads the gyro thousands of times a second and tells each motor how fast to spin.",
+      "specs": {
+        "MCU": "STM32F405, 168 MHz",
+        "Gyro": "ICM-42688-P",
+        "Blackbox": "16 MB"
+      },
+      "nodes": ["FC_Board", "FC_MCU", "FC_Gyro"],
+      "detail": "../../models/drone/fc.json"
+    },
+    {
+      "name": "ESC",
+      "category": "Electronics",
+      "info": "SpeedyBee OX32 55A 4-in-1: turns battery power into three-phase drive for each motor.",
+      "specs": {
+        "Current": "55 A per motor",
+        "Input": "3\u20136S"
+      },
+      "nodes": ["ESC_Board", "ESC_MOSFETs"],
+      "detail": "../../models/drone/esc.json"
+    },
+    {
+      "name": "Motor FL",
+      "category": "Motor",
+      "info": "Brushless outrunner: the bell with magnets spins around a fixed wound stator.",
+      "specs": {
+        "Model": "T-Motor Velox 2207 V3",
+        "Poles": "14"
+      },
+      "nodes": ["Motor_FL_Base", "Motor_FL_Stator", "Motor_FL_Bell", "Motor_FL_Shaft"],
+      "detail": "../../models/drone/motor.json"
+    },
+    {
+      "name": "Motor FR",
+      "category": "Motor",
+      "nodes": ["Motor_FR_Base", "Motor_FR_Stator", "Motor_FR_Bell", "Motor_FR_Shaft"],
+      "detail": "../../models/drone/motor.json",
+      "info": "T-Motor Velox 2207 V3 brushless outrunner.",
+      "specs": {
+        "Model": "T-Motor Velox 2207 V3",
+        "Poles": "14"
+      }
+    },
+    {
+      "name": "Motor RL",
+      "category": "Motor",
+      "nodes": ["Motor_RL_Base", "Motor_RL_Stator", "Motor_RL_Bell", "Motor_RL_Shaft"],
+      "detail": "../../models/drone/motor.json",
+      "info": "T-Motor Velox 2207 V3 brushless outrunner.",
+      "specs": {
+        "Model": "T-Motor Velox 2207 V3",
+        "Poles": "14"
+      }
+    },
+    {
+      "name": "Motor RR",
+      "category": "Motor",
+      "nodes": ["Motor_RR_Base", "Motor_RR_Stator", "Motor_RR_Bell", "Motor_RR_Shaft"],
+      "detail": "../../models/drone/motor.json",
+      "info": "T-Motor Velox 2207 V3 brushless outrunner.",
+      "specs": {
+        "Model": "T-Motor Velox 2207 V3",
+        "Poles": "14"
+      }
+    },
+    {
+      "name": "Battery",
+      "category": "Power",
+      "info": "6S LiPo, mounted at the rear for balance.",
+      "specs": {
+        "Cells": "6S",
+        "Capacity": "1200\u20131480 mAh"
+      },
+      "nodes": ["Battery", "Battery_Strap"],
+      "detail": "../../models/drone/battery.json"
+    },
+    {
+      "name": "Power lead",
+      "category": "Power",
+      "info": "XT60 plug with a low-ESR capacitor across the pads to soak up voltage spikes.",
+      "specs": {
+        "Capacitor": "1000 \u00b5F 35 V"
+      },
+      "nodes": ["XT60", "Capacitor"]
+    },
+    {
+      "name": "Video",
+      "category": "Video",
+      "info": "DJI O4 air unit and camera.",
+      "nodes": ["O4_AirUnit", "O4_Camera"]
+    },
+    {
+      "name": "Receiver",
+      "category": "Radio",
+      "info": "ExpressLRS 2.4 GHz receiver with a dipole antenna.",
+      "nodes": ["RX_ELRS", "RX_Antenna"]
+    },
+    {
+      "name": "Prop FL",
+      "category": "Propeller",
+      "info": "5.1-inch two-blade prop on the motor's 5 mm shaft.",
+      "nodes": ["Prop_FL"]
+    },
+    {
+      "name": "Prop FR",
+      "category": "Propeller",
+      "info": "5.1-inch two-blade prop on the motor's 5 mm shaft.",
+      "nodes": ["Prop_FR"]
+    },
+    {
+      "name": "Prop RL",
+      "category": "Propeller",
+      "info": "5.1-inch two-blade prop on the motor's 5 mm shaft.",
+      "nodes": ["Prop_RL"]
+    },
+    {
+      "name": "Prop RR",
+      "category": "Propeller",
+      "info": "5.1-inch two-blade prop on the motor's 5 mm shaft.",
+      "nodes": ["Prop_RR"]
+    }
+  ]
+}
