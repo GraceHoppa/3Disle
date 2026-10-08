@@ -20,6 +20,8 @@ test('lists the models and opens the drone tour first', async ({ page }) => {
   await expect(page.locator('#builtin button')).toHaveCount(4);
   await expect(page.locator('#counter')).toHaveText('01 / 03');
   await expect(page.locator('#hud .ttl')).toHaveText('5-inch FPV quad');
+  await expect(page.locator('#xray')).toBeHidden();
+  await expect(page.locator('.cut')).toBeHidden();
   expect(errors).toEqual([]);
 });
 
@@ -60,7 +62,8 @@ test('hovering a part shows its name and info', async ({ page }) => {
   await expect(page.locator('#tip strong')).not.toBeEmpty();
 });
 
-test('section cut: toggles, picks an axis and moves', async ({ page }) => {
+// Cut and X-Ray are hidden for now (viewer.html); these come back with them.
+test.skip('section cut: toggles, picks an axis and moves', async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto('/viewer.html?model=rtx5070ti/package.json');
   await loaded(page);
@@ -75,7 +78,7 @@ test('section cut: toggles, picks an axis and moves', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test('X-Ray toggles on and off, and a model change turns it off', async ({ page }) => {
+test.skip('X-Ray toggles on and off, and a model change turns it off', async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto('/viewer.html?model=rtx5070ti/card.json');
   await loaded(page);

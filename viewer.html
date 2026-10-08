@@ -34,13 +34,14 @@
         <button id="next" type="button" aria-label="Dive to the next level">▶</button>
       </div>
       <button id="flow" type="button" hidden>Flow · Realtime</button>
-      <button id="xray" type="button" aria-pressed="false">X-Ray</button>
+      <!-- X-Ray and Cut work but are hidden until they are wanted again. -->
+      <button id="xray" type="button" aria-pressed="false" hidden>X-Ray</button>
       <button id="labels" type="button" aria-pressed="false" title="Labels (L)">Labels</button>
       <label class="slider">
         Disassemble
         <input id="explode" type="range" min="0" max="1" step="0.01" value="0" />
       </label>
-      <div class="cut">
+      <div class="cut" hidden>
         <button id="cut" type="button" aria-pressed="false">Cut</button>
         <div class="axes" role="group" aria-label="Cut axis">
           <button type="button" data-axis="x" aria-pressed="true">X</button>
@@ -63,7 +64,7 @@
       <div class="actions">
         <button id="dive" type="button">Dive in ▸</button>
         <button id="recentre" type="button">Re-centre</button>
-        <button id="cut-here" type="button">Cut through it</button>
+        <button id="cut-here" type="button" hidden>Cut through it</button>
       </div>
     </aside>
     <section id="hud" hidden>
