@@ -141,7 +141,8 @@
           "material": "chip",
           "repeat": {
             "count": 4,
-            "step": [0, 4.5]
+            "step": [0, 4.5],
+            "names": ["Driver motor 1", "Driver motor 2", "Driver motor 3", "Driver motor 4"]
           },
           "category": "Power stage",
           "info": "Turn the MCU’s logic signals into the gate current that switches the MOSFETs fast. Approx."
@@ -268,7 +269,7 @@
           "round": 0.3,
           "at": [0, -17.5],
           "material": "plastic",
-          "color": "#e9e4d6",
+          "color": "#a39c8b",
           "category": "Connector",
           "info": "8-pin SH 1.0 mm socket; the cable to the flight controller."
         },
@@ -286,6 +287,450 @@
           },
           "category": "Mounting",
           "info": "30.5 × 30.5 mm pattern, Ø4 mm side-opening holes for M3 bolts."
+        }
+      ],
+      "links": [
+        {
+          "name": "Battery bus",
+          "from": "BAT +",
+          "to": ["Motor 1", "Motor 2", "Motor 3", "Motor 4"],
+          "kind": "power",
+          "lanes": 4,
+          "width": 0.9,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.033278688524590164],
+              [5, 0.04377049180327869],
+              [25, 0.09885245901639345],
+              [50, 0.26934426229508196],
+              [75, 0.610327868852459],
+              [100, 1]
+            ]
+          },
+          "info": "Thick copper pours carry battery + to the high-side MOSFETs of all twelve half-bridges."
+        },
+        {
+          "name": "Return to the shunt",
+          "from": "Motor 1",
+          "to": "Current sense shunt",
+          "kind": "ground",
+          "lanes": 3,
+          "width": 0.9,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          }
+        },
+        {
+          "name": "Return (motor 2)",
+          "from": "Motor 2",
+          "to": "Current sense shunt",
+          "kind": "ground",
+          "lanes": 3,
+          "width": 0.9,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          }
+        },
+        {
+          "name": "Return (motor 3)",
+          "from": "Motor 3",
+          "to": "Current sense shunt",
+          "kind": "ground",
+          "lanes": 3,
+          "width": 0.9,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          }
+        },
+        {
+          "name": "Return (motor 4)",
+          "from": "Motor 4",
+          "to": "Current sense shunt",
+          "kind": "ground",
+          "lanes": 3,
+          "width": 0.9,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          }
+        },
+        {
+          "name": "Shunt → battery −",
+          "from": "Current sense shunt",
+          "to": "BAT −",
+          "kind": "ground",
+          "lanes": 4,
+          "width": 0.9,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.033278688524590164],
+              [5, 0.04377049180327869],
+              [25, 0.09885245901639345],
+              [50, 0.26934426229508196],
+              [75, 0.610327868852459],
+              [100, 1]
+            ]
+          },
+          "info": "All the current goes back to the battery through one tiny resistor; the voltage across it measures the total."
+        },
+        {
+          "name": "Shunt voltage",
+          "from": "Current sense shunt",
+          "to": "Current sense amplifier",
+          "kind": "signal",
+          "lanes": 2,
+          "width": 0.3,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.033278688524590164],
+              [5, 0.04377049180327869],
+              [25, 0.09885245901639345],
+              [50, 0.26934426229508196],
+              [75, 0.610327868852459],
+              [100, 1]
+            ]
+          }
+        },
+        {
+          "name": "Current to FC",
+          "from": "Current sense amplifier",
+          "to": "FC connector",
+          "kind": "signal",
+          "lanes": 1,
+          "width": 0.3,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.033278688524590164],
+              [5, 0.04377049180327869],
+              [25, 0.09885245901639345],
+              [50, 0.26934426229508196],
+              [75, 0.610327868852459],
+              [100, 1]
+            ]
+          }
+        },
+        {
+          "name": "DShot motor 1",
+          "from": "FC connector",
+          "to": "MCU motor 1",
+          "kind": "data",
+          "lanes": 1,
+          "width": 0.3,
+          "info": "The FC’s throttle for this motor, 16 bits per frame.",
+          "specs": {
+            "Protocol": "DShot600"
+          }
+        },
+        {
+          "name": "Gate signals motor 1",
+          "from": "MCU motor 1",
+          "to": "Driver motor 1",
+          "kind": "data",
+          "lanes": 6,
+          "width": 0.25,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "Six on/off signals, one per MOSFET: which switch closes when, so the field turns ahead of the magnets."
+        },
+        {
+          "name": "Gate drive motor 1",
+          "from": "Driver motor 1",
+          "to": "Motor 1",
+          "kind": "signal",
+          "lanes": 6,
+          "width": 0.3,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "The driver turns the MCU’s logic signals into the stronger gate voltages the MOSFETs need."
+        },
+        {
+          "name": "Phases motor 1",
+          "from": "Motor 1",
+          "to": "Motor 1 pads",
+          "kind": "phase",
+          "lanes": 3,
+          "width": 0.9,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "Three phase outputs: each swings between battery + and −, a third of a turn apart."
+        },
+        {
+          "name": "DShot motor 2",
+          "from": "FC connector",
+          "to": "MCU motor 2",
+          "kind": "data",
+          "lanes": 1,
+          "width": 0.3,
+          "info": "The FC’s throttle for this motor, 16 bits per frame.",
+          "specs": {
+            "Protocol": "DShot600"
+          }
+        },
+        {
+          "name": "Gate signals motor 2",
+          "from": "MCU motor 2",
+          "to": "Driver motor 2",
+          "kind": "data",
+          "lanes": 6,
+          "width": 0.25,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "Six on/off signals, one per MOSFET: which switch closes when, so the field turns ahead of the magnets."
+        },
+        {
+          "name": "Gate drive motor 2",
+          "from": "Driver motor 2",
+          "to": "Motor 2",
+          "kind": "signal",
+          "lanes": 6,
+          "width": 0.3,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "The driver turns the MCU’s logic signals into the stronger gate voltages the MOSFETs need."
+        },
+        {
+          "name": "Phases motor 2",
+          "from": "Motor 2",
+          "to": "Motor 2 pads",
+          "kind": "phase",
+          "lanes": 3,
+          "width": 0.9,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "Three phase outputs: each swings between battery + and −, a third of a turn apart."
+        },
+        {
+          "name": "DShot motor 3",
+          "from": "FC connector",
+          "to": "MCU motor 3",
+          "kind": "data",
+          "lanes": 1,
+          "width": 0.3,
+          "info": "The FC’s throttle for this motor, 16 bits per frame.",
+          "specs": {
+            "Protocol": "DShot600"
+          }
+        },
+        {
+          "name": "Gate signals motor 3",
+          "from": "MCU motor 3",
+          "to": "Driver motor 3",
+          "kind": "data",
+          "lanes": 6,
+          "width": 0.25,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "Six on/off signals, one per MOSFET: which switch closes when, so the field turns ahead of the magnets."
+        },
+        {
+          "name": "Gate drive motor 3",
+          "from": "Driver motor 3",
+          "to": "Motor 3",
+          "kind": "signal",
+          "lanes": 6,
+          "width": 0.3,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "The driver turns the MCU’s logic signals into the stronger gate voltages the MOSFETs need."
+        },
+        {
+          "name": "Phases motor 3",
+          "from": "Motor 3",
+          "to": "Motor 3 pads",
+          "kind": "phase",
+          "lanes": 3,
+          "width": 0.9,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "Three phase outputs: each swings between battery + and −, a third of a turn apart."
+        },
+        {
+          "name": "DShot motor 4",
+          "from": "FC connector",
+          "to": "MCU motor 4",
+          "kind": "data",
+          "lanes": 1,
+          "width": 0.3,
+          "info": "The FC’s throttle for this motor, 16 bits per frame.",
+          "specs": {
+            "Protocol": "DShot600"
+          }
+        },
+        {
+          "name": "Gate signals motor 4",
+          "from": "MCU motor 4",
+          "to": "Driver motor 4",
+          "kind": "data",
+          "lanes": 6,
+          "width": 0.25,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "Six on/off signals, one per MOSFET: which switch closes when, so the field turns ahead of the magnets."
+        },
+        {
+          "name": "Gate drive motor 4",
+          "from": "Driver motor 4",
+          "to": "Motor 4",
+          "kind": "signal",
+          "lanes": 6,
+          "width": 0.3,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "The driver turns the MCU’s logic signals into the stronger gate voltages the MOSFETs need."
+        },
+        {
+          "name": "Phases motor 4",
+          "from": "Motor 4",
+          "to": "Motor 4 pads",
+          "kind": "phase",
+          "lanes": 3,
+          "width": 0.9,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.0],
+              [5, 0.010526315789473684],
+              [25, 0.06578947368421052],
+              [50, 0.23684210526315788],
+              [75, 0.5789473684210527],
+              [100, 1.0]
+            ]
+          },
+          "info": "Three phase outputs: each swings between battery + and −, a third of a turn apart."
         }
       ]
     },
@@ -312,6 +757,69 @@
           "info": "Anodised aluminium."
         }
       ]
+    }
+  ],
+  "controls": [
+    {
+      "id": "throttle",
+      "label": "Throttle",
+      "min": 0,
+      "max": 100,
+      "value": 30,
+      "unit": "%",
+      "info": "0 is disarmed. The same throttle as on the quad; numbers approx. for a 5-inch 6S quad."
+    }
+  ],
+  "readouts": [
+    {
+      "label": "DShot value",
+      "by": "throttle",
+      "map": [
+        [0, 0],
+        [0.5, 48],
+        [5, 148],
+        [100, 2047]
+      ]
+    },
+    {
+      "label": "Current per motor",
+      "by": "throttle",
+      "map": [
+        [0, 0],
+        [5, 0.4],
+        [25, 2.5],
+        [50, 9],
+        [75, 22],
+        [100, 38]
+      ],
+      "unit": "A",
+      "digits": 1
+    },
+    {
+      "label": "Total current",
+      "by": "throttle",
+      "map": [
+        [0, 0.5],
+        [5, 2.1],
+        [25, 10.5],
+        [50, 36.5],
+        [75, 88.5],
+        [100, 152.5]
+      ],
+      "unit": "A"
+    },
+    {
+      "label": "Electrical frequency",
+      "by": "throttle",
+      "map": [
+        [0, 0.0],
+        [5, 350.0],
+        [25, 1283.3333333333333],
+        [50, 2216.6666666666665],
+        [75, 2916.6666666666665],
+        [100, 3383.3333333333335]
+      ],
+      "unit": "Hz"
     }
   ]
 }

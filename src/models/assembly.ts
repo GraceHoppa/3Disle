@@ -103,6 +103,8 @@ export interface PartSpec {
   mirror?: boolean;
   /** fan: `prop` draws slim propeller blades on a small hub instead of a fan's wide ones. */
   blade?: 'fan' | 'prop';
+  /** Glow in time with an AC phase, like a motor coil: which phase (0–2) and how strongly (0..1). */
+  pulse?: { phase?: number; level?: Value; color?: string };
   /** Sprinkle copies at random over an area centred on `at`: [width, depth] in mm. Count comes from repeat.count. */
   scatter?: [number, number];
   /** box: [width, height, depth]. */
@@ -207,6 +209,14 @@ function material(spec: {
     m.emissiveIntensity = 2.2;
   }
   return m;
+}
+
+/** A part that glows with an AC phase: its emissive colour is set here, the viewer drives the strength. */
+function pulsing(mesh: THREE.Mesh, pulse: NonNullable<PartSpec['pulse']>) {
+  const m = mesh.material as THREE.MeshPhysicalMaterial;
+  m.emissive.set(pulse.color ?? '#ff7a2f');
+  m.emissiveIntensity = 0;
+  mesh.userData.pulse = pulse;
 }
 
 /** What hover / inspect read from a built object. */
@@ -331,6 +341,21 @@ async function buildPart(
   }
 
   const count = copies(part);
+  if (part.spin && part.repeat?.around !== undefined) {
+    // A ring of copies (a bell's segments, magnets) turns as one about the ring's centre.
+    const ring = new THREE.InstancedMesh(geometry, material(part), count);
+    const m = new THREE.Matrix4();
+    for (let i = 0; i < count; i++) ring.setMatrixAt(i, copyMatrix(part, i, count, 0, base + h / 2, 0, m));
+    ring.instanceMatrix.needsUpdate = true;
+    for (let i = 0; i < count; i++) ring.setColorAt(i, WHITE);
+    ring.computeBoundingBox();
+    ring.computeBoundingSphere();
+    ring.position.set(x, 0, z);
+    ring.userData.spin = part.spin;
+    if (part.pulse) pulsing(ring, part.pulse);
+    if (part.repeat?.names) ring.userData.names = part.repeat.names;
+    return tag(ring, part.name, part.info, part);
+  }
   if (part.spin) {
     // Spinning parts are separate meshes so each turns about its own centre.
     const group = new THREE.Group();
@@ -345,12 +370,14 @@ async function buildPart(
   }
   if (count === 1) {
     const mesh = new THREE.Mesh(geometry, part.shape === 'port' ? portMaterials(part) : material(part));
+    if (part.pulse) pulsing(mesh, part.pulse);
     mesh.position.set(x, base + h / 2, z);
     markChip(mesh, part, h);
     return tag(mesh, part.name, part.info, part);
   }
   const mesh = new THREE.InstancedMesh(geometry, part.shape === 'port' ? portMaterials(part) : material(part), count);
   if (part.scatter) mesh.userData.scatter = true;
+  if (part.pulse) pulsing(mesh, part.pulse);
   const m = new THREE.Matrix4();
   for (let i = 0; i < count; i++) mesh.setMatrixAt(i, copyMatrix(part, i, count, x, base + h / 2, z, m, avoid));
   mesh.instanceMatrix.needsUpdate = true;

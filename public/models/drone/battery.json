@@ -77,7 +77,7 @@
           "round": 0.5,
           "at": [-8, -30],
           "material": "plastic",
-          "color": "#f2f0e8",
+          "color": "#a19d93",
           "category": "Connector",
           "info": "JST-XH 7-pin plug: one wire per cell junction so the charger can measure and balance every cell. Housing size approx.",
           "specs": {
@@ -92,7 +92,7 @@
           "round": 0.8,
           "at": [8, -26],
           "material": "plastic",
-          "color": "#e6c229",
+          "color": "#b5931c",
           "category": "Connector",
           "info": "Main discharge plug, gold-plated contacts. Rated 60 A continuous.",
           "specs": {

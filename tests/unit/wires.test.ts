@@ -203,3 +203,37 @@ describe('mirrored fan', () => {
     expect(checked).toBe(4);
   });
 });
+
+describe('rings and pulses', () => {
+  it('a spinning ring turns as one about its centre and keeps its copy names; pulsing parts start dark', async () => {
+    const root = await buildAssembly({
+      name: 'Rotor',
+      footprint: [30, 30],
+      layers: [
+        {
+          name: 'Bell',
+          thickness: 0,
+          parts: [
+            {
+              name: 'Magnets',
+              shape: 'box',
+              size: [1, 5, 3],
+              at: [2, 3],
+              spin: 100,
+              repeat: { count: 4, around: 10, names: ['N1', 'S1', 'N2', 'S2'] },
+            },
+            { name: 'Coils', shape: 'box', size: [2, 5, 2], repeat: { count: 3, step: [3, 0] }, pulse: { phase: 1 } },
+          ],
+        },
+      ],
+    });
+    const ring = root.getObjectByName('Magnets') as THREE.InstancedMesh;
+    expect(ring.isInstancedMesh).toBe(true);
+    expect(ring.position.x).toBe(2);
+    expect(ring.position.z).toBe(3);
+    expect(ring.userData.names).toEqual(['N1', 'S1', 'N2', 'S2']);
+    const coils = root.getObjectByName('Coils') as THREE.Mesh;
+    expect(coils.userData.pulse).toEqual({ phase: 1 });
+    expect((coils.material as THREE.MeshPhysicalMaterial).emissiveIntensity).toBe(0);
+  });
+});

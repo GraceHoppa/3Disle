@@ -208,7 +208,7 @@
           "round": 0.3,
           "at": [0, -15],
           "material": "plastic",
-          "color": "#e9e4d6",
+          "color": "#a39c8b",
           "category": "Connector",
           "info": "8-pin SH 1.0 mm plug to the 4-in-1 ESC: battery voltage, ground, current sensor, telemetry and four motor signals."
         },
@@ -219,7 +219,7 @@
           "round": 0.3,
           "at": [16.5, 0],
           "material": "plastic",
-          "color": "#e9e4d6",
+          "color": "#a39c8b",
           "category": "Connector",
           "info": "6-pin SH 1.0 mm plug for the DJI O4 air unit: 9 V power, ground and a UART."
         },
@@ -258,7 +258,7 @@
           "round": 0.3,
           "at": [14, 12],
           "material": "plastic",
-          "color": "#d9d9d9",
+          "color": "#8e9093",
           "category": "Control",
           "info": "Hold while plugging in USB to enter the STM32 DFU bootloader. Position approx."
         },
@@ -282,7 +282,197 @@
             "Hole": "Ø4 mm side opening, M3"
           }
         }
+      ],
+      "links": [
+        {
+          "name": "Gyro → MCU (SPI)",
+          "from": "Gyro ICM42688P",
+          "to": "MCU STM32F405",
+          "kind": "data",
+          "lanes": 4,
+          "info": "Four SPI lines: the gyro’s rotation readings, thousands of times a second. Every one starts a new pass through the PID loop.",
+          "specs": {
+            "Bus": "SPI",
+            "Gyro interface": "up to 24 MHz"
+          }
+        },
+        {
+          "name": "DShot to ESC",
+          "from": "MCU STM32F405",
+          "to": "ESC connector",
+          "kind": "data",
+          "lanes": 4,
+          "info": "One line per motor. Each PID loop the MCU sends every motor a 16-bit DShot frame: an 11-bit throttle value, a telemetry bit and a 4-bit checksum.",
+          "specs": {
+            "Protocol": "DShot600",
+            "Bit rate": "600 kbit/s",
+            "Frame": "16 bits ≈ 26.7 µs"
+          }
+        },
+        {
+          "name": "Current sensor in",
+          "from": "ESC connector",
+          "to": "MCU STM32F405",
+          "kind": "signal",
+          "lanes": 1,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.033278688524590164],
+              [5, 0.04377049180327869],
+              [25, 0.09885245901639345],
+              [50, 0.26934426229508196],
+              [75, 0.610327868852459],
+              [100, 1]
+            ]
+          },
+          "info": "An analog voltage from the ESC’s current amplifier; the MCU’s ADC turns it into amps."
+        },
+        {
+          "name": "Battery voltage in",
+          "from": "ESC connector",
+          "to": "5 V BEC buck",
+          "kind": "power",
+          "lanes": 2,
+          "width": 0.8,
+          "level": 0.5,
+          "info": "Battery voltage up the stack cable: the input of both converters."
+        },
+        {
+          "name": "9 V supply",
+          "from": "ESC connector",
+          "to": "9 V BEC buck",
+          "kind": "power",
+          "lanes": 2,
+          "width": 0.8,
+          "level": 0.5
+        },
+        {
+          "name": "CRSF from receiver",
+          "from": "RX2",
+          "to": "MCU STM32F405",
+          "kind": "data",
+          "lanes": 1,
+          "level": 0.9,
+          "info": "The receiver’s serial line: stick positions as CRSF frames at 420 000 baud.",
+          "specs": {
+            "Protocol": "CRSF",
+            "Baud rate": "420 000"
+          }
+        },
+        {
+          "name": "Telemetry to receiver",
+          "from": "MCU STM32F405",
+          "to": "TX2",
+          "kind": "data",
+          "lanes": 1,
+          "level": 0.35
+        },
+        {
+          "name": "OSD (SPI)",
+          "from": "MCU STM32F405",
+          "to": "OSD AT7456E",
+          "kind": "data",
+          "lanes": 3,
+          "level": 0.5,
+          "info": "The MCU tells the OSD chip which characters to draw over the camera picture."
+        },
+        {
+          "name": "Blackbox writes",
+          "from": "MCU STM32F405",
+          "to": "Blackbox flash 16 MB",
+          "kind": "data",
+          "lanes": 3,
+          "level": 0.6,
+          "info": "Gyro, sticks and motor outputs, logged every few loops for later tuning."
+        },
+        {
+          "name": "Barometer (I²C)",
+          "from": "Barometer SPA06-003",
+          "to": "MCU STM32F405",
+          "kind": "data",
+          "lanes": 2,
+          "level": 0.2
+        },
+        {
+          "name": "5 V rail",
+          "from": "5 V BEC buck",
+          "to": "5V",
+          "kind": "power",
+          "lanes": 2,
+          "width": 0.6,
+          "level": 0.4,
+          "info": "5 V for the receiver and the camera."
+        },
+        {
+          "name": "3.3 V to MCU",
+          "from": "LDO 3.3 V MCU",
+          "to": "MCU STM32F405",
+          "kind": "power",
+          "lanes": 2,
+          "width": 0.5,
+          "level": 0.4
+        },
+        {
+          "name": "3.3 V to gyro",
+          "from": "LDO 3.3 V gyro",
+          "to": "Gyro ICM42688P",
+          "kind": "power",
+          "lanes": 1,
+          "width": 0.5,
+          "level": 0.4,
+          "info": "The gyro has its own clean regulator: noise on its supply would show up as false rotation."
+        }
       ]
+    }
+  ],
+  "controls": [
+    {
+      "id": "throttle",
+      "label": "Throttle",
+      "min": 0,
+      "max": 100,
+      "value": 30,
+      "unit": "%",
+      "info": "0 is disarmed. The same throttle as on the quad; numbers approx. for a 5-inch 6S quad."
+    }
+  ],
+  "readouts": [
+    {
+      "label": "DShot value",
+      "by": "throttle",
+      "map": [
+        [0, 0],
+        [0.5, 48],
+        [5, 148],
+        [100, 2047]
+      ]
+    },
+    {
+      "label": "Motor speed",
+      "by": "throttle",
+      "map": [
+        [0, 0],
+        [5, 3000],
+        [25, 11000],
+        [50, 19000],
+        [75, 25000],
+        [100, 29000]
+      ],
+      "unit": "rpm"
+    },
+    {
+      "label": "Current (ESC sensor)",
+      "by": "throttle",
+      "map": [
+        [0, 0.5],
+        [5, 2.1],
+        [25, 10.5],
+        [50, 36.5],
+        [75, 88.5],
+        [100, 152.5]
+      ],
+      "unit": "A"
     }
   ]
 }

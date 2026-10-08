@@ -307,6 +307,8 @@ for (const b of axisButtons) {
 
 /** Parts with `spin` (fans, props) turn while shown; the stage keeps drawing while any do. */
 let spinners: THREE.Object3D[] = [];
+/** Parts that glow with an AC phase (motor coils). */
+let pulsers: THREE.Mesh[] = [];
 /** Turns are shown this many times slower than real: a 30 000 rpm prop would strobe on screen. */
 const SPIN_SLOWDOWN = 64;
 type FlowUniforms = { uTime: { value: number }; uSpeed: { value: number }; uLevel?: { value: number } };
@@ -326,7 +328,7 @@ let flowTime = 0;
 tickers.add((now) => {
   const speed = FLOW_SPEEDS[flowAt][1];
   const rpms = spinners.map((o) => evaluate(o.userData.spin as Value, values));
-  const turning = rpms.some((r) => r !== 0);
+  const turning = rpms.some((r) => r !== 0) || pulsers.length > 0;
   if (!turning && !(flows.length && speed)) {
     spunAt = 0;
     return false;
@@ -337,6 +339,13 @@ tickers.add((now) => {
     o.rotation.y += (rpms[i] / 60 / SPIN_SLOWDOWN) * Math.PI * 2 * dt;
   });
   flowTime += dt;
+  for (const p of pulsers) {
+    // The same wave as a phase wire: a third of a turn between phases, faster with more drive.
+    const pulse = p.userData.pulse as { phase?: number; level?: Value };
+    const level = evaluate(pulse.level, values, 1);
+    const w = Math.sin(flowTime * speed * Math.PI * 2 * (0.5 + 3 * level) + (pulse.phase ?? 0) * ((Math.PI * 2) / 3));
+    (p.material as THREE.MeshPhysicalMaterial).emissiveIntensity = 2.4 * level * Math.abs(w);
+  }
   for (const u of flows) {
     u.uTime.value = flowTime;
     u.uSpeed.value = speed;
@@ -367,6 +376,8 @@ function show(next: THREE.Object3D, name: string, layered: boolean, arrive = 1) 
   spinners = [];
   spunAt = 0;
   next.traverse((o) => o.userData.spin && spinners.push(o));
+  pulsers = [];
+  next.traverse((o) => o.userData.pulse && pulsers.push(o as THREE.Mesh));
   flows = [];
   levelled = [];
   next.traverse((o) => {
