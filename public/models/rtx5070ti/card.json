@@ -410,25 +410,6 @@
           "info": "The regulator’s phases step 12 V down to the roughly 1 V the GPU core runs on."
         },
         {
-          "name": "Memory bus",
-          "from": "GB203 package substrate",
-          "to": [
-            "Memory chip 1",
-            "Memory chip 2",
-            "Memory chip 3",
-            "Memory chip 4",
-            "Memory chip 5",
-            "Memory chip 6",
-            "Memory chip 7",
-            "Memory chip 8"
-          ],
-          "lanes": 4,
-          "width": 0.364,
-          "color": "#76b900",
-          "category": "Data · memory",
-          "info": "Each memory chip has its own channel to the GPU; textures, frames and model data stream over them."
-        },
-        {
           "name": "PCIe link",
           "from": "GB203 package substrate",
           "to": ["PCIe 5.0 x16 fingers"],

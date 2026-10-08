@@ -17,7 +17,7 @@ test('lists the models and opens the drone tour first', async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto('/viewer.html');
   await loaded(page);
-  await expect(page.locator('#builtin button')).toHaveCount(4);
+  await expect(page.locator('#builtin button')).toHaveCount(7);
   await expect(page.locator('#counter')).toHaveText('01 / 02');
   await expect(page.locator('#hud .ttl')).toHaveText('SpeedyBee F405 V5 flight controller');
   await expect(page.locator('#xray')).toBeHidden();

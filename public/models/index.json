@@ -18,5 +18,20 @@
     "name": "Google Pixel 6",
     "file": "devices/pixel6/device.json",
     "note": "Real specs · zoom tree"
+  },
+  {
+    "name": "SpeedyBee 4-in-1 ESC",
+    "file": "drone/esc.json",
+    "note": "Real specs · test data"
+  },
+  {
+    "name": "T-Motor Velox 2207",
+    "file": "drone/motor.json",
+    "note": "Real specs · test data"
+  },
+  {
+    "name": "6S LiPo pack",
+    "file": "drone/battery.json",
+    "note": "Real specs · test data"
   }
 ]

@@ -488,7 +488,7 @@ async function diveTo(entry: Entry, box: THREE.Box3 | null, name?: string) {
 
 // ---------------------------------------------------------------- where you are, in the address bar
 
-/** The files of the levels you dived through (up to the first generated one), after the model itself. */
+/** The files of the levels you dived through (up to the first one that has no file), after the model itself. */
 const pathFiles = () => {
   const files: string[] = [];
   for (const e of trail.slice(1)) {
@@ -902,7 +902,7 @@ async function listed(index: URL, note?: string) {
 }
 
 async function start() {
-  // ?embed: just the model, no model list (the compare page uses this).
+  // ?embed: just the model, no model list (for showing it inside another page).
   if (new URLSearchParams(location.search).has('embed')) document.body.classList.add('embed');
   const entries = [...(await listed(base)), ...(await listed(projects, 'Project'))];
   if (!entries.length) status.textContent = 'No model list found';
