@@ -17,6 +17,13 @@ quad are only data.
 | `viewer.html` | The viewer. `?model=<file>` opens a model, assembly, project or tour (relative to `models/`, or a path starting with `models/` or `projects/`); `&path=a.json\|b.json` reopens the levels you dived through; `?embed` hides the model list and the file links; `?nointro` skips a tour's landing card; `?quality=low\|medium\|high` forces a quality tier. |
 | `editor.html` | Turns a GLB into a project: select objects, group them into parts, describe, save. Saving works only under the dev server, from this machine.                                                                                                                                                                                                              |
 
+**Export** (`npm run export -- <file> [--single]`, `scripts/export-page.ts`): one teardown as a
+finished page, the viewer built alone (`vite.export.config.ts`) with only the data files the
+entry reaches (`walkDeps` in `src/models/pack.ts`). A folder (`index.html`, its script, the
+data) to host, and with `--single` one `.html` that opens from disk: the data rides inside it
+and a fetch shim hands each file to the viewer. Exported pages list only their entry and hide
+the model list and file links (`embed`).
+
 Without `?model=`, the viewer opens the first listed entry. The lists are
 `public/models/index.json` and `public/projects/index.json` (written by the editor's Save):
 arrays of `{ "name", "file", "note", "hidden" }`, `file` relative to its folder. `hidden` entries

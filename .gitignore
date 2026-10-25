@@ -1,7 +1,9 @@
 node_modules
 dist
+dist-export
+out
 *.log
 .DS_Store
 test-results
 playwright-report
-
+demo/*/

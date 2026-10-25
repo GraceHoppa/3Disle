@@ -1,4 +1,7 @@
 dist
+dist-export
+out
+demo
 node_modules
 test-results
 playwright-report

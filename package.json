@@ -13,6 +13,8 @@
     "test": "vitest run",
     "test:e2e": "vite build && playwright test",
     "size": "node scripts/check-size.mjs",
+    "export": "node --experimental-strip-types --no-warnings=ExperimentalWarning scripts/export-page.ts",
+    "demo": "npm run export -- models/drone/tour.json --single --name fpv-quad --out demo",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

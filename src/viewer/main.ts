@@ -405,7 +405,7 @@ function show(next: THREE.Object3D, name: string, layered: boolean, arrive = 1) 
   void frame3q(model, arrive);
 
   title.textContent = name;
-  document.title = `${name} · Model Viewer`;
+  document.title = `${name} · 3Disle`;
   showCredit(next.userData.credit as Credit | undefined);
   status.textContent = '';
   drawHud();
