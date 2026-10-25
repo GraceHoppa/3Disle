@@ -36,10 +36,10 @@ ones). Move finished tasks into `STATE.md`.
 1. Split `src/viewer/main.ts` (~1100 lines) into modules; behaviour unchanged, tests pass.
 2. **Disassemble that works on complex models** (author-set directions, by hierarchy), then
    select → info → isolate. _Check:_ a downloaded drone part comes apart cleanly.
-3. Frame-rate-independent easing; a data checker run by `npm test` (every `detail` and link
-   name resolves); speed pass on PC, a laptop and a phone.
-4. **Export**: a tour or model as a folder (`index.html` + data) and as a single `.html`.
-   _Check:_ open the exported file on the phone.
+3. Frame-rate-independent easing; speed pass on PC, a laptop and a phone. (Data checker: done,
+   see STATE.)
+4. ~~**Export**~~ (folder and single `.html`): done 2026-10-25, see STATE. Left: check the
+   exported file on the phone.
 
 ## 3. Logic and mechanics (one kind at a time, each tested before the next)
 

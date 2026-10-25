@@ -19,14 +19,14 @@ npx playwright test`. Never use sudo; nothing here needs it.
 
 ## Code map
 
-| Path                                 | What                                                                                                               |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| `src/models/`                        | Engine without DOM (runs in Node tests): assemblies, surfaces, links, explode, section, inspect, projects, loading |
-| `src/viewer/`, `viewer.html`         | The viewer. Today it is the engine's test bench; exported pages will grow out of it                                |
-| `src/editor/`, `editor.html`         | GLB → project editor; saves through `scripts/projects-plugin.ts` (dev server only)                                 |
-| `src/home/`, `index.html`            | Start page: tours, models, projects                                                                                |
-| `src/lib/`                           | Modules taken from GPU → Atom (post chain, X-Ray shells, section caps, brackets, routing)                          |
-| `public/models/`, `public/projects/` | Device data; each `index.json` lists what the start page shows                                                     |
+| Path                                 | What                                                                                                                             |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `src/models/`                        | Engine without DOM (runs in Node tests): assemblies, surfaces, links, explode, section, inspect, projects, loading, data checker |
+| `src/viewer/`, `viewer.html`         | The viewer. Today it is the engine's test bench; exported pages will grow out of it                                              |
+| `src/editor/`, `editor.html`         | GLB → project editor; saves through `scripts/projects-plugin.ts` (dev server only)                                               |
+| `src/home/`, `index.html`            | Start page: tours, models, projects                                                                                              |
+| `src/lib/`                           | Modules taken from GPU → Atom (post chain, X-Ray shells, section caps, brackets, routing)                                        |
+| `public/models/`, `public/projects/` | Device data; each `index.json` lists what the start page shows                                                                   |
 
 ## Rules
 

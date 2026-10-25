@@ -35,9 +35,17 @@ Where the project stands. Update at the end of every session (newest log entry a
   models with the engine instead); `public/projects/motor` stays in the repo.
 - **Data**: RTX 5070 Ti (card → PCB → package → die, tour, explicit links, each bus drawn once),
   Pixel 6 (3 levels).
-- **Checks** (2026-10-08): lint, typecheck, 96 unit tests, format, build, size (device data not
-  counted); browser tests 13 passed, 2 skipped (Cut, X-Ray). CI runs them on
-  every push; its first run has not been looked at.
+- **Export** (`npm run export`): any tour, assembly or project as a folder to host or, with
+  `--single`, one HTML that opens from disk. `demo/fpv-quad.html` (`npm run demo`) is the quad
+  tour, linked from the README; regenerate it after viewer or quad changes.
+- **Data checker** (`src/models/check.ts`, in `npm test`): files, details, tour stops, links,
+  wires, rules, project nodes and list entries all resolve.
+- **Demo page workflow** (`.github/workflows/pages.yml`): exports the quad on every push to main,
+  keeps the one-file page as an artifact, deploys to Pages only while the repo is public (or on a
+  manual run). Pages is not switched on yet; the repo is private.
+- **Checks** (2026-10-25): lint, typecheck, 108 unit tests, format, build, size (device data not
+  counted); browser tests 14 passed, 2 skipped (Cut, X-Ray). CI runs them on every push; its
+  runs have not been looked at.
 
 ## Known bugs and weak spots
 
@@ -81,3 +89,15 @@ and rules, and the FPV quad tour with real wiring, throttle and dives into ESC, 
 Run skill `.claude/skills/run-3disle` drives the app headless for screenshots. Next: owner's
 notes on the quad; ESC heatsinks hide its buses (lift them or open on Disassemble); camera tilt;
 battery wrap; select → isolate; continuous zoom into dives.
+
+### 2026-10-25
+
+Made the repo presentable on GitHub (agent working alone). Ported from the frozen side copy
+(re-implemented against current code, not copied): the one-page export (`scripts/export-page.ts`,
+`vite.export.config.ts`, `src/models/pack.ts`) and the data checker (now `src/models/check.ts`).
+Added `demo/fpv-quad.html`, README screenshots in `docs/media/`, the Demo page workflow, a
+browser test for the exported page. Not ported: its airflow (`air.ts`), its logic panel
+(`logic-ui.ts`, superseded by the current controls), `calmMetals`, its research notes, its
+downloaded models and its diverged data. Next: Pages (owner: make the repo public or use a plan
+with private Pages, then Settings → Pages → Source: GitHub Actions); a README GIF; airflow under
+the props (PLAN 3.5); the research notes worth keeping; the owner's notes on the quad (10-08 entry).
