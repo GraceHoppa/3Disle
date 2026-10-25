@@ -158,11 +158,16 @@ an installed Chromium. `npm run size` checks the build against `size-budget.json
 (`.github/workflows/ci.yml`) runs all of these on every push and pull request.
 
 The Cut and X-Ray browser tests are skipped while their buttons are hidden. The editor has no
-browser test yet. Data files are checked by the tests that open them: the unit tests build
-`rtx5070ti/card.json`; the running browser tests open the RTX tour, `card.json`, `pcb.json`,
-`die.json`, the drone tour's first level and the Pixel 6 device. The other files (the RTX
-`package.json`, `mcu.json`, the Pixel 6 board and SoC, the ESC, motor and battery) are opened by
-no running test.
+browser test yet.
+
+**Data checker** (`src/models/check.ts`, run by `npm test` over everything in `public/`): every
+file is valid JSON and builds; every `detail`, tour level, project `model` and `file` part exists
+and stays inside the data folder; every list entry exists; a tour's `into` is an object of its
+level; a link names parts on its own layer; a wire names parts of its model; a rule's `by` is a
+control of the same file (a model opened on its own starts from those); a project's `nodes` are
+objects in its GLB. It names the file and what is wrong. Beyond that, the browser tests open the
+RTX tour, `card.json`, `pcb.json`, `die.json`, the drone tour's first level, `quad.json` and the
+motor project.
 
 ## Adding a device
 
