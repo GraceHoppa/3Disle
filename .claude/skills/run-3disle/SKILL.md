@@ -79,7 +79,7 @@ Browser tests run against `vite preview` on port 4173 (`PW_PORT` changes it); ab
 
 ## Gotchas
 
-- **Another checkout may own the usual ports.** `~/Proj/GROK-HELP-3Disle` is often served on 5173,
+- **Another checkout may own the usual ports.** Another copy of this repo may be served on 5173,
   and screenshots from 5173 then show that copy. The driver never reuses a server and refuses a
   busy port. Playwright reuses whatever answers on 4173 outside CI, so check `ss -ltnp` first
   or set `PW_PORT`.

@@ -50,4 +50,4 @@ npx playwright test`. Never use sudo; nothing here needs it.
   with screenshots and a one-minute check he can do on his phone. He says ok or what is wrong.
 - When he says go on, keep going without stopping; interrupt him only with questions.
 - The main agent talks with him and does the editing. Hand small research or repetitive tasks to
-  subagents (or Grok for research) and check what they return.
+  subagents and check what they return.

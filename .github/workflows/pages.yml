@@ -1,0 +1,59 @@
+name: Demo page
+
+# Exports the FPV quad tour (npm run export) and publishes it with GitHub Pages: the folder form
+# at the site root, the one-file page beside it as fpv-quad.html. Every run also keeps the
+# one-file page as a downloadable artifact, so it can be tried without Pages.
+# To switch Pages on: Settings → Pages → Build and deployment → Source: GitHub Actions.
+# Deploys on pushes to main while the repository is public; a manual run always tries.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run export -- models/drone/tour.json --single --name fpv-quad --out site
+      - name: Site root is the exported folder, plus the one-file page
+        run: |
+          mkdir _site
+          cp -r site/fpv-quad/. _site/
+          cp site/fpv-quad.html _site/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fpv-quad-one-file-page
+          path: site/fpv-quad.html
+          retention-days: 30
+      - if: github.event_name == 'workflow_dispatch' || !github.event.repository.private
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: github.event_name == 'workflow_dispatch' || !github.event.repository.private
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - id: deployment
+        uses: actions/deploy-pages@v4
