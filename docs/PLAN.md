@@ -59,3 +59,16 @@ ones). Move finished tasks into `STATE.md`.
 4. Premade parts library: IC packages, passives, connectors, labelled black box.
 5. Desktop window around it, with export.
 6. Author manual; themes (GPU → Atom's look stays the default).
+
+## 5. Video output (decided 2026-10-26, see `BRIDGE.md`)
+
+1. Time-based easing for make-room and labels (also PLAN 2.3), so a rendered frame does not
+   depend on frame rate.
+2. `renderFrame(i, fps)` behind a URL flag: every animation and the camera driven by a frame
+   counter instead of `requestAnimationFrame` time. _Check:_ two renders of the same tour give
+   identical frames.
+3. Headless render script (Playwright → `frames/%05d.png` → ffmpeg → MP4). _Check:_ a 10 s MP4
+   of the quad tour plays on the phone, smooth, no dropped or stretched frames.
+4. A shot list (JSON timeline of camera keys and part moves) so a video is data, like a tour.
+5. Later: the Wattson bridge (an agent turns verified electronics params into device data and a
+   shot list). Reminder only; try it after 1–4 work.
