@@ -344,3 +344,10 @@ also keep our own copy so that we can split off again if something breaks.
   > "also i want to split the job so you dont bloat up with context, try to separate job between
   > diffrent subagents so its easier on you to focus on main goal - talking with me bout design
   > and results"
+
+## Credit — 2026-10-30
+
+**Q: Who is credited?** Only the owner: "Created by f3nt". Oleg left the project and never worked
+on the engine; GPU → Atom was the idea, the engine is the owner's. His MIT copyright stays in
+`LICENSE` and `docs/ARCHITECTURE.md` because modules from GPU → Atom are copied into `src/lib/`
+unchanged (MIT requires the notice), and the start page keeps a link to GPU → Atom as the inspiration.

@@ -2,7 +2,7 @@
 
 <p align="center">
   <b>Make explorable 3D teardowns of real hardware, without writing the page by hand.</b><br />
-  Created by <b>f3nt</b> and <a href="https://github.com/OlehHavrilko"><b>Oleh Havrilko</b></a>
+  Created by <b>f3nt</b>
 </p>
 
 <p align="center">

@@ -37,9 +37,9 @@ npx playwright test`. Never use sudo; nothing here needs it.
 - **Facts from sources** in our own example data (datasheets, official pages, teardowns);
   unconfirmed things say "approx.".
 - The dev server is often open: create a module before importing it.
-- **Oleh Havrilko** is a collaborator and comes in through pull requests. Tag the last good
-  commit before merging a large outside change. No force-push.
-- Credit line, exactly: **Created by f3nt and Oleh Havrilko** (no roles).
+- Credit line, exactly: **Created by f3nt**. 3Disle is the owner's alone (decided 2026-10-30).
+  GPU → Atom stays credited only where the law needs it: its MIT notice in `LICENSE` and the
+  "Taken from GPU → Atom" table in `docs/ARCHITECTURE.md`, for the modules copied into `src/lib/`.
 - Repository files explain the code. The exceptions are `docs/DECISIONS.md` and `docs/VISION.md`,
   which record the owner's wants.
 - Commit messages explain themselves briefly.

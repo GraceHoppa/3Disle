@@ -3,7 +3,7 @@
 Needs [Node.js](https://nodejs.org) 22 or newer and git.
 
 ```bash
-git clone git@github.com:allextraszza1488/3Disle.git
+git clone git@github.com:GraceHoppa/3Disle.git
 cd 3Disle
 npm ci
 npm run dev
