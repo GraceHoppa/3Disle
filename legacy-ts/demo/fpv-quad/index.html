@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Inside a 5-inch FPV quad</title>
+    <meta name="description" content="A freestyle quad built part by part: every wire carries what it really carries. Move the throttle and watch the current, the motor phases and the commands change. Dive off the path into the ESC, a motor or the battery." />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <script type="module" crossorigin src="./assets/viewer-D4T8FNEG.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/viewer-nQg8sT6V.css">
+  </head>
+  <body class="embed">
+    <canvas id="gl"></canvas>
+    <div id="fade" aria-hidden="true"></div>
+    <header class="bar">
+      <nav id="crumbs" aria-label="Where you are"></nav>
+      <button id="menu" type="button" aria-expanded="false" aria-controls="library">
+        <span id="title">Loading…</span>
+        <span class="caret" aria-hidden="true">▾</span>
+      </button>
+      <a class="open" href="index.html">All models</a>
+      <label class="open">
+        Open file
+        <input id="file" type="file" accept=".stl,.glb,.gltf,.json" hidden />
+      </label>
+    </header>
+    <nav id="library" aria-label="Models">
+      <h2>Models</h2>
+      <ul id="builtin"></ul>
+      <h2 id="opened-head" hidden>Opened</h2>
+      <ul id="opened"></ul>
+    </nav>
+    <footer class="tools">
+      <div class="tour" hidden>
+        <button id="prev" type="button" aria-label="Back up a level">◀</button>
+        <button id="auto" type="button" aria-pressed="false">Auto</button>
+        <button id="next" type="button" aria-label="Dive to the next level">▶</button>
+      </div>
+      <button id="flow" type="button" hidden>Flow · Realtime</button>
+      <!-- X-Ray and Cut work but are hidden until they are wanted again. -->
+      <button id="xray" type="button" aria-pressed="false" hidden>X-Ray</button>
+      <button id="labels" type="button" aria-pressed="false" title="Labels (L)">Labels</button>
+      <label class="slider">
+        Disassemble
+        <input id="explode" type="range" min="0" max="1" step="0.01" value="0" />
+      </label>
+      <div class="cut" hidden>
+        <button id="cut" type="button" aria-pressed="false">Cut</button>
+        <div class="axes" role="group" aria-label="Cut axis">
+          <button type="button" data-axis="x" aria-pressed="true">X</button>
+          <button type="button" data-axis="y" aria-pressed="false">Y</button>
+          <button type="button" data-axis="z" aria-pressed="false">Z</button>
+        </div>
+        <input id="cut-pos" type="range" min="0" max="1" step="0.005" value="0.5" aria-label="Cut position" />
+      </div>
+    </footer>
+    <aside id="inspector" hidden aria-label="Part details">
+      <button class="close" type="button" aria-label="Close">×</button>
+      <p class="kicker"></p>
+      <h2 class="name"></h2>
+      <p class="info"></p>
+      <dl class="specs"></dl>
+      <div class="consists">
+        <h3>Consists of</h3>
+        <ul></ul>
+      </div>
+      <div class="actions">
+        <button id="dive" type="button">Dive in ▸</button>
+        <button id="recentre" type="button">Re-centre</button>
+        <button id="cut-here" type="button" hidden>Cut through it</button>
+      </div>
+    </aside>
+    <section id="hud" hidden>
+      <p class="scale"></p>
+      <h1 class="ttl"></h1>
+      <p class="txt"></p>
+      <p class="cap"></p>
+      <p id="fov"></p>
+    </section>
+    <p id="counter" hidden></p>
+    <section id="controls" hidden aria-label="Controls"></section>
+    <section id="landing" hidden aria-labelledby="landing-title">
+      <div class="card">
+        <p class="lead"></p>
+        <h1 id="landing-title"></h1>
+        <p class="sub"></p>
+        <ol class="acts" hidden></ol>
+        <div class="go">
+          <button id="start-tour" type="button">Start the tour</button>
+          <button id="explore-own" type="button">Explore on my own</button>
+        </div>
+        <p class="keys">enter start · esc explore · ← → step · l labels</p>
+      </div>
+    </section>
+    <section id="finale" hidden aria-labelledby="finale-title">
+      <h1 id="finale-title"></h1>
+      <p class="sub"></p>
+      <div class="go">
+        <button id="restart" type="button">Back to the top</button>
+        <button id="finale-close" type="button">Keep exploring</button>
+      </div>
+    </section>
+    <div id="ruler" hidden aria-label="Scale, from the whole device down"></div>
+    <div id="tags" aria-hidden="true"></div>
+    <div id="tip" hidden><strong></strong><span></span></div>
+    <p id="status" role="status"></p>
+    <p id="credit" hidden></p>
+  </body>
+</html>

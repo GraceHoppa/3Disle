@@ -7,7 +7,7 @@ description: Run, start, open, drive or screenshot 3Disle (the 3D teardown viewe
 
 3Disle is a Vite web app with three pages: `index.html` (start page), `viewer.html` (viewer and
 tours) and `editor.html` (GLB → project). Agents drive it with
-`.claude/skills/run-3disle/driver.mjs`: it starts its own Vite dev server from this checkout,
+`run-3disle-skill/driver.mjs`: it starts its own Vite dev server from this checkout,
 opens pages in headless Chromium (WebGL through SwiftShader), runs steps and saves screenshots.
 Paths below are relative to the repo root.
 
@@ -20,7 +20,7 @@ Paths below are relative to the repo root.
 ## Run (agent path)
 
 ```sh
-node .claude/skills/run-3disle/driver.mjs \
+node run-3disle-skill/driver.mjs \
   open:index.html shot:home \
   "open:viewer.html?model=rtx5070ti/tour.json" shot:landing \
   key:Escape wait:800 key:L wait:500 shot:card-labels "text:#hud .ttl" \

@@ -1,0 +1,122 @@
+{
+  "name": "6S LiPo pack, 1200–1480 mAh",
+  "footprint": [38, 76],
+  "layers": [
+    {
+      "name": "Wrap (bottom)",
+      "thickness": 0.3,
+      "material": "plastic",
+      "color": "#22262b",
+      "category": "Pack · wrap",
+      "info": "Heat-shrink PVC wrap with a hard base plate. Thickness approx."
+    },
+    {
+      "name": "Cells",
+      "thickness": 0,
+      "category": "Pack · cells",
+      "info": "Six lithium-polymer pouch cells in series (6S1P). Cell dimensions approx. for a 1300 mAh class pack.",
+      "specs": {
+        "Configuration": "6S1P",
+        "Nominal": "22.2 V (3.7 V/cell)",
+        "Full": "25.2 V (4.2 V/cell)",
+        "Storage": "3.8 V/cell",
+        "Capacity": "1200–1480 mAh",
+        "Weight": "approx. 200–240 g"
+      },
+      "parts": [
+        {
+          "name": "Cells",
+          "shape": "box",
+          "size": [5.8, 35, 72],
+          "round": 1,
+          "at": [-15.25, 0],
+          "material": "aluminium",
+          "color": "#c3c7cc",
+          "repeat": {
+            "count": 6,
+            "step": [6.1, 0],
+            "names": ["Cell 1", "Cell 2", "Cell 3", "Cell 4", "Cell 5", "Cell 6"]
+          },
+          "category": "Cell",
+          "info": "Pouch cell: graphite anode and lithium-cobalt-oxide cathode sheets with separator, sealed in aluminium-laminate foil. Size approx.",
+          "specs": {
+            "Nominal": "3.7 V",
+            "Range": "3.3–4.2 V under use",
+            "Size": "approx. 72 × 35 × 5.8 mm"
+          }
+        },
+        {
+          "name": "Series tabs",
+          "shape": "box",
+          "size": [5.8, 10, 2],
+          "lift": 12,
+          "at": [-15.25, -37],
+          "material": "steel",
+          "color": "#d8dadc",
+          "repeat": {
+            "count": 6,
+            "step": [6.1, 0]
+          },
+          "category": "Interconnect",
+          "info": "Nickel/aluminium tabs welded cell-to-cell to put the six cells in series."
+        }
+      ]
+    },
+    {
+      "name": "Wrap (top)",
+      "thickness": 0.3,
+      "material": "plastic",
+      "color": "#22262b",
+      "category": "Pack · wrap",
+      "info": "Top of the heat-shrink wrap; the leads exit at one end.",
+      "parts": [
+        {
+          "name": "Balance lead",
+          "shape": "box",
+          "size": [19.9, 7, 5.8],
+          "round": 0.5,
+          "at": [-8, -30],
+          "material": "plastic",
+          "color": "#a19d93",
+          "category": "Connector",
+          "info": "JST-XH 7-pin plug: one wire per cell junction so the charger can measure and balance every cell. Housing size approx.",
+          "specs": {
+            "Pins": "7 (GND + 6 taps)",
+            "Pitch": "2.5 mm"
+          }
+        },
+        {
+          "name": "XT60",
+          "shape": "box",
+          "size": [15.8, 8.2, 16],
+          "round": 0.8,
+          "at": [8, -26],
+          "material": "plastic",
+          "color": "#b5931c",
+          "category": "Connector",
+          "info": "Main discharge plug, gold-plated contacts. Rated 60 A continuous.",
+          "specs": {
+            "Rating": "60 A continuous",
+            "Wire": "12 AWG"
+          }
+        },
+        {
+          "name": "Capacitor 1000 µF 35 V",
+          "shape": "cylinder",
+          "radius": 5,
+          "height": 20,
+          "at": [8, 2],
+          "material": "aluminium",
+          "color": "#2c3440",
+          "category": "Power filter",
+          "info": "Low-ESR electrolytic soldered across the ESC power input (shown here beside the pack). Absorbs voltage spikes from the motors. Size approx. 10 × 20 mm.",
+          "specs": {
+            "Capacitance": "1000 µF",
+            "Voltage": "35 V",
+            "Type": "Low-ESR electrolytic"
+          }
+        }
+      ]
+    }
+  ]
+}

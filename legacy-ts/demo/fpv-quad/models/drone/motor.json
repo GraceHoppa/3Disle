@@ -1,0 +1,462 @@
+{
+  "name": "T-Motor Velox V2207 V3",
+  "footprint": [28, 28],
+  "layers": [
+    {
+      "name": "Base",
+      "thickness": 0,
+      "category": "Motor · stator side",
+      "info": "Aluminium base that bolts to the arm and holds the stator and bearings still.",
+      "specs": {
+        "Bolt pattern": "16 × 16 mm, M3"
+      },
+      "parts": [
+        {
+          "name": "Base plate",
+          "shape": "cylinder",
+          "radius": 13.5,
+          "height": 3,
+          "material": "aluminium",
+          "color": "#2a2d31",
+          "category": "Base",
+          "info": "CNC-machined aluminium. Thickness approx."
+        },
+        {
+          "name": "Mounting holes",
+          "shape": "cylinder",
+          "radius": 1.5,
+          "height": 3.05,
+          "material": "steel",
+          "color": "#0b0c0e",
+          "repeat": {
+            "count": 4,
+            "around": 11.31,
+            "startAngle": 45,
+            "names": ["M3 hole 1", "M3 hole 2", "M3 hole 3", "M3 hole 4"]
+          },
+          "category": "Mounting",
+          "info": "16 × 16 mm square of M3 threads."
+        },
+        {
+          "name": "Phase leads",
+          "shape": "box",
+          "size": [1.8, 1.8, 6],
+          "round": 0.8,
+          "at": [-2.2, 15],
+          "material": "rubber",
+          "repeat": {
+            "count": 3,
+            "step": [2.2, 0],
+            "names": ["Phase A", "Phase B", "Phase C"]
+          },
+          "category": "Wiring",
+          "info": "20 AWG silicone leads, 150 mm, to the ESC motor pads."
+        }
+      ]
+    },
+    {
+      "name": "Stator",
+      "thickness": 0,
+      "category": "Motor · stator",
+      "info": "22 mm × 7 mm laminated silicon-steel stack with 12 teeth, each wound with enamelled copper. It never moves.",
+      "specs": {
+        "Stator": "22 mm × 7 mm (2207)",
+        "Configuration": "12N14P"
+      },
+      "parts": [
+        {
+          "name": "Stator yoke",
+          "shape": "box",
+          "size": [1.6, 7, 3.7],
+          "material": "steel",
+          "repeat": {
+            "count": 12,
+            "around": 6.5,
+            "startAngle": 15
+          },
+          "category": "Stator",
+          "info": "Inner ring of the laminated core that joins the teeth."
+        },
+        {
+          "name": "Stator teeth",
+          "shape": "box",
+          "size": [3.4, 7, 1.8],
+          "material": "steel",
+          "repeat": {
+            "count": 12,
+            "around": 8.6,
+            "names": [
+              "Tooth 1",
+              "Tooth 2",
+              "Tooth 3",
+              "Tooth 4",
+              "Tooth 5",
+              "Tooth 6",
+              "Tooth 7",
+              "Tooth 8",
+              "Tooth 9",
+              "Tooth 10",
+              "Tooth 11",
+              "Tooth 12"
+            ]
+          },
+          "category": "Stator",
+          "info": "Thin silicon-steel laminations stacked and bonded; the layering limits eddy-current loss. Tooth width approx."
+        },
+        {
+          "name": "Tooth shoes",
+          "shape": "box",
+          "size": [0.8, 7, 5],
+          "material": "steel",
+          "repeat": {
+            "count": 12,
+            "around": 10.6
+          },
+          "category": "Stator",
+          "info": "Widened tooth tips; the outer surface sets the 22 mm stator diameter."
+        },
+        {
+          "name": "Windings phase A",
+          "shape": "box",
+          "size": [2.9, 8.2, 3.4],
+          "round": 0.6,
+          "lift": -0.6,
+          "material": "copper",
+          "repeat": {
+            "count": 4,
+            "around": 8.6,
+            "startAngle": 0,
+            "names": ["Coil 1 (phase A)", "Coil 4 (phase A)", "Coil 7 (phase A)", "Coil 10 (phase A)"]
+          },
+          "category": "Windings",
+          "info": "Enamelled copper wire, 4 coils per phase. Turn count not published. These four coils are phase A: they light up as the ESC drives current through them, a third of a turn after phase C.",
+          "pulse": {
+            "phase": 0,
+            "level": {
+              "by": "throttle",
+              "map": [
+                [0, 0.0],
+                [5, 0.010526315789473684],
+                [25, 0.06578947368421052],
+                [50, 0.23684210526315788],
+                [75, 0.5789473684210527],
+                [100, 1.0]
+              ]
+            }
+          }
+        },
+        {
+          "name": "Windings phase B",
+          "shape": "box",
+          "size": [2.9, 8.2, 3.4],
+          "round": 0.6,
+          "lift": -0.6,
+          "material": "copper",
+          "repeat": {
+            "count": 4,
+            "around": 8.6,
+            "startAngle": 30,
+            "names": ["Coil 2 (phase B)", "Coil 5 (phase B)", "Coil 8 (phase B)", "Coil 11 (phase B)"]
+          },
+          "category": "Windings",
+          "info": "Enamelled copper wire, 4 coils per phase. Turn count not published. These four coils are phase B: they light up as the ESC drives current through them, a third of a turn after phase A.",
+          "pulse": {
+            "phase": 1,
+            "level": {
+              "by": "throttle",
+              "map": [
+                [0, 0.0],
+                [5, 0.010526315789473684],
+                [25, 0.06578947368421052],
+                [50, 0.23684210526315788],
+                [75, 0.5789473684210527],
+                [100, 1.0]
+              ]
+            }
+          }
+        },
+        {
+          "name": "Windings phase C",
+          "shape": "box",
+          "size": [2.9, 8.2, 3.4],
+          "round": 0.6,
+          "lift": -0.6,
+          "material": "copper",
+          "repeat": {
+            "count": 4,
+            "around": 8.6,
+            "startAngle": 60,
+            "names": ["Coil 3 (phase C)", "Coil 6 (phase C)", "Coil 9 (phase C)", "Coil 12 (phase C)"]
+          },
+          "category": "Windings",
+          "info": "Enamelled copper wire, 4 coils per phase. Turn count not published. These four coils are phase C: they light up as the ESC drives current through them, a third of a turn after phase B.",
+          "pulse": {
+            "phase": 2,
+            "level": {
+              "by": "throttle",
+              "map": [
+                [0, 0.0],
+                [5, 0.010526315789473684],
+                [25, 0.06578947368421052],
+                [50, 0.23684210526315788],
+                [75, 0.5789473684210527],
+                [100, 1.0]
+              ]
+            }
+          }
+        },
+        {
+          "name": "Lower bearing",
+          "shape": "cylinder",
+          "radius": 4.5,
+          "height": 4,
+          "lift": -1,
+          "material": "steel",
+          "category": "Bearing",
+          "info": "Ball bearing, approx. 9 × 4 × 4 mm (outer × bore × width)."
+        },
+        {
+          "name": "Upper bearing",
+          "shape": "cylinder",
+          "radius": 4.5,
+          "height": 4,
+          "lift": 3.2,
+          "material": "steel",
+          "category": "Bearing",
+          "info": "Ball bearing, approx. 9 × 4 × 4 mm."
+        }
+      ]
+    },
+    {
+      "name": "Rotor (bell)",
+      "thickness": 0,
+      "category": "Motor · rotor",
+      "info": "The bell spins around the stator. 14 curved magnets glued to a steel flux ring face the stator across a ~0.25 mm air gap (gap approx.).",
+      "specs": {
+        "Magnets": "14 (7 pole pairs)",
+        "Electrical revs per rev": "7",
+        "Bell diameter": "27.6 mm (approx.)"
+      },
+      "parts": [
+        {
+          "name": "Magnets",
+          "shape": "box",
+          "size": [1.4, 7.6, 4.8],
+          "lift": -8.2,
+          "material": "steel",
+          "color": "#6f747c",
+          "repeat": {
+            "count": 14,
+            "around": 11.95,
+            "names": [
+              "Magnet 1 (N)",
+              "Magnet 2 (S)",
+              "Magnet 3 (N)",
+              "Magnet 4 (S)",
+              "Magnet 5 (N)",
+              "Magnet 6 (S)",
+              "Magnet 7 (N)",
+              "Magnet 8 (S)",
+              "Magnet 9 (N)",
+              "Magnet 10 (S)",
+              "Magnet 11 (N)",
+              "Magnet 12 (S)",
+              "Magnet 13 (N)",
+              "Magnet 14 (S)"
+            ]
+          },
+          "category": "Magnet",
+          "info": "Curved arc segments, poles alternating N/S. Grade not published; size approx.",
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, 3000],
+              [25, 11000],
+              [50, 19000],
+              [75, 25000],
+              [100, 29000]
+            ]
+          }
+        },
+        {
+          "name": "Flux ring",
+          "shape": "box",
+          "size": [0.5, 9, 3.1],
+          "lift": -8.8,
+          "material": "steel",
+          "repeat": {
+            "count": 28,
+            "around": 12.9
+          },
+          "category": "Rotor",
+          "info": "Steel ring behind the magnets that closes the magnetic circuit.",
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, 3000],
+              [25, 11000],
+              [50, 19000],
+              [75, 25000],
+              [100, 29000]
+            ]
+          }
+        },
+        {
+          "name": "Bell",
+          "shape": "box",
+          "size": [0.6, 10, 3.2],
+          "lift": -8.8,
+          "material": "aluminium",
+          "color": "#3a8f4f",
+          "repeat": {
+            "count": 28,
+            "around": 13.5
+          },
+          "category": "Rotor",
+          "info": "Anodised aluminium bell wall. Colour varies by batch.",
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, 3000],
+              [25, 11000],
+              [50, 19000],
+              [75, 25000],
+              [100, 29000]
+            ]
+          }
+        },
+        {
+          "name": "Inner shaft",
+          "shape": "cylinder",
+          "radius": 2,
+          "height": 10.5,
+          "lift": -10,
+          "material": "steel",
+          "category": "Shaft",
+          "info": "4 mm section that runs through the bearings; held by a clip under the base.",
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, 3000],
+              [25, 11000],
+              [50, 19000],
+              [75, 25000],
+              [100, 29000]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Top cap",
+      "thickness": 0,
+      "category": "Motor · rotor",
+      "info": "Closed top of the bell and the prop shaft.",
+      "parts": [
+        {
+          "name": "Bell top",
+          "shape": "cylinder",
+          "radius": 13.8,
+          "height": 1.4,
+          "material": "aluminium",
+          "color": "#3a8f4f",
+          "category": "Rotor",
+          "info": "Bell cap; transfers torque from the magnets to the shaft. Thickness approx.",
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, 3000],
+              [25, 11000],
+              [50, 19000],
+              [75, 25000],
+              [100, 29000]
+            ]
+          }
+        },
+        {
+          "name": "Prop shaft",
+          "shape": "cylinder",
+          "radius": 2.5,
+          "height": 12,
+          "lift": 1.4,
+          "material": "steel",
+          "color": "#b9bec5",
+          "category": "Shaft",
+          "info": "5 mm outer shaft with M5 thread for the prop nut. Length approx.",
+          "specs": {
+            "Diameter": "5 mm (4 mm inside bearings)"
+          },
+          "spin": {
+            "by": "throttle",
+            "map": [
+              [0, 0],
+              [5, 3000],
+              [25, 11000],
+              [50, 19000],
+              [75, 25000],
+              [100, 29000]
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "controls": [
+    {
+      "id": "throttle",
+      "label": "Throttle",
+      "min": 0,
+      "max": 100,
+      "value": 30,
+      "unit": "%",
+      "info": "0 is disarmed. The same throttle as on the quad; numbers approx. for a 5-inch 6S quad."
+    }
+  ],
+  "readouts": [
+    {
+      "label": "Motor speed",
+      "by": "throttle",
+      "map": [
+        [0, 0],
+        [5, 3000],
+        [25, 11000],
+        [50, 19000],
+        [75, 25000],
+        [100, 29000]
+      ],
+      "unit": "rpm"
+    },
+    {
+      "label": "Electrical frequency",
+      "by": "throttle",
+      "map": [
+        [0, 0.0],
+        [5, 350.0],
+        [25, 1283.3333333333333],
+        [50, 2216.6666666666665],
+        [75, 2916.6666666666665],
+        [100, 3383.3333333333335]
+      ],
+      "unit": "Hz"
+    },
+    {
+      "label": "Current",
+      "by": "throttle",
+      "map": [
+        [0, 0],
+        [5, 0.4],
+        [25, 2.5],
+        [50, 9],
+        [75, 22],
+        [100, 38]
+      ],
+      "unit": "A",
+      "digits": 1
+    }
+  ]
+}

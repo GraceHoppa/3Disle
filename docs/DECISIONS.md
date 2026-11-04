@@ -395,3 +395,9 @@ unchanged (MIT requires the notice), and the start page keeps a link to GPU → 
 - **Geometry:** engine parts first, GLB after.
 - **TypeScript** stays in the repo until the FPV quad tour reaches parity, then it is deleted
   (tag `ts-final` keeps it). Work lands straight on `main`.
+
+## 15. Claude leads the project — 2026-11-04
+
+- The owner made Claude the project's lead ("ure the magistr of this project from now on"): it decides and
+  builds; the owner judges results and sets direction.
+- The first C session ended on the owner's stop with the editor not yet started.

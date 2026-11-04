@@ -224,7 +224,7 @@ bool r_init(char *err, size_t errlen) {
   U(wiremode, "uWireMode");
 #undef U
   build_env(err, errlen);
-  return glGetError() == GL_NO_ERROR || true;
+  return true;
 }
 
 void r_shutdown(void) {}
@@ -639,9 +639,6 @@ void r_render(const Model *cm, const Camera *cam, const PostParams *post, const 
     bool self_lit = hints && hints->hover_node == i && hints->hover_copy < 0;
     lit[i] = (n->parent >= 0 && lit[n->parent]) || self_lit;
     if (hidden[i] || !n->mesh) continue;
-    if ((n->flags & NF_WIRE) || (n->flags & NF_FLOW)) {
-      // Nothing flowing is still something drawn.
-    }
     int groups = n->mesh->ngroups ? n->mesh->ngroups : 1;
     Vec3 c = n->mesh ? m4point(n->world, box_center(n->mesh->box)) : n->home;
     float dist = v3dist(c, cam->pos);

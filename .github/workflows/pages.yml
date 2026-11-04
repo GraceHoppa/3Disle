@@ -29,8 +29,11 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: legacy-ts/package-lock.json
       - run: npm ci
-      - run: npm run export -- models/drone/tour.json --single --name fpv-quad --out site
+        working-directory: legacy-ts
+      - run: npm run export -- models/drone/tour.json --single --name fpv-quad --out ../site
+        working-directory: legacy-ts
       - name: Site root is the exported folder, plus the one-file page
         run: |
           mkdir _site

@@ -10,7 +10,7 @@ Recorded 2026-10-26 from the owner (`DECISIONS.md` part 13). A plan, not built y
 - **An agent works on top of it.** Today a Claude Code session drives 3Disle to make
   animations and models (device data, tours, screenshots). That agent is a user of the program,
   not part of it.
-- No engine rewrite or optimisation is planned now.
+- Superseded 2026-11-04: the engine was rewritten in C (`DECISIONS.md` 14). The render below is built in `app/video.c`, without Playwright.
 
 ## Offline video rendering
 

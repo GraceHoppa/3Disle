@@ -14,7 +14,7 @@ void gl_extensions(void) {}
 
 static void usage(void) {
   fprintf(stderr,
-          "3disle                             open the app\n"
+          "3disle                             open the viewer on the quad tour\n"
           "3disle view <file.json>            open a device or tour in the viewer\n"
           "3disle shot <file.json> <out.png> [--size WxH] [--explode A]\n"
           "3disle auto <device-or-tour.json> <out.shot.json>   write a video's timeline from the data\n"

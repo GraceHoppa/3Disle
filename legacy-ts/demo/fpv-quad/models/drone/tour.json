@@ -1,0 +1,39 @@
+{
+  "name": "Inside a 5-inch FPV quad",
+  "heading": ["Inside a", "5-inch FPV quad"],
+  "lead": "Three levels · 30 cm to 10 mm",
+  "subtitle": "A freestyle quad built part by part: every wire carries what it really carries. Move the throttle and watch the current, the motor phases and the commands change. Dive off the path into the ESC, a motor or the battery.",
+  "acts": [
+    { "title": "The machine", "levels": [0] },
+    { "title": "The brain", "levels": [1, 2] }
+  ],
+  "levels": [
+    {
+      "file": "quad.json",
+      "scale": "30 cm",
+      "title": "5-inch FPV quad",
+      "text": "Battery to ESC on two 12 AWG leads, ESC to each motor on three phase wires, the flight controller above the ESC sending four DShot commands down an 8-wire cable. Camera, VTX and receiver hang off the FC's pads.",
+      "caption": "Over 100 A flat out, from a pack you hold in one hand.",
+      "into": "FC board"
+    },
+    {
+      "file": "fc.json",
+      "scale": "36 mm",
+      "title": "SpeedyBee F405 V5 flight controller",
+      "text": "A 39 mm square board weighing 8.1 g. The ICM42688P gyro reports rotation thousands of times a second; the STM32F405 turns each reading into four new motor commands for the ESC.",
+      "caption": "Sense, decide, command: thousands of times a second.",
+      "into": "MCU STM32F405"
+    },
+    {
+      "file": "mcu.json",
+      "scale": "10 mm",
+      "title": "STM32F405 microcontroller",
+      "text": "A 10 × 10 mm LQFP64 package with 64 leads at 0.5 mm pitch. Inside, a 90 nm die carries a 168 MHz Cortex-M4F core, 1 MB of flash and 192 KB of RAM.",
+      "caption": "The whole flight runs through 64 pins."
+    }
+  ],
+  "finale": {
+    "title": "64 pins fly the quad.",
+    "text": "Every stick input, gyro sample and motor command passes through this 10 mm chip, and every amp the motors pull is switched by the ESC below it."
+  }
+}

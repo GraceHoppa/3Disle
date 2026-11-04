@@ -18,7 +18,7 @@ typedef struct {
 void stage_init(Stage *s);
 float stage_aspect(const UiInput *in);
 void stage_input(Stage *s, const UiInput *in, Rect view);
-bool stage_tick(Stage *s, float dt, float aspect); // true while something moves
+bool stage_tick(Stage *s, float dt, int view_height); // true while something moves
 void stage_fly(Stage *s, Vec3 pos, Vec3 target, float seconds);
 // The three-quarter view that fits the model. `from` scales the starting distance: 5 starts far
 // away and glides in, 0.25 starts close and backs away; 1 lands there at once.

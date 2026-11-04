@@ -258,8 +258,10 @@ static const char *file_base(const char *path) {
 
 static void load_list(Viewer *v) {
   v->nlist = 0;
+  char root[256];
+  snprintf(root, sizeof root, "%s", v->root);
   char path[640];
-  snprintf(path, sizeof path, "%.500s/models/index.json", v->root);
+  snprintf(path, sizeof path, "%s/models/index.json", root);
   char *text = file_read(path, NULL);
   if (!text) return;
   Arena ar = {0};
@@ -270,7 +272,7 @@ static void load_list(Viewer *v) {
       ListItem *it = &v->list[v->nlist++];
       snprintf(it->name, sizeof it->name, "%s", json_str(e, "name", ""));
       snprintf(it->note, sizeof it->note, "%s", json_str(e, "note", ""));
-      snprintf(it->file, sizeof it->file, "%.240s/models/%.240s", v->root, json_str(e, "file", ""));
+      snprintf(it->file, sizeof it->file, "%.240s/models/%.240s", root, json_str(e, "file", ""));
     }
   arena_free(&ar);
   free(text);
@@ -498,7 +500,11 @@ static void begin_dive(Viewer *v, const char *rel, Box *box, const char *name) {
   Arena ar = {0};
   const char *full = path_join(&ar, v->trail[v->ntrail - 1].path, rel);
   // A tour's first level resolves from the tour itself.
-  if (v->tour && v->ntrail == 1 && file_read(full, NULL) == NULL) full = path_join(&ar, v->tour->path, rel);
+  if (v->tour && v->ntrail == 1) {
+    char *probe = file_read(full, NULL);
+    if (!probe) full = path_join(&ar, v->tour->path, rel);
+    free(probe);
+  }
   snprintf(v->next_path, sizeof v->next_path, "%s", full);
   snprintf(v->next_name, sizeof v->next_name, "%s", name ? name : "");
   arena_free(&ar);
@@ -1111,8 +1117,6 @@ static void draw_finale(Viewer *v, const UiInput *in) {
 void viewer_frame(Viewer *v, const UiInput *in, u32 fbo) {
   float dt = minf(in->dt, 0.1f), aspect = stage_aspect(in);
   v->time += dt;
-  extern int stage_view_height;
-  stage_view_height = in->h;
   ui_begin(in);
   if (!v->model) {
     PostParams p = post_defaults();
@@ -1170,7 +1174,7 @@ void viewer_frame(Viewer *v, const UiInput *in, u32 fbo) {
   }
 
   // Everything that moves on its own.
-  bool busy = stage_tick(&v->stage, dt, aspect);
+  bool busy = stage_tick(&v->stage, dt, in->h);
   move_tick(v, dt, aspect);
   busy = model_room_tick(v->model, dt) || busy;
   model_tick(v->model, dt);
@@ -1185,7 +1189,7 @@ void viewer_frame(Viewer *v, const UiInput *in, u32 fbo) {
   PostParams post = post_defaults();
   post.fade = v->fade;
   post.time = v->time;
-  SceneHints hints = {v->hover_node, v->hover_copy, false};
+  SceneHints hints = {v->hover_node, v->hover_copy};
   r_render(v->model, &v->stage.cam, &post, &hints, fbo);
 
   // Interface.

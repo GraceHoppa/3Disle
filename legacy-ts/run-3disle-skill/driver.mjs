@@ -4,7 +4,7 @@
 // and stops it at the end; it never reuses a server that is already running, because another
 // checkout of this repo may be serving on the usual port. Prints console errors and warnings.
 //
-//   node .claude/skills/run-3disle/driver.mjs [--port 5190] [--phone] [--out DIR] STEP...
+//   node run-3disle-skill/driver.mjs [--port 5190] [--phone] [--out DIR] STEP...
 //
 // Steps run in order:
 //   open:PATH        go to http://127.0.0.1:PORT/PATH and wait until the model has loaded

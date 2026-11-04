@@ -1,5 +1,8 @@
 # The engine
 
+The device format, which the C engine reads unchanged. The pages and npm commands below describe `legacy-ts/`; the
+C commands are in `INSTALL.md`.
+
 A data-driven way to build explorable 3D teardowns of real hardware: describe a device in a
 JSON file (or point at a GLB and name its parts in the editor), and the viewer gives you the
 descent-style experience of GPU → Atom by Oleh Havrilko — exploded layers, hover and inspect,

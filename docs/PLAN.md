@@ -1,74 +1,37 @@
 # Plan
 
-Stages in order; tasks top to bottom. Every task: build it, test it hard, report with
-screenshots, the owner checks on his phone and says ok. One task per commit (or a few small
-ones). Move finished tasks into `STATE.md`.
+Claude leads this project (`DECISIONS.md` 15). In order. Finished items move to `STATE.md`.
 
-## 0. Move in
+## 1. Editor (`app/editor.c`), the main goal
 
-1. ~~**Repository.**~~ Done 2026-10-08, see STATE.
-2. **Test models, one at a time.** Start from the owner's downloaded FPV / Arduino models
-   (labelled report first; he confirms the labels). Each one: check its license, add it under
-   `public/projects/<name>/` with named parts, specs from its datasheet.
-   _Done:_ the model opens, its parts select by name, specs show. _Check:_ open it from the start
-   page on the phone, tap two parts.
-3. **Laptop test (easy).** Framework Laptop 16 mainboard (STEP, CC BY 4.0) converted to GLB by a
-   script; one level (board), then board → chip. _Done/check:_ as above.
+One app with tabs **Build · Animate · View**. `3disle` opens it; `3disle view` stays the viewer.
 
-## 1. Look: match GPU → Atom (copy its values first, then the owner's notes)
+- **Viewport:** render 3D into an offscreen target sized to the free area, blit, draw panels around it.
+  Animate letterboxes to the video's aspect.
+- **Build:** left tree (layers, parts, wires; add, duplicate, delete, reorder), right properties for the
+  selection, every `spec.h` field. Rules as a control dropdown plus `0:0, 100:29000`.
+- **Move parts:** dragging the selected part previews through `off_anim`; commit `at` and rebuild on release.
+  Other edits rebuild at most every 30 ms. Sweep unused textures after a rebuild.
+- **Undo:** a stack of whole documents as JSON. Open a group on the first change; close it when the mouse is
+  up and no field has focus.
+- **Animate:** bottom timeline with scene strip and rows per track, draggable keys, scrub, play. Right panel:
+  key values, ease, Set camera from view, captions, labels, Auto video. Orbiting detaches the camera from the
+  track until the next scrub. `player_new` needs an override so an unsaved document plays.
+- **Render:** size, fps, quality, file; one `video_frame` per interface frame with progress and Cancel.
+  `video.c` already does the work.
+- **Tests:** generalise `script.c` to drive the editor, look at the screenshots.
 
-1. **Materials and light.** Its lighting, environment, post settings and material presets, so a
-   real GLB looks like its Sketchfab / Blender preview. _Files:_ `src/viewer/stage.ts`,
-   `src/models/load.ts`, `src/models/assembly.ts`. _Check:_ our RTX card next to its level 1 on
-   the live site; a downloaded model next to its source page.
-2. **Labels.** No labels over the landing card, no stacked columns; then his notes.
-   _Files:_ `src/viewer/main.ts`, `viewer.css`. _Check:_ open the RTX tour, landing is clean;
-   press Labels at every level.
-3. **Story.** Landing drift, how text appears, acts, key numbers, typography and timings from
-   the reference. _Check:_ RTX tour landing and first two levels next to the reference.
-4. **Sound.** Ambient and UI sounds like the reference (ElevenLabs may supply them). _Check:_
-   sound toggles and plays on the phone.
-5. **Continuous zoom.** The next level appears inside the part (scale and position mapped),
-   preloaded ahead, no black frame. _Check:_ dive card → PCB → package, it reads as one move.
+## 2. Web export
 
-## 2. Make the engine solid
+`clang --target=wasm32` with a small libc in `wasm/`, JS forwarding GL to WebGL2, `3disle export` embedding
+wasm and reachable data in one HTML. Browser check in headless Chromium.
 
-1. Split `src/viewer/main.ts` (~1100 lines) into modules; behaviour unchanged, tests pass.
-2. **Disassemble that works on complex models** (author-set directions, by hierarchy), then
-   select → info → isolate. _Check:_ a downloaded drone part comes apart cleanly.
-3. Frame-rate-independent easing; speed pass on PC, a laptop and a phone. (Data checker: done,
-   see STATE.)
-4. ~~**Export**~~ (folder and single `.html`): done 2026-10-25, see STATE. Left: check the
-   exported file on the phone.
+## 3. GLB, STL, projects, checker
 
-## 3. Logic and mechanics (one kind at a time, each tested before the next)
+`engine/glb.c` with every offset bounds-checked and a fuzz test on `motor.glb`; project grouping; outward
+explode; `shape: file`; `3disle check` ported from `legacy-ts/src/models/check.ts`.
 
-1. The core: parts have state (on, rpm, current); rules; trigger → action; controls the author
-   puts on the page (slider, button).
-2. Data / signal pulses on that core (today's links move onto it).
-3. Power and current.
-4. Real wires in 3D.
-5. Air, heat and motion (props pushing air; a Thermal view).
-6. A script box with a small API for anything else (servos, lighting).
+## 4. Then delete `legacy-ts/`, and make it better
 
-## 4. The app
-
-1. Start screen: recent projects with previews, New, Open.
-2. Polygon selection: click a connected island, and brush / lasso; the owner tries both.
-3. Levels, dives and the main path; text per stop; logic in forms and blocks.
-4. Premade parts library: IC packages, passives, connectors, labelled black box.
-5. Desktop window around it, with export.
-6. Author manual; themes (GPU → Atom's look stays the default).
-
-## 5. Video output (decided 2026-10-26, see `BRIDGE.md`)
-
-1. Time-based easing for make-room and labels (also PLAN 2.3), so a rendered frame does not
-   depend on frame rate.
-2. `renderFrame(i, fps)` behind a URL flag: every animation and the camera driven by a frame
-   counter instead of `requestAnimationFrame` time. _Check:_ two renders of the same tour give
-   identical frames.
-3. Headless render script (Playwright → `frames/%05d.png` → ffmpeg → MP4). _Check:_ a 10 s MP4
-   of the quad tour plays on the phone, smooth, no dropped or stretched frames.
-4. A shot list (JSON timeline of camera keys and part moves) so a video is data, like a tour.
-5. Later: the Wattson bridge (an agent turns verified electronics params into device data and a
-   shot list). Reminder only; try it after 1–4 work.
+Polygon selection, premade parts library, continuous zoom between levels, sound, airflow, Thermal view, script
+box, manual, Windows and macOS builds. Later: the Wattson bridge (`BRIDGE.md`).

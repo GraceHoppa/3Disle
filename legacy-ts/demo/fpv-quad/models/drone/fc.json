@@ -1,0 +1,478 @@
+{
+  "name": "SpeedyBee F405 V5 flight controller",
+  "footprint": [39, 39],
+  "layers": [
+    {
+      "name": "Bottom side",
+      "thickness": 0.1,
+      "material": "pcb",
+      "color": "#121417",
+      "category": "Board · layer",
+      "info": "Black solder mask over the bottom copper. The underside carries the remaining passives and test pads (not modelled)."
+    },
+    {
+      "name": "Board core",
+      "thickness": 1.4,
+      "material": "fibreglass",
+      "category": "Board · layer",
+      "info": "FR-4 glass-epoxy core with the inner copper planes; approx. 1.6 mm total board thickness.",
+      "specs": {
+        "Board size": "39 × 39 mm",
+        "Height incl. parts": "4.9 mm",
+        "Weight": "8.1 g"
+      }
+    },
+    {
+      "name": "Top side",
+      "thickness": 0.1,
+      "material": "pcb",
+      "color": "#121417",
+      "surface": "pcb",
+      "category": "Board · layer",
+      "info": "Top solder mask: the microcontroller, gyro, flash, barometer, OSD and power regulators sit here. Chip positions are approx.",
+      "specs": {
+        "MCU": "STM32F405",
+        "Gyro": "ICM42688P",
+        "Barometer": "SPA06-003",
+        "OSD": "AT7456E",
+        "Blackbox": "16 MB",
+        "Input": "3–6S LiPo"
+      },
+      "parts": [
+        {
+          "name": "MCU STM32F405",
+          "shape": "box",
+          "size": [10, 1.6, 10],
+          "round": 0.15,
+          "at": [0, 0],
+          "material": "chip",
+          "category": "Microcontroller",
+          "info": "The flight controller’s brain: reads the gyro thousands of times a second, runs the PID loop and sends DShot commands to the ESC. Dive in to see the package.",
+          "specs": {
+            "Core": "Arm Cortex-M4F",
+            "Clock": "168 MHz",
+            "Flash": "1 MB",
+            "SRAM": "192 KB (+4 KB backup)",
+            "Package": "LQFP64, 10 × 10 mm"
+          },
+          "detail": "mcu.json"
+        },
+        {
+          "name": "Gyro ICM42688P",
+          "shape": "box",
+          "size": [2.5, 0.91, 3],
+          "round": 0.1,
+          "at": [0, -9],
+          "material": "chip",
+          "category": "Sensor",
+          "info": "6-axis MEMS IMU (3-axis gyro + 3-axis accelerometer). Powered from its own LDO to keep noise off the readings. Position approx.",
+          "specs": {
+            "Package": "LGA-14, 2.5 × 3 × 0.91 mm",
+            "Gyro range": "±15.6 to ±2000 °/s",
+            "Accel range": "±2 to ±16 g",
+            "Interface": "SPI up to 24 MHz"
+          }
+        },
+        {
+          "name": "Blackbox flash 16 MB",
+          "shape": "box",
+          "size": [6, 0.8, 5],
+          "round": 0.1,
+          "at": [-9, -8],
+          "material": "chip",
+          "category": "Memory",
+          "info": "SPI NOR flash that records gyro, motor and RC data for later tuning. Package size approx.",
+          "specs": {
+            "Capacity": "16 MB (128 Mbit)",
+            "Interface": "SPI"
+          }
+        },
+        {
+          "name": "Barometer SPA06-003",
+          "shape": "box",
+          "size": [2, 0.8, 2.5],
+          "round": 0.1,
+          "at": [8, -8],
+          "material": "chip",
+          "color": "#9aa0a6",
+          "category": "Sensor",
+          "info": "Goertek pressure sensor for altitude hold. Retailer listings for the V5 name the SPA06-003, not a DPS310. Height approx.",
+          "specs": {
+            "Package": "approx. 2.0 × 2.5 mm",
+            "Measures": "Pressure + temperature"
+          }
+        },
+        {
+          "name": "OSD AT7456E",
+          "shape": "box",
+          "size": [5, 1, 5],
+          "round": 0.1,
+          "at": [9, 0],
+          "material": "chip",
+          "category": "Video",
+          "info": "Analog on-screen-display chip (MAX7456 compatible). Unused with a digital DJI link. Package size approx."
+        },
+        {
+          "name": "Bluetooth module",
+          "shape": "box",
+          "size": [5, 0.9, 5],
+          "round": 0.2,
+          "at": [-9, 0],
+          "material": "chip",
+          "color": "#24272b",
+          "category": "Radio",
+          "info": "Bluetooth link for the SpeedyBee phone app: tuning and wireless firmware updates. Chip type and size approx."
+        },
+        {
+          "name": "Decoupling capacitors",
+          "shape": "box",
+          "size": [1, 0.5, 0.5],
+          "at": [-3, 6.5],
+          "material": "ceramic",
+          "color": "#b89a6a",
+          "repeat": {
+            "count": 5,
+            "step": [1.5, 0]
+          },
+          "category": "Passive",
+          "info": "Small ceramic capacitors that steady the MCU supply pins. Count approx."
+        },
+        {
+          "name": "LDOs (MCU, gyro)",
+          "shape": "box",
+          "size": [2, 0.6, 2],
+          "at": [-4, 8.5],
+          "material": "chip",
+          "repeat": {
+            "count": 2,
+            "step": [3, 0],
+            "names": ["LDO 3.3 V MCU", "LDO 3.3 V gyro"]
+          },
+          "category": "Power",
+          "info": "Independent linear regulators for the MCU and the gyro, so motor noise on the 5 V rail does not reach the sensor."
+        },
+        {
+          "name": "5 V BEC buck",
+          "shape": "box",
+          "size": [3, 1, 3],
+          "at": [-9, 9],
+          "material": "chip",
+          "category": "Power",
+          "info": "Switching regulator: battery voltage down to 5 V for the receiver, LEDs and peripherals.",
+          "specs": {
+            "Output": "5 V, 1.5 A total (retailer figures vary: 1.5–2.5 A)"
+          }
+        },
+        {
+          "name": "9 V BEC buck",
+          "shape": "box",
+          "size": [3, 1, 3],
+          "at": [-9, 13],
+          "material": "chip",
+          "category": "Power",
+          "info": "Switching regulator for the video transmitter (DJI O4) supply.",
+          "specs": {
+            "Output": "9 V, 2 outputs, 3 A total"
+          }
+        },
+        {
+          "name": "BEC inductors",
+          "shape": "box",
+          "size": [4, 2, 4],
+          "round": 0.4,
+          "at": [-3.5, 13],
+          "material": "chip",
+          "color": "#3a3d42",
+          "repeat": {
+            "count": 2,
+            "step": [5, 0],
+            "names": ["5 V inductor", "9 V inductor"]
+          },
+          "category": "Power",
+          "info": "Shielded power inductors for the two buck converters. Size approx."
+        },
+        {
+          "name": "USB-C port",
+          "shape": "box",
+          "size": [9, 3.2, 7.3],
+          "round": 0.8,
+          "at": [8, 16.5],
+          "material": "steel",
+          "category": "Connector",
+          "info": "For Betaflight Configurator and firmware flashing."
+        },
+        {
+          "name": "ESC connector",
+          "shape": "box",
+          "size": [11, 2.9, 4.3],
+          "round": 0.3,
+          "at": [0, -15],
+          "material": "plastic",
+          "color": "#a39c8b",
+          "category": "Connector",
+          "info": "8-pin SH 1.0 mm plug to the 4-in-1 ESC: battery voltage, ground, current sensor, telemetry and four motor signals."
+        },
+        {
+          "name": "DJI connector",
+          "shape": "box",
+          "size": [4.3, 2.9, 9],
+          "round": 0.3,
+          "at": [16.5, 0],
+          "material": "plastic",
+          "color": "#a39c8b",
+          "category": "Connector",
+          "info": "6-pin SH 1.0 mm plug for the DJI O4 air unit: 9 V power, ground and a UART."
+        },
+        {
+          "name": "Solder pads",
+          "shape": "box",
+          "size": [1.6, 0.05, 1.2],
+          "at": [-17.3, -6],
+          "material": "gold",
+          "repeat": {
+            "count": 8,
+            "step": [0, 1.8],
+            "names": ["TX1", "RX1", "TX2", "RX2", "TX3", "RX3", "5V", "GND"]
+          },
+          "category": "Pads",
+          "info": "Gold-plated pads for the receiver and other UART devices. Pad labels approx."
+        },
+        {
+          "name": "Status LEDs",
+          "shape": "box",
+          "size": [1, 0.4, 0.5],
+          "at": [12, 9],
+          "material": "plastic",
+          "glow": "#3a7bff",
+          "repeat": {
+            "count": 2,
+            "step": [2, 0]
+          },
+          "category": "Indicator",
+          "info": "Power and status LEDs."
+        },
+        {
+          "name": "Boot button",
+          "shape": "box",
+          "size": [3, 1.5, 2],
+          "round": 0.3,
+          "at": [14, 12],
+          "material": "plastic",
+          "color": "#8e9093",
+          "category": "Control",
+          "info": "Hold while plugging in USB to enter the STM32 DFU bootloader. Position approx."
+        },
+        {
+          "name": "Mounting grommets",
+          "shape": "cylinder",
+          "radius": 3.2,
+          "height": 1.6,
+          "at": [0, 0],
+          "material": "rubber",
+          "repeat": {
+            "count": 4,
+            "around": 21.57,
+            "startAngle": 45,
+            "names": ["Hole SE", "Hole SW", "Hole NW", "Hole NE"]
+          },
+          "category": "Mounting",
+          "info": "30.5 × 30.5 mm M3 pattern with soft rubber grommets that isolate the gyro from frame vibration.",
+          "specs": {
+            "Pattern": "30.5 × 30.5 mm",
+            "Hole": "Ø4 mm side opening, M3"
+          }
+        }
+      ],
+      "links": [
+        {
+          "name": "Gyro → MCU (SPI)",
+          "from": "Gyro ICM42688P",
+          "to": "MCU STM32F405",
+          "kind": "data",
+          "lanes": 4,
+          "info": "Four SPI lines: the gyro’s rotation readings, thousands of times a second. Every one starts a new pass through the PID loop.",
+          "specs": {
+            "Bus": "SPI",
+            "Gyro interface": "up to 24 MHz"
+          }
+        },
+        {
+          "name": "DShot to ESC",
+          "from": "MCU STM32F405",
+          "to": "ESC connector",
+          "kind": "data",
+          "lanes": 4,
+          "info": "One line per motor. Each PID loop the MCU sends every motor a 16-bit DShot frame: an 11-bit throttle value, a telemetry bit and a 4-bit checksum.",
+          "specs": {
+            "Protocol": "DShot600",
+            "Bit rate": "600 kbit/s",
+            "Frame": "16 bits ≈ 26.7 µs"
+          }
+        },
+        {
+          "name": "Current sensor in",
+          "from": "ESC connector",
+          "to": "MCU STM32F405",
+          "kind": "signal",
+          "lanes": 1,
+          "level": {
+            "by": "throttle",
+            "map": [
+              [0, 0.033278688524590164],
+              [5, 0.04377049180327869],
+              [25, 0.09885245901639345],
+              [50, 0.26934426229508196],
+              [75, 0.610327868852459],
+              [100, 1]
+            ]
+          },
+          "info": "An analog voltage from the ESC’s current amplifier; the MCU’s ADC turns it into amps."
+        },
+        {
+          "name": "Battery voltage in",
+          "from": "ESC connector",
+          "to": "5 V BEC buck",
+          "kind": "power",
+          "lanes": 2,
+          "width": 0.8,
+          "level": 0.5,
+          "info": "Battery voltage up the stack cable: the input of both converters."
+        },
+        {
+          "name": "9 V supply",
+          "from": "ESC connector",
+          "to": "9 V BEC buck",
+          "kind": "power",
+          "lanes": 2,
+          "width": 0.8,
+          "level": 0.5
+        },
+        {
+          "name": "CRSF from receiver",
+          "from": "RX2",
+          "to": "MCU STM32F405",
+          "kind": "data",
+          "lanes": 1,
+          "level": 0.9,
+          "info": "The receiver’s serial line: stick positions as CRSF frames at 420 000 baud.",
+          "specs": {
+            "Protocol": "CRSF",
+            "Baud rate": "420 000"
+          }
+        },
+        {
+          "name": "Telemetry to receiver",
+          "from": "MCU STM32F405",
+          "to": "TX2",
+          "kind": "data",
+          "lanes": 1,
+          "level": 0.35
+        },
+        {
+          "name": "OSD (SPI)",
+          "from": "MCU STM32F405",
+          "to": "OSD AT7456E",
+          "kind": "data",
+          "lanes": 3,
+          "level": 0.5,
+          "info": "The MCU tells the OSD chip which characters to draw over the camera picture."
+        },
+        {
+          "name": "Blackbox writes",
+          "from": "MCU STM32F405",
+          "to": "Blackbox flash 16 MB",
+          "kind": "data",
+          "lanes": 3,
+          "level": 0.6,
+          "info": "Gyro, sticks and motor outputs, logged every few loops for later tuning."
+        },
+        {
+          "name": "Barometer (I²C)",
+          "from": "Barometer SPA06-003",
+          "to": "MCU STM32F405",
+          "kind": "data",
+          "lanes": 2,
+          "level": 0.2
+        },
+        {
+          "name": "5 V rail",
+          "from": "5 V BEC buck",
+          "to": "5V",
+          "kind": "power",
+          "lanes": 2,
+          "width": 0.6,
+          "level": 0.4,
+          "info": "5 V for the receiver and the camera."
+        },
+        {
+          "name": "3.3 V to MCU",
+          "from": "LDO 3.3 V MCU",
+          "to": "MCU STM32F405",
+          "kind": "power",
+          "lanes": 2,
+          "width": 0.5,
+          "level": 0.4
+        },
+        {
+          "name": "3.3 V to gyro",
+          "from": "LDO 3.3 V gyro",
+          "to": "Gyro ICM42688P",
+          "kind": "power",
+          "lanes": 1,
+          "width": 0.5,
+          "level": 0.4,
+          "info": "The gyro has its own clean regulator: noise on its supply would show up as false rotation."
+        }
+      ]
+    }
+  ],
+  "controls": [
+    {
+      "id": "throttle",
+      "label": "Throttle",
+      "min": 0,
+      "max": 100,
+      "value": 30,
+      "unit": "%",
+      "info": "0 is disarmed. The same throttle as on the quad; numbers approx. for a 5-inch 6S quad."
+    }
+  ],
+  "readouts": [
+    {
+      "label": "DShot value",
+      "by": "throttle",
+      "map": [
+        [0, 0],
+        [0.5, 48],
+        [5, 148],
+        [100, 2047]
+      ]
+    },
+    {
+      "label": "Motor speed",
+      "by": "throttle",
+      "map": [
+        [0, 0],
+        [5, 3000],
+        [25, 11000],
+        [50, 19000],
+        [75, 25000],
+        [100, 29000]
+      ],
+      "unit": "rpm"
+    },
+    {
+      "label": "Current (ESC sensor)",
+      "by": "throttle",
+      "map": [
+        [0, 0.5],
+        [5, 2.1],
+        [25, 10.5],
+        [50, 36.5],
+        [75, 88.5],
+        [100, 152.5]
+      ],
+      "unit": "A"
+    }
+  ]
+}

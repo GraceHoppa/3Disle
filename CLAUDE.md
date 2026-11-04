@@ -1,9 +1,9 @@
 # 3Disle
 
-An engine for explorable 3D teardowns of real hardware. The goal is a desktop app: an author
+An engine for explorable 3D teardowns and explainer videos of real hardware, in C. The goal is a desktop app: an author
 loads 3D models of a device and its parts, marks and names the parts (by object or by polygon),
 links them into levels, adds logic (flows, motion, controls), and exports a finished web page
-(a folder or a single `.html`). The look and mechanics follow Oleh Havrilko's
+(a single `.html`) or an MP4. The look and mechanics follow Oleh Havrilko's
 [GPU → Atom](https://olehhavrilko.github.io/3dgpuanimation/), which is the design reference;
 its code is not in this repo.
 
@@ -13,20 +13,13 @@ At the end of every session, update `docs/STATE.md`, commit and push.
 
 ## Run and check
 
-See `INSTALL.md`. Before every commit: `npm run lint && npm run typecheck && npm test &&
-npm run format:check`; for viewer changes also `npm run build && PW_CHROMIUM=/usr/bin/chromium
-npx playwright test`. Never use sudo; nothing here needs it.
+See `INSTALL.md`. Before every commit: `make test`, and `make asan` for engine changes. Build warning-free. Never
+use sudo. Don't run bare `3disle` from scripts: it opens a window on the owner's screen; use `script`, `shot`,
+`still` or `render`. Look at screenshots before saying something works.
 
 ## Code map
 
-| Path                                 | What                                                                                                                             |
-| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| `src/models/`                        | Engine without DOM (runs in Node tests): assemblies, surfaces, links, explode, section, inspect, projects, loading, data checker |
-| `src/viewer/`, `viewer.html`         | The viewer. Today it is the engine's test bench; exported pages will grow out of it                                              |
-| `src/editor/`, `editor.html`         | GLB → project editor; saves through `scripts/projects-plugin.ts` (dev server only)                                               |
-| `src/home/`, `index.html`            | Start page: tours, models, projects                                                                                              |
-| `src/lib/`                           | Modules taken from GPU → Atom (post chain, X-Ray shells, section caps, brackets, routing)                                        |
-| `public/models/`, `public/projects/` | Device data; each `index.json` lists what the start page shows                                                                   |
+`docs/ARCHITECTURE.md`. `legacy-ts/` is the old TypeScript version, kept until C covers it; don't extend it.
 
 ## Rules
 
@@ -38,16 +31,16 @@ npx playwright test`. Never use sudo; nothing here needs it.
   unconfirmed things say "approx.".
 - The dev server is often open: create a module before importing it.
 - Credit line, exactly: **Created by f3nt**. 3Disle is the owner's alone (decided 2026-10-30).
-  GPU → Atom stays credited only where the law needs it: its MIT notice in `LICENSE` and the
-  "Taken from GPU → Atom" table in `docs/ARCHITECTURE.md`, for the modules copied into `src/lib/`.
+  GPU → Atom stays credited only where the law needs it: its MIT notice in `LICENSE` and
+  `third_party/NOTICES.md`.
 - Repository files explain the code. The exceptions are `docs/DECISIONS.md` and `docs/VISION.md`,
   which record the owner's wants.
 - Commit messages explain themselves briefly.
 
 ## How the owner works with agents
 
-- One step at a time: build it, test it hard (try to break it), then report "done, check it"
-  with screenshots and a one-minute check he can do on his phone. He says ok or what is wrong.
-- When he says go on, keep going without stopping; interrupt him only with questions.
-- The main agent talks with him and does the editing. Hand small research or repetitive tasks to
+- Claude leads the project (`docs/DECISIONS.md` 15): decide and build, test hard, show results with
+  screenshots. The owner says ok or what is wrong, and interrupts when they want to.
+- When told to go on, keep going without stopping; interrupt only with questions.
+- The main agent talks with the owner and does the editing. Hand small research or repetitive tasks to
   subagents and check what they return.

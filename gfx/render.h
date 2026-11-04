@@ -29,7 +29,6 @@ void r_set_size(int w, int h, float scale, int msaa);
 
 typedef struct {
   int hover_node, hover_copy;     // hovered part glows faintly
-  bool wireframe_selection;
 } SceneHints;
 
 // Draw a model into the HDR buffer; `dest_fbo` then receives the graded image at the output size.

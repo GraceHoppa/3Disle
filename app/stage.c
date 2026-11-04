@@ -92,7 +92,7 @@ void stage_input(Stage *s, const UiInput *in, Rect view) {
   }
 }
 
-bool stage_tick(Stage *s, float dt, float aspect) {
+bool stage_tick(Stage *s, float dt, int view_height) {
   bool busy = false;
   if (s->flying) {
     s->fly_t += dt;
@@ -120,14 +120,9 @@ bool stage_tick(Stage *s, float dt, float aspect) {
   // Pan in the view's plane, the pointer staying on what it grabbed.
   if (dpx != 0 || dpy != 0) {
     Vec3 fw = v3scale(dir, -1), right = v3norm(v3cross(fw, v3(0, 1, 0))), up = v3cross(right, fw);
-    float scale = 2 * dist * tanf(s->cam.fov_deg * PI / 360) / maxf(s->press_y > 0 ? 1 : 1, 1);
-    (void)aspect;
-    extern int stage_view_height;
-    scale /= (float)maxi(stage_view_height, 1);
+    float scale = 2 * dist * tanf(s->cam.fov_deg * PI / 360) / (float)maxi(view_height, 1);
     s->cam.target = v3add(s->cam.target, v3add(v3scale(right, -dpx * scale), v3scale(up, dpy * scale)));
   }
   s->cam.pos = v3mad(s->cam.target, dir, dist);
-  // Keep the depth range around where the camera is.
   return busy;
 }
-int stage_view_height = 800;
