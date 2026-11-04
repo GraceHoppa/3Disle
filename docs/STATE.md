@@ -2,6 +2,9 @@
 
 Where the project stands. Update at the end of every session (newest log entry at the bottom).
 
+**Revived 2026-10-26.** Next goal besides the viewer: offline video rendering of the scene
+(Playwright frames → ffmpeg → MP4), plan in `BRIDGE.md`, tasks in `PLAN.md` stage 5.
+
 ## Works
 
 - **Viewer** (`viewer.html`): assemblies, GLB projects, STL / GLB files, tours. Disassemble with
@@ -101,3 +104,13 @@ browser test for the exported page. Not ported: its airflow (`air.ts`), its logi
 downloaded models and its diverged data. Next: Pages (owner: make the repo public or use a plan
 with private Pages, then Settings → Pages → Source: GitHub Actions); a README GIF; airflow under
 the props (PLAN 3.5); the research notes worth keeping; the owner's notes on the quad (10-08 entry).
+
+### 2026-10-26
+
+Docs only, no code changes. The owner revived 3Disle after a pause (`DECISIONS.md` part 13).
+New goal: offline video rendering of the three.js scene for Embedr-style explainer videos
+(headless Playwright frame capture → ffmpeg → MP4), next to the interactive viewer; `BRIDGE.md`
+has the plan and `PLAN.md` stage 5 the tasks. Recorded the framing: 3Disle is a program for
+users; an agent works on top of it. Also recorded the future Wattson bridge (verified
+electronics params from the owner's Wattson repo feeding the agent that drives 3Disle). No
+engine optimisation planned. Next: PLAN 5.1 (time-based easing), then 5.2 `renderFrame`.

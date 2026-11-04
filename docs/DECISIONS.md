@@ -351,3 +351,47 @@ also keep our own copy so that we can split off again if something breaks.
 on the engine; GPU → Atom was the idea, the engine is the owner's. His MIT copyright stays in
 `LICENSE` and `docs/ARCHITECTURE.md` because modules from GPU → Atom are copied into `src/lib/`
 unchanged (MIT requires the notice), and the start page keeps a link to GPU → Atom as the inspiration.
+
+## 13. Revival, video output and the Wattson bridge — 2026-10-26
+
+- **3Disle is back.** The owner paused it for a while and has revived it.
+- **New output: offline video.** Besides the interactive page, render the same scene to an MP4
+  for Embedr-style 3D explainer videos (headless Playwright frame capture, then ffmpeg). Plan
+  in `BRIDGE.md`. The animation already looks close to the reference video with almost no
+  manual animation work.
+- **3Disle is a program for the user, not for agents.** An agent works on top of it to make
+  animations and models; that agent is not part of the program.
+- **No engine optimisation now.** He wanted an optimised program rather than heavy TypeScript,
+  but that is not being worked on.
+
+  > "3дизель это просто эндин да задумывался(изначально хотел типо оптимизированную прогу не
+  > просто тайпскрипт хуйню на 3000 мегабайт кода но получилось как получилось, не скть пока
+  > этим не занимаюсь - зато сама анимация выглядит мегаахуенно уже почти как на видосе что я
+  > скинул, притом что я руками почти ниче не делал для анимации самой лол), но поверх этого
+  > дизеля сейчас постоянно агент просто который сам все крутит чтоб создавать
+  > анимации/модельки, такшо да варинципе ты правильно написал но в конечном итоге 3дизель это
+  > арограмма отдельная для юзера а не для агентов"
+
+- **Future: the Wattson bridge.** A reminder to try later: one agent runs the Wattson
+  electronics pipeline (datasheets, compile, sim, measurements) and hands true parameters to
+  the agent that drives 3Disle, which makes the real 3D content from them. The owner works only
+  on the electronics; the 3D design and animation follow from verified data. See `BRIDGE.md`.
+
+  > "СДЕЛАЙ типо блять напоминание чтоб я потом попробовал замерджить этот пайплайн с самим
+  > дизелем (отдельные ииагенты один типо отдает инфу из пайплайна в агента который работает в
+  > 3дизель и делает типо контент настоящий по трушным параметрам из пайплайна(чтоб не самому
+  > думать над анимациями и тем как выглядят 3д модельки а только раьотать над электроникой
+  > самой, а этот весь дизайн и прочая хуйня мануальная на них)"
+
+## 14. Rewrite in C, editor and video in one app — 2026-11-04
+
+- **The engine moves to C.** The owner prefers minimal design and fast C over TypeScript ("minimal
+  design and fast C language is best for theese kinds of apps"), and confirmed the rewrite.
+  This replaces "no engine optimisation now" from part 13.
+- **Stack:** C17, SDL3 for window and input only, OpenGL ES 3 shaders, an own immediate-mode UI.
+  MP4 renders headless on the GPU (EGL, frames piped to ffmpeg). Pages export as one HTML through
+  clang wasm32 and WebGL2. Device JSON stays the data format.
+- **One app, all of it:** author device, parts and levels, animate on a timeline, Render MP4.
+- **Geometry:** engine parts first, GLB after.
+- **TypeScript** stays in the repo until the FPV quad tour reaches parity, then it is deleted
+  (tag `ts-final` keeps it). Work lands straight on `main`.
