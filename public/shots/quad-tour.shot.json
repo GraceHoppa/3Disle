@@ -1,0 +1,460 @@
+{
+  "name": "Inside a 5-inch FPV quad",
+  "fps": 60,
+  "size": [2560, 1440],
+  "duration": 81.79999999999998,
+  "scenes": [
+    { "file": "../models/drone/quad.json", "start": 0, "end": 27.499999999999996 },
+    { "file": "../models/drone/fc.json", "start": 27.499999999999996, "end": 53.8 },
+    { "file": "../models/drone/mcu.json", "start": 53.8, "end": 81.79999999999998 }
+  ],
+  "tracks": [
+    {
+      "type": "fade",
+      "keys": [
+        { "t": 0, "v": 1 },
+        { "t": 0.9, "v": 0 },
+        { "t": 26.95, "v": 0 },
+        { "t": 27.5, "v": 1, "ease": "hold" },
+        { "t": 27.55, "v": 1 },
+        { "t": 28.2, "v": 0 },
+        { "t": 53.25, "v": 0 },
+        { "t": 53.8, "v": 1, "ease": "hold" },
+        { "t": 53.85, "v": 1 },
+        { "t": 54.5, "v": 0 },
+        { "t": 80.9, "v": 0 },
+        { "t": 81.8, "v": 1, "ease": "hold" }
+      ]
+    },
+    {
+      "type": "camera",
+      "scene": 0,
+      "keys": [
+        {
+          "t": 0,
+          "pos": [77.103, 451.612, 911.56],
+          "target": [0, 39.17, -5.57],
+          "ease": "out"
+        },
+        {
+          "t": 3,
+          "pos": [392.802, 314.132, 465.793],
+          "target": [0, 39.17, -5.57],
+          "ease": "linear"
+        },
+        { "t": 8, "pos": [497.361, 308.632, 332.365], "target": [0, 39.17, -5.57] },
+        {
+          "t": 10.2,
+          "pos": [599.534, 339.75, 214.949],
+          "target": [0, 39.17, -5.57],
+          "ease": "linear"
+        },
+        { "t": 14.6, "pos": [620.244, 331.162, -25.123], "target": [0, 39.17, -5.57] },
+        {
+          "t": 16.2,
+          "pos": [768.945, 445.932, -140.305],
+          "target": [-10.637, 55.946, -5.57],
+          "ease": "linear"
+        },
+        { "t": 19.2, "pos": [655.286, 414.733, -299.355], "target": [-10.637, 55.946, -5.57] },
+        {
+          "t": 20.8,
+          "pos": [618.407, 445.932, -512.045],
+          "target": [10.637, 55.946, -5.57],
+          "ease": "linear"
+        },
+        { "t": 23.8, "pos": [440.451, 414.733, -592.956], "target": [10.637, 55.946, -5.57] },
+        {
+          "t": 25.8,
+          "pos": [211.811, 314.132, -581.429],
+          "target": [0, 39.17, -5.57],
+          "ease": "in"
+        },
+        {
+          "t": 27.5,
+          "pos": [2.563, 23.459, -6.967],
+          "target": [0, 19.8, 0],
+          "ease": "linear"
+        }
+      ]
+    },
+    {
+      "type": "explode",
+      "scene": 0,
+      "keys": [
+        { "t": 7, "v": 0 },
+        { "t": 10.2, "v": 0.85, "ease": "linear" },
+        { "t": 14.6, "v": 0.85 },
+        { "t": 24.1, "v": 0.85 },
+        { "t": 26.1, "v": 0 }
+      ]
+    },
+    {
+      "type": "control",
+      "scene": 0,
+      "name": "throttle",
+      "keys": [
+        { "t": 0, "v": 30 },
+        { "t": 16.5, "v": 85 },
+        { "t": 27.5, "v": 50 }
+      ]
+    },
+    {
+      "type": "camera",
+      "scene": 1,
+      "keys": [
+        {
+          "t": 27.5,
+          "pos": [228.052, 196.307, 367.916],
+          "target": [0, 2.4, 0.186],
+          "ease": "out"
+        },
+        {
+          "t": 29.3,
+          "pos": [55.402, 41.181, 66.669],
+          "target": [0, 2.4, 0.186],
+          "ease": "linear"
+        },
+        { "t": 34.3, "pos": [70.149, 40.406, 47.85], "target": [0, 2.4, 0.186] },
+        {
+          "t": 36.5,
+          "pos": [84.56, 44.795, 31.289],
+          "target": [0, 2.4, 0.186],
+          "ease": "linear"
+        },
+        { "t": 40.9, "pos": [87.481, 43.583, -2.572], "target": [0, 2.4, 0.186] },
+        {
+          "t": 42.5,
+          "pos": [115.695, 72.263, -19.996],
+          "target": [0, 14.387, -0],
+          "ease": "linear"
+        },
+        { "t": 45.5, "pos": [98.827, 67.633, -43.599], "target": [0, 14.387, -0] },
+        {
+          "t": 47.1,
+          "pos": [22.939, 29.106, -19.116],
+          "target": [0, 14.387, 0],
+          "ease": "linear"
+        },
+        { "t": 50.1, "pos": [16.222, 27.928, -22.169], "target": [0, 14.387, 0] },
+        {
+          "t": 52.1,
+          "pos": [29.875, 41.181, -81.035],
+          "target": [0, 2.4, 0.186],
+          "ease": "in"
+        },
+        {
+          "t": 53.8,
+          "pos": [0.661, 3.344, -1.797],
+          "target": [0, 2.4, 0],
+          "ease": "linear"
+        }
+      ]
+    },
+    {
+      "type": "explode",
+      "scene": 1,
+      "keys": [
+        { "t": 33.3, "v": 0 },
+        { "t": 36.5, "v": 0.85, "ease": "linear" },
+        { "t": 40.9, "v": 0.85 },
+        { "t": 50.4, "v": 0.85 },
+        { "t": 52.4, "v": 0 }
+      ]
+    },
+    {
+      "type": "control",
+      "scene": 1,
+      "name": "throttle",
+      "keys": [
+        { "t": 27.5, "v": 30 },
+        { "t": 43.28, "v": 85 },
+        { "t": 53.8, "v": 50 }
+      ]
+    },
+    {
+      "type": "camera",
+      "scene": 2,
+      "keys": [
+        {
+          "t": 53.8,
+          "pos": [68.914, 59.396, 111.123],
+          "target": [0, 0.8, 0],
+          "ease": "out"
+        },
+        {
+          "t": 55.6,
+          "pos": [16.742, 12.519, 20.09],
+          "target": [0, 0.8, 0],
+          "ease": "linear"
+        },
+        { "t": 60.6, "pos": [21.198, 12.285, 14.403], "target": [0, 0.8, 0] },
+        {
+          "t": 62.8,
+          "pos": [25.553, 13.611, 9.399],
+          "target": [0, 0.8, 0],
+          "ease": "linear"
+        },
+        { "t": 67.2, "pos": [26.436, 13.245, -0.833], "target": [0, 0.8, 0] },
+        {
+          "t": 68.8,
+          "pos": [29.255, 13.224, -5.056],
+          "target": [0, -1.411, 0],
+          "ease": "linear"
+        },
+        { "t": 71.8, "pos": [24.99, 12.053, -11.025], "target": [0, -1.411, 0] },
+        {
+          "t": 73.4,
+          "pos": [22.807, 19.587, -19.006],
+          "target": [0, 4.952, 0],
+          "ease": "linear"
+        },
+        { "t": 76.4, "pos": [16.129, 18.416, -22.043], "target": [0, 4.952, 0] },
+        {
+          "t": 78.4,
+          "pos": [9.028, 12.519, -24.544],
+          "target": [0, 0.8, 0],
+          "ease": "linear"
+        },
+        { "t": 81.8, "pos": [2.737, 12.168, -25.219], "target": [0, 0.8, 0] }
+      ]
+    },
+    {
+      "type": "explode",
+      "scene": 2,
+      "keys": [
+        { "t": 59.6, "v": 0 },
+        { "t": 62.8, "v": 0.85, "ease": "linear" },
+        { "t": 67.2, "v": 0.85 },
+        { "t": 76.7, "v": 0.85 },
+        { "t": 78.7, "v": 0 }
+      ]
+    }
+  ],
+  "labels": [
+    {
+      "t0": 9.2,
+      "t1": 14.6,
+      "scene": 0,
+      "part": "Props (CW)"
+    },
+    {
+      "t0": 9.379999999999999,
+      "t1": 14.6,
+      "scene": 0,
+      "part": "Props (CCW)"
+    },
+    {
+      "t0": 9.559999999999999,
+      "t1": 14.6,
+      "scene": 0,
+      "part": "Bells (CW)"
+    },
+    {
+      "t0": 9.739999999999998,
+      "t1": 14.6,
+      "scene": 0,
+      "part": "Bells (CCW)"
+    },
+    {
+      "t0": 9.92,
+      "t1": 14.6,
+      "scene": 0,
+      "part": "Motors"
+    },
+    {
+      "t0": 10.1,
+      "t1": 14.6,
+      "scene": 0,
+      "part": "Prop nuts (CW)"
+    },
+    {
+      "t0": 10.28,
+      "t1": 14.6,
+      "scene": 0,
+      "part": "Prop nuts (CCW)"
+    },
+    {
+      "t0": 15.6,
+      "t1": 19.4,
+      "scene": 0,
+      "part": "Props (CW)"
+    },
+    {
+      "t0": 20.2,
+      "t1": 24,
+      "scene": 0,
+      "part": "Props (CCW)"
+    },
+    {
+      "t0": 35.5,
+      "t1": 40.9,
+      "scene": 1,
+      "part": "Mounting grommets"
+    },
+    {
+      "t0": 35.68,
+      "t1": 40.9,
+      "scene": 1,
+      "part": "MCU STM32F405"
+    },
+    {
+      "t0": 35.86,
+      "t1": 40.9,
+      "scene": 1,
+      "part": "Solder pads"
+    },
+    {
+      "t0": 36.04,
+      "t1": 40.9,
+      "scene": 1,
+      "part": "ESC connector"
+    },
+    {
+      "t0": 36.22,
+      "t1": 40.9,
+      "scene": 1,
+      "part": "USB-C port"
+    },
+    {
+      "t0": 36.4,
+      "t1": 40.9,
+      "scene": 1,
+      "part": "DJI connector"
+    },
+    {
+      "t0": 36.58,
+      "t1": 40.9,
+      "scene": 1,
+      "part": "BEC inductors"
+    },
+    {
+      "t0": 41.9,
+      "t1": 45.699999999999996,
+      "scene": 1,
+      "part": "Mounting grommets"
+    },
+    {
+      "t0": 46.5,
+      "t1": 50.3,
+      "scene": 1,
+      "part": "MCU STM32F405"
+    },
+    {
+      "t0": 61.8,
+      "t1": 67.19999999999999,
+      "scene": 2,
+      "part": "Mould compound, lower half"
+    },
+    {
+      "t0": 61.98,
+      "t1": 67.19999999999999,
+      "scene": 2,
+      "part": "Mould compound, upper half"
+    },
+    {
+      "t0": 62.16,
+      "t1": 67.19999999999999,
+      "scene": 2,
+      "part": "Die paddle"
+    },
+    {
+      "t0": 62.339999999999996,
+      "t1": 67.19999999999999,
+      "scene": 2,
+      "part": "Left fingers"
+    },
+    {
+      "t0": 62.519999999999996,
+      "t1": 67.19999999999999,
+      "scene": 2,
+      "part": "Bottom fingers"
+    },
+    {
+      "t0": 62.699999999999996,
+      "t1": 67.19999999999999,
+      "scene": 2,
+      "part": "Right fingers"
+    },
+    {
+      "t0": 62.879999999999995,
+      "t1": 67.19999999999999,
+      "scene": 2,
+      "part": "Top fingers"
+    },
+    {
+      "t0": 68.19999999999999,
+      "t1": 71.99999999999999,
+      "scene": 2,
+      "part": "Mould compound, lower half"
+    },
+    {
+      "t0": 72.79999999999998,
+      "t1": 76.59999999999998,
+      "scene": 2,
+      "part": "Mould compound, upper half"
+    }
+  ],
+  "captions": [
+    {
+      "t0": 0.4,
+      "t1": 8.5,
+      "scale": "30 cm",
+      "title": "5-inch FPV quad",
+      "text": "Battery to ESC on two 12 AWG leads, ESC to each motor on three phase wires, the flight controller above the ESC sending four DShot commands down an 8-wire cable.",
+      "caption": "Over 100 A flat out, from a pack you hold in one hand."
+    },
+    {
+      "t0": 15.7,
+      "t1": 19.4,
+      "title": "Props (CW)",
+      "text": "5.1-inch tri-blade. Turning, it pushes air down; thrust grows roughly with the square of its speed."
+    },
+    {
+      "t0": 20.3,
+      "t1": 24,
+      "title": "Props (CCW)",
+      "text": "5.1-inch tri-blade. Turning, it pushes air down; thrust grows roughly with the square of its speed."
+    },
+    {
+      "t0": 27.899999999999995,
+      "t1": 34.8,
+      "scale": "36 mm",
+      "title": "SpeedyBee F405 V5 flight controller",
+      "text": "A 39 mm square board weighing 8.1 g.",
+      "caption": "Sense, decide, command: thousands of times a second."
+    },
+    {
+      "t0": 42,
+      "t1": 45.699999999999996,
+      "title": "Mounting grommets",
+      "text": "30.5 × 30.5 mm M3 pattern with soft rubber grommets that isolate the gyro from frame vibration."
+    },
+    {
+      "t0": 46.6,
+      "t1": 50.3,
+      "title": "MCU STM32F405",
+      "text": "The flight controller’s brain:"
+    },
+    {
+      "t0": 54.199999999999996,
+      "t1": 61.099999999999994,
+      "scale": "10 mm",
+      "title": "STM32F405 microcontroller",
+      "text": "A 10 × 10 mm LQFP64 package with 64 leads at 0.5 mm pitch.",
+      "caption": "The whole flight runs through 64 pins."
+    },
+    {
+      "t0": 68.29999999999998,
+      "t1": 71.99999999999999,
+      "title": "Mould compound, lower half",
+      "text": "Black silica-filled epoxy."
+    },
+    {
+      "t0": 72.89999999999998,
+      "t1": 76.59999999999998,
+      "title": "Mould compound, upper half",
+      "text": "Black silica-filled epoxy; protects the die and wires."
+    }
+  ]
+}

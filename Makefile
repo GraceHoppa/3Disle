@@ -7,20 +7,20 @@ INC = -Iengine -Igfx -Iapp -Ithird_party -I$(BUILD)/gen
 SDL_CFLAGS := $(shell pkg-config --cflags sdl3 2>/dev/null)
 SDL_LIBS := $(shell pkg-config --libs sdl3 2>/dev/null)
 
-ENGINE = engine/json.c engine/spec.c engine/mesh.c engine/model.c engine/paint.c engine/platform.c
+ENGINE = engine/json.c engine/spec.c engine/mesh.c engine/model.c engine/paint.c engine/shot.c engine/platform.c
 ENGINE_OBJ = $(ENGINE:%.c=$(BUILD)/%.o)
 GEN = $(BUILD)/gen/fonts_data.h $(BUILD)/gen/shaders_data.h
 SHADERS = $(wildcard gfx/shaders/*.glsl)
 
-GFX = gfx/render.c
-APP = app/main.c app/headless.c
+GFX = gfx/render.c gfx/ui.c
+APP = app/main.c app/headless.c app/stage.c app/viewer.c app/script.c app/window.c app/video.c
 GFX_OBJ = $(GFX:%.c=$(BUILD)/%.o)
 APP_OBJ = $(APP:%.c=$(BUILD)/%.o)
 
 all: $(BUILD)/3disle
 
 $(BUILD)/3disle: $(ENGINE_OBJ) $(GFX_OBJ) $(APP_OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ -lEGL -lGLESv2 -lm
+	$(CC) $(CFLAGS) -o $@ $^ $(SDL_LIBS) -lEGL -lGLESv2 -lm
 
 $(BUILD)/gfx/%.o: gfx/%.c $(GEN) $(wildcard engine/*.h gfx/*.h)
 	@mkdir -p $(dir $@)
