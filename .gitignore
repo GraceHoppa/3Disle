@@ -6,6 +6,6 @@ out
 .DS_Store
 test-results
 playwright-report
-demo/*/
+legacy-ts/demo/*/
 build/
 build-asan/

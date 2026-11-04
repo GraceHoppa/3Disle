@@ -259,7 +259,7 @@ static const char *file_base(const char *path) {
 static void load_list(Viewer *v) {
   v->nlist = 0;
   char root[256];
-  snprintf(root, sizeof root, "%s", v->root);
+  snprintf(root, sizeof root, "%.255s", v->root);
   char path[640];
   snprintf(path, sizeof path, "%s/models/index.json", root);
   char *text = file_read(path, NULL);
