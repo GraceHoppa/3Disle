@@ -32,6 +32,11 @@ typedef struct {
   Cmd *cmds;
 } Layer;
 
+typedef struct {
+  char name[72];
+  Rect r;
+} Mark;
+
 static struct {
   UiInput in;
   Layer layers[2];
@@ -67,6 +72,9 @@ static struct {
     float v;
   } states[1024];
   float blink;
+  float ox, oy;
+  bool recording;
+  Mark *marks, *marks_prev;
 } U;
 
 static u32 hash_str(u32 h, const char *s) {
@@ -147,6 +155,13 @@ void ui_begin(const UiInput *in) {
   U.layer = 0;
   U.nclips = 0;
   U.nids = 0;
+  U.ox = U.oy = 0;
+  if (U.recording) {
+    Mark *mt = U.marks_prev;
+    U.marks_prev = U.marks;
+    U.marks = mt;
+    arr_clear(U.marks);
+  }
   // What was interface last frame answers this frame's mouse.
   Rect *t = U.blocks_prev;
   U.blocks_prev = U.blocks;
@@ -157,7 +172,8 @@ void ui_begin(const UiInput *in) {
   U.popup_next_on = false;
   U.hot = 0;
   U.blink += in->dt;
-  if (U.active && !in->down[0]) U.active = 0;
+  // Held through the frame of the release: that is when a button learns it was clicked.
+  if (U.active && !in->down[0] && !in->released[0]) U.active = 0;
 }
 
 static Layer *L(void) { return &U.layers[U.layer]; }
@@ -178,6 +194,7 @@ static void add_tri_verts(UiVert a, UiVert b, UiVert c) {
   Layer *l = L();
   UiVert *d = arr_add(l->v, 3);
   d[0] = a, d[1] = b, d[2] = c;
+  for (int i = 0; i < 3; i++) d[i].x += U.ox, d[i].y += U.oy;
   arr_last(l->cmds).count += 3;
 }
 static void add_quad(float x0, float y0, float x1, float y1, float u0, float v0, float u1, float v1, u32 c0, u32 c1) {
@@ -391,6 +408,38 @@ void ui_clip_pop(void) {
   if (U.nclips) U.nclips--;
 }
 void ui_set_layer(int layer) { U.layer = layer; }
+void ui_set_origin(float x, float y) { U.ox = x, U.oy = y; }
+void ui_set_scale(float scale) { U.in.scale = scale; }
+
+void ui_record(bool on) { U.recording = on; }
+void ui_mark(const char *name, Rect r) {
+  if (!U.recording) return;
+  if (U.nclips) {
+    Rect c = U.clips[U.nclips - 1];
+    float x0 = maxf(r.x, c.x), y0 = maxf(r.y, c.y), x1 = minf(r.x + r.w, c.x + c.w), y1 = minf(r.y + r.h, c.y + c.h);
+    if (x1 <= x0 || y1 <= y0) return; // scrolled out of sight: nobody could press it
+    r = rect(x0, y0, x1 - x0, y1 - y0);
+  }
+  Mark m = {.r = r};
+  snprintf(m.name, sizeof m.name, "%s", name);
+  arr_push(U.marks, m);
+}
+bool ui_find(const char *name, Rect *out) {
+  // Asked between frames, so the newest list is the frame just drawn. The later one wins: what is
+  // drawn last is on top.
+  size_t n = strlen(name);
+  for (int i = arr_len(U.marks) - 1; i >= 0; i--) {
+    const char *m = U.marks[i].name;
+    if (!strcmp(m, name) || (!strncmp(m, name, n) && !strncmp(m + n, "##", 2))) {
+      if (out) *out = U.marks[i].r;
+      return true;
+    }
+  }
+  return false;
+}
+void ui_dump_marks(void) {
+  for (int i = 0; i < arr_len(U.marks); i++) printf("  %s\n", U.marks[i].name);
+}
 
 void ui_render(u32 fbo) {
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -461,6 +510,7 @@ bool ui_wants_mouse(void) {
   return false;
 }
 bool ui_wants_keyboard(void) { return U.focus != 0; }
+bool ui_focus_is(u32 id) { return U.focus == id; }
 void ui_set_popup(Rect r) {
   U.popup_next = r;
   U.popup_next_on = true;
@@ -477,6 +527,7 @@ void ui_focus_next(void) { U.focus_next = true; }
 // ------------------------------------------------------------------ widgets
 bool ui_button(Rect r, const char *label, int flags) {
   u32 id = ui_id(label);
+  ui_mark(label, r);
   bool dis = flags & BTN_DISABLED;
   bool over = !dis && ui_hovering(r);
   bool clicked = false;
@@ -500,6 +551,7 @@ bool ui_button(Rect r, const char *label, int flags) {
 
 bool ui_slider(Rect r, const char *ids, float *v, float mn, float mx) {
   u32 id = ui_id(ids);
+  ui_mark(ids, r);
   float pad = S(8);
   bool over = ui_hovering(r);
   if (over && U.in.pressed[0] && !U.active) U.active = id, U.focus = 0;
@@ -590,6 +642,7 @@ static bool edit_apply(char *buf, int cap, bool multiline) {
 
 bool ui_text_field(Rect r, const char *ids, char *buf, int cap, const char *hint) {
   u32 id = ui_id(ids);
+  ui_mark(ids, r);
   bool over = ui_hovering(r);
   if (over && U.in.pressed[0]) {
     if (U.focus != id) U.select_all = true;
@@ -636,6 +689,7 @@ bool ui_text_field(Rect r, const char *ids, char *buf, int cap, const char *hint
 
 bool ui_multiline(Rect r, const char *ids, char *buf, int cap) {
   u32 id = ui_id(ids);
+  ui_mark(ids, r);
   bool over = ui_hovering(r);
   if (over && U.in.pressed[0]) {
     U.focus = id;
@@ -673,6 +727,7 @@ bool ui_multiline(Rect r, const char *ids, char *buf, int cap) {
 
 bool ui_drag(Rect r, const char *ids, double *v, double step, const char *unit) {
   u32 id = ui_id(ids);
+  ui_mark(ids, r);
   bool over = ui_hovering(r);
   bool changed = false;
   float size = S(12), pad = S(6);
@@ -756,6 +811,7 @@ bool ui_drag(Rect r, const char *ids, double *v, double step, const char *unit) 
 
 bool ui_dropdown(Rect r, const char *ids, int *sel, const char *const *options, int n) {
   u32 id = ui_id(ids);
+  ui_mark(ids, r);
   bool over = ui_hovering(r);
   bool open = U.open_popup == id;
   float size = S(12), pad = S(6);
@@ -785,6 +841,11 @@ bool ui_dropdown(Rect r, const char *ids, int *sel, const char *const *options, 
     for (int i = 0; i < n; i++) {
       Rect row = rect(pop.x + 1, y + rowh * (float)i, pop.w - 2, rowh);
       bool hit = rect_has(row, U.in.mx, U.in.my);
+      if (U.recording) {
+        char mark[72];
+        snprintf(mark, sizeof mark, "%s=%s", ids, options[i]);
+        ui_mark(mark, row);
+      }
       if (hit) ui_rect(row, C_HOVER);
       ui_text_fit(row.x + pad, row.y + (rowh - ui_line_height(size)) / 2, row.w - 2 * pad, size, FONT_REGULAR, i == *sel ? C_BRIGHT : C_TEXT, options[i]);
       if (hit && U.in.pressed[0]) {

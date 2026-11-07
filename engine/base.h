@@ -262,3 +262,6 @@ char *file_read(const char *path, size_t *len);
 bool file_write(const char *path, const void *data, size_t len);
 // `rel` resolved against the folder of `from`; collapses "x/../". Result lives until the arena dies.
 char *path_join(Arena *ar, const char *from, const char *rel);
+bool path_same(const char *a, const char *b); // the same file, however it was reached
+// `to` as seen from the folder of `from`, for the links inside files.
+void path_rel(const char *from, const char *to, char *out, size_t n);

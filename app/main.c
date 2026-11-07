@@ -14,13 +14,13 @@ void gl_extensions(void) {}
 
 static void usage(void) {
   fprintf(stderr,
-          "3disle                             open the viewer on the quad tour\n"
-          "3disle view <file.json>            open a device or tour in the viewer\n"
+          "3disle [file.json]                 the app: build, animate, view (a device, tour or video)\n"
+          "3disle view [file.json]            just the viewer, on a device or tour\n"
           "3disle shot <file.json> <out.png> [--size WxH] [--explode A]\n"
           "3disle auto <device-or-tour.json> <out.shot.json>   write a video's timeline from the data\n"
           "3disle render <file.shot.json> -o out.mp4 [--size WxH] [--fps N] [--crf N] [--ss K] [--from S] [--to S] [--no-grain]\n"
           "3disle still <file.shot.json> <out.png> <seconds> [--size WxH]\n"
-          "3disle script <file.json> <steps>  drive the viewer headless (for checks)\n");
+          "3disle script [--app] <file.json> <steps>  drive the viewer or the app headless (for checks)\n");
 }
 
 static bool parse_size(const char *s, int *w, int *h) { return sscanf(s, "%dx%d", w, h) == 2 && *w > 0 && *h > 0; }

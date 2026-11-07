@@ -13,7 +13,7 @@ GEN = $(BUILD)/gen/fonts_data.h $(BUILD)/gen/shaders_data.h
 SHADERS = $(wildcard gfx/shaders/*.glsl)
 
 GFX = gfx/render.c gfx/ui.c
-APP = app/main.c app/headless.c app/stage.c app/viewer.c app/script.c app/window.c app/video.c
+APP = app/main.c app/headless.c app/stage.c app/viewer.c app/script.c app/window.c app/video.c app/editor.c app/ed_build.c app/ed_props.c app/ed_animate.c
 GFX_OBJ = $(GFX:%.c=$(BUILD)/%.o)
 APP_OBJ = $(APP:%.c=$(BUILD)/%.o)
 
@@ -52,10 +52,14 @@ $(BUILD)/test_engine: tests/test_engine.c $(ENGINE_OBJ)
 test: $(BUILD)/test_engine
 	$(BUILD)/test_engine
 
+# The whole app, driven headless through real clicks.
+test-app: $(BUILD)/3disle
+	BIN=$(BUILD)/3disle tests/app.sh
+
 asan:
 	$(MAKE) BUILD=build-asan CC=clang CFLAGS="-O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer" test
 
 clean:
 	rm -rf build build-asan
 
-.PHONY: all test asan clean
+.PHONY: all test test-app asan clean

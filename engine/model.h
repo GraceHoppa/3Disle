@@ -18,6 +18,7 @@ typedef struct Texture {
   bool repeat;
   u32 gl;
   u32 last_used;
+  bool marked;
 } Texture;
 
 typedef struct {
@@ -192,6 +193,9 @@ const WireKind *wire_kind(const char *name);
 Texture *texture_cached(const char *key);
 Texture *texture_put(const char *key, int w, int h, u8 *rgba, bool repeat);
 void texture_cache_each(void (*fn)(Texture *, void *), void *ud);
+// Drop every texture not marked since the last clear; `release` frees its GPU side first.
+void texture_cache_clear_marks(void);
+void texture_cache_sweep(void (*release)(Texture *));
 // One part of a bus's footprints list; exposed for the painted silkscreen.
 typedef struct {
   const char *name;

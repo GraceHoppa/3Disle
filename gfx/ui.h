@@ -12,7 +12,8 @@ static inline Rect rect_inset(Rect r, float d) { return rect(r.x + d, r.y + d, r
 
 typedef enum {
   KEY_NONE, KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, KEY_ENTER, KEY_ESCAPE, KEY_BACKSPACE, KEY_DELETE, KEY_HOME, KEY_END,
-  KEY_TAB, KEY_SPACE, KEY_A, KEY_C, KEY_D, KEY_E, KEY_G, KEY_K, KEY_L, KEY_N, KEY_O, KEY_R, KEY_S, KEY_V, KEY_X, KEY_Y, KEY_Z,
+  KEY_TAB, KEY_SPACE, KEY_A, KEY_C, KEY_D, KEY_E, KEY_F, KEY_G, KEY_K, KEY_L, KEY_N, KEY_O, KEY_R, KEY_S, KEY_V, KEY_X, KEY_Y, KEY_Z,
+  KEY_1, KEY_2, KEY_3,
   KEY_COUNT
 } UiKey;
 
@@ -72,6 +73,10 @@ void ui_text_fit(float x, float y, float w, float size, Font f, u32 c, const cha
 void ui_clip_push(Rect r);
 void ui_clip_pop(void);
 void ui_set_layer(int layer); // 0 base, 1 popups on top
+// Everything drawn from here on lands shifted by this many pixels; clips stay in window pixels. For
+// drawing a whole-frame overlay inside a part of the window.
+void ui_set_origin(float x, float y);
+void ui_set_scale(float scale); // what S() multiplies by, until the next ui_begin
 
 // Interaction. Ids come from strings, within the current scope.
 u32 ui_id(const char *s);
@@ -80,6 +85,7 @@ void ui_pop_id(void);
 void ui_block(Rect r);             // this area is interface: the 3D view under it gets no mouse
 bool ui_wants_mouse(void);         // the pointer is over interface, or dragging a widget
 bool ui_wants_keyboard(void);      // a text field has focus
+bool ui_focus_is(u32 id);
 bool ui_hovering(Rect r);          // false when a popup covers it
 void ui_set_popup(Rect r);         // keeps widgets below from answering inside r
 
@@ -104,6 +110,12 @@ typedef struct {
 } Scroll;
 Scroll ui_scroll_begin(Rect r, const char *id);
 void ui_scroll_end(Scroll *s, float content_bottom);
+
+// Where every widget landed last frame, by the name it was given, so checks can press them by name.
+void ui_record(bool on);
+void ui_mark(const char *name, Rect r); // for hand-drawn widgets too
+bool ui_find(const char *name, Rect *out);
+void ui_dump_marks(void);
 
 // Small persistent values, by id.
 float *ui_state(u32 id);

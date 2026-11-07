@@ -44,7 +44,9 @@ bool camera_project(const Camera *c, float aspect, Vec3 p, float w, float h, flo
 
 // Free GPU copies of a model's meshes before freeing the model.
 void r_release_model(Model *m);
+void r_release_texture(Texture *t);
 
 // An offscreen target to read frames back from.
 u32 r_offscreen_fbo(int w, int h);
+void r_free_offscreen(u32 fbo);
 void r_read_rgba(u32 fbo, int w, int h, u8 *out); // top row first

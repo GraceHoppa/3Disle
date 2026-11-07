@@ -144,6 +144,16 @@ int spec_add_layer(AssemblySpec *s, int at, const char *name);
 WireSpec *spec_add_wire(AssemblySpec *s, const char *from, const char *to);
 void spec_part_defaults(AssemblySpec *s, PartSpec *p, Shape shape);
 const char *spec_str(AssemblySpec *s, const char *text); // copy into the document
+// A copy right after the original, under a free name, or the item gone with what it owned.
+PartSpec *spec_dup_part(AssemblySpec *s, int layer, int part);
+int spec_dup_layer(AssemblySpec *s, int layer);
+WireSpec *spec_dup_wire(AssemblySpec *s, int wire);
+void spec_remove_part(AssemblySpec *s, int layer, int part);
+void spec_remove_layer(AssemblySpec *s, int layer);
+void spec_remove_link(AssemblySpec *s, int layer, int link);
+void spec_remove_wire(AssemblySpec *s, int wire);
+void spec_remove_readout(AssemblySpec *s, int readout);
+bool spec_name_taken(const AssemblySpec *s, const char *name);
 
 // Values and rules.
 double lookup(const Dbl2 *map, double x);

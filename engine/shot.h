@@ -101,6 +101,12 @@ typedef struct {
 } ShotFrame;
 
 ShotPlayer *player_new(Shot *s, BuildOpts opts, char *err, size_t errlen);
+// The same, with documents still open in the editor standing in for their files on disk.
+typedef struct {
+  const char *path;
+  const AssemblySpec *spec;
+} SpecOverride;
+ShotPlayer *player_new_over(Shot *s, BuildOpts opts, const SpecOverride *over, int nover, char *err, size_t errlen);
 void player_free(ShotPlayer *p);
 // Rebuild one scene after its file changed.
 void player_invalidate(ShotPlayer *p);

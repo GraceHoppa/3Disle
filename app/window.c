@@ -1,5 +1,6 @@
 // The desktop window: SDL3 for the window and input, nothing else.
 #include "app.h"
+#include "editor.h"
 #include "gl.h"
 #include "render.h"
 #include "ui.h"
@@ -43,6 +44,7 @@ static UiKey map_key(SDL_Keycode k) {
   case SDLK_C: return KEY_C;
   case SDLK_D: return KEY_D;
   case SDLK_E: return KEY_E;
+  case SDLK_F: return KEY_F;
   case SDLK_G: return KEY_G;
   case SDLK_K: return KEY_K;
   case SDLK_L: return KEY_L;
@@ -54,6 +56,9 @@ static UiKey map_key(SDL_Keycode k) {
   case SDLK_X: return KEY_X;
   case SDLK_Y: return KEY_Y;
   case SDLK_Z: return KEY_Z;
+  case SDLK_1: return KEY_1;
+  case SDLK_2: return KEY_2;
+  case SDLK_3: return KEY_3;
   default: return KEY_NONE;
   }
 }
@@ -74,12 +79,24 @@ int app_window(int argc, char **argv) {
   ui_init();
   char rootbuf[560], fallback[640];
   const char *root = find_root(rootbuf, sizeof rootbuf);
-  Viewer *v = viewer_new(root, false);
-  snprintf(fallback, sizeof fallback, "%s/models/drone/tour.json", root);
-  const char *file = argc > 1 && !strcmp(argv[0], "view") ? argv[1] : (argc > 0 && strcmp(argv[0], "view") ? argv[0] : fallback);
-  if (!viewer_open(v, file, err, sizeof err)) {
-    fprintf(stderr, "%s\n", err);
-    viewer_set_status(v, err);
+  // `view` is the visitor's viewer alone; anything else is the app.
+  bool view_only = argc > 0 && !strcmp(argv[0], "view");
+  Viewer *v = NULL;
+  Editor *ed = NULL;
+  if (view_only) {
+    v = viewer_new(root, false);
+    snprintf(fallback, sizeof fallback, "%s/models/drone/tour.json", root);
+    const char *file = argc > 1 ? argv[1] : fallback;
+    if (!viewer_open(v, file, err, sizeof err)) {
+      fprintf(stderr, "%s\n", err);
+      viewer_set_status(v, err);
+    }
+  } else {
+    ed = editor_new(root);
+    if (!editor_open(ed, argc > 0 ? argv[0] : NULL, err, sizeof err)) {
+      fprintf(stderr, "%s\n", err);
+      editor_open(ed, NULL, err, sizeof err);
+    }
   }
   SDL_StartTextInput(win);
 
@@ -100,7 +117,9 @@ int app_window(int argc, char **argv) {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
       switch (e.type) {
-      case SDL_EVENT_QUIT: running = false; break;
+      case SDL_EVENT_QUIT:
+        if (!ed || editor_request_close(ed)) running = false;
+        break;
       case SDL_EVENT_MOUSE_MOTION:
         in.mx = e.motion.x * density;
         in.my = e.motion.y * density;
@@ -148,10 +167,16 @@ int app_window(int argc, char **argv) {
     Uint64 now = SDL_GetPerformanceCounter();
     in.dt = (float)((double)(now - last) / (double)SDL_GetPerformanceFrequency());
     last = now;
-    viewer_frame(v, &in, 0);
+    if (ed) {
+      editor_frame(ed, &in, 0);
+      if (editor_should_close(ed)) running = false;
+    } else {
+      viewer_frame(v, &in, 0);
+    }
     SDL_GL_SwapWindow(win);
   }
-  viewer_free(v);
+  if (v) viewer_free(v);
+  if (ed) editor_free(ed);
   SDL_GL_DestroyContext(ctx);
   SDL_DestroyWindow(win);
   SDL_Quit();

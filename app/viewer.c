@@ -81,6 +81,8 @@ struct Viewer {
   float hud_t, cap_t;
   float time;
   float scroll_list;
+  void (*overlay)(void *ud);
+  void *overlay_ud;
 };
 
 static const char *const FLOW_NAMES[] = {"Off", "Slow", "Realtime", "Burst"};
@@ -310,11 +312,17 @@ static void remember_values(Viewer *v) {
 }
 
 static void build_tags(Viewer *v);
+static void show_spec(Viewer *v, AssemblySpec *s, const char *path, const char *name, float from, float aspect);
 
 // Swap the model on stage. `from` is how the camera arrives (see stage_frame).
 static bool show_file(Viewer *v, const char *path, const char *name, float from, float aspect, char *err, size_t errlen) {
   AssemblySpec *s = spec_load(path, err, errlen);
   if (!s) return false;
+  show_spec(v, s, path, name, from, aspect);
+  return true;
+}
+
+static void show_spec(Viewer *v, AssemblySpec *s, const char *path, const char *name, float from, float aspect) {
   Model *m = model_build(s, (BuildOpts){.paint = true});
   remember_values(v);
   if (v->model) {
@@ -333,7 +341,28 @@ static bool show_file(Viewer *v, const char *path, const char *name, float from,
   stage_frame(&v->stage, m, aspect, from);
   snprintf(v->title, sizeof v->title, "%s", name && *name ? name : s->name);
   build_tags(v);
+}
+
+bool viewer_open_doc(Viewer *v, const AssemblySpec *doc, const char *path, float aspect) {
+  AssemblySpec *s = spec_clone(doc);
+  if (!s) return false;
+  tour_free(v->tour);
+  v->tour = NULL;
+  v->ntrail = 0;
+  v->finale = false;
+  v->auto_on = false;
+  v->landing = false;
+  show_spec(v, s, path, NULL, 1, aspect);
+  Entry *e = &v->trail[v->ntrail++];
+  snprintf(e->path, sizeof e->path, "%s", path);
+  snprintf(e->name, sizeof e->name, "%s", v->title);
+  v->stage.flying = false;
   return true;
+}
+
+void viewer_set_overlay(Viewer *v, void (*fn)(void *ud), void *ud) {
+  v->overlay = fn;
+  v->overlay_ud = ud;
 }
 
 bool viewer_open(Viewer *v, const char *path, char *err, size_t errlen) {
@@ -1123,6 +1152,7 @@ void viewer_frame(Viewer *v, const UiInput *in, u32 fbo) {
     r_render_empty(&p, fbo);
     ui_text(S(32), S(24), S(13), FONT_REGULAR, v->status[0] ? C_ERROR : C_TEXT, v->status[0] ? v->status : "Nothing open");
     draw_library(v, aspect);
+    if (v->overlay) v->overlay(v->overlay_ud);
     ui_render(fbo);
     return;
   }
@@ -1242,6 +1272,7 @@ void viewer_frame(Viewer *v, const UiInput *in, u32 fbo) {
   }
   draw_landing(v, in);
   draw_finale(v, in);
+  if (v->overlay) v->overlay(v->overlay_ud);
   ui_render(fbo);
   (void)busy;
 }

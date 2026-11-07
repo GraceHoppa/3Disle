@@ -87,6 +87,25 @@ void texture_cache_each(void (*fn)(Texture *, void *), void *ud) {
   for (int i = 0; i < arr_len(g_textures); i++) fn(g_textures[i], ud);
 }
 
+void texture_cache_clear_marks(void) {
+  for (int i = 0; i < arr_len(g_textures); i++) g_textures[i]->marked = false;
+}
+void texture_cache_sweep(void (*release)(Texture *)) {
+  int kept = 0;
+  for (int i = 0; i < arr_len(g_textures); i++) {
+    Texture *t = g_textures[i];
+    if (t->marked) {
+      g_textures[kept++] = t;
+      continue;
+    }
+    if (release) release(t);
+    free(t->rgba);
+    free(t->key);
+    free(t);
+  }
+  if (g_textures) arr_set_len(g_textures, kept);
+}
+
 // ------------------------------------------------------------------ materials
 static const MaterialPreset *preset_of(const char *name) {
   for (int i = 0; name && i < MATERIAL_PRESET_COUNT; i++)

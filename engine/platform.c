@@ -71,3 +71,41 @@ char *path_join(Arena *ar, const char *from, const char *rel) {
   out[o] = 0;
   return out;
 }
+
+#ifdef __wasm__
+bool path_same(const char *a, const char *b) { return !strcmp(a, b); }
+void path_rel(const char *from, const char *to, char *out, size_t n) { snprintf(out, n, "%s", to); }
+#else
+void path_rel(const char *from, const char *to, char *out, size_t n) {
+  char ra[4096], rb[4096], dir[4096];
+  snprintf(dir, sizeof dir, "%s", from);
+  char *slash = strrchr(dir, '/');
+  if (slash) *slash = 0;
+  else snprintf(dir, sizeof dir, ".");
+  if (!realpath(dir, ra) || !realpath(to, rb)) {
+    snprintf(out, n, "%s", to);
+    return;
+  }
+  size_t common = 0, i = 0;
+  while (ra[i] && rb[i] && ra[i] == rb[i]) {
+    if (ra[i] == '/') common = i + 1;
+    i++;
+  }
+  if (!ra[i] && rb[i] == '/') common = i + 1;
+  size_t at = 0;
+  out[0] = 0;
+  if (common <= strlen(ra))
+    for (const char *p = ra + common; *p && at + 4 < n;) {
+      at += (size_t)snprintf(out + at, n - at, "../");
+      while (*p && *p != '/') p++;
+      if (*p) p++;
+    }
+  snprintf(out + at, n - at, "%s", rb + common);
+}
+bool path_same(const char *a, const char *b) {
+  if (!strcmp(a, b)) return true;
+  char ra[4096], rb[4096];
+  if (!realpath(a, ra) || !realpath(b, rb)) return false;
+  return !strcmp(ra, rb);
+}
+#endif

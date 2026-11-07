@@ -396,6 +396,11 @@ static void bind_instances(Node *n) {
   }
 }
 
+void r_release_texture(Texture *t) {
+  if (t->gl) glDeleteTextures(1, &t->gl);
+  t->gl = 0;
+}
+
 void r_release_model(Model *m) {
   for (int i = 0; i < arr_len(m->nodes); i++) {
     Node *n = &m->nodes[i];
@@ -674,6 +679,17 @@ u32 r_offscreen_fbo(int w, int h) {
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
   return fbo;
+}
+
+void r_free_offscreen(u32 fbo) {
+  if (!fbo) return;
+  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+  GLint tex = 0;
+  glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME, &tex);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  u32 t = (u32)tex;
+  glDeleteTextures(1, &t);
+  glDeleteFramebuffers(1, &fbo);
 }
 
 void r_read_rgba(u32 fbo, int w, int h, u8 *out) {

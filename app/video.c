@@ -196,6 +196,7 @@ bool video_end(Video *v) {
   int status = 0;
   waitpid(v->pid, &status, 0);
   bool ok = !v->failed && WIFEXITED(status) && WEXITSTATUS(status) == 0;
+  r_free_offscreen(v->fbo);
   free(v->px);
   free(v);
   return ok;

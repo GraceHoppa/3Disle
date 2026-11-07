@@ -348,14 +348,19 @@ void default_camera(const Model *m, float aspect, float from, Vec3 *pos, Vec3 *t
   *pos = v3mad(m->center, dir, dist * from);
 }
 
-ShotPlayer *player_new(Shot *s, BuildOpts opts, char *err, size_t errlen) {
+ShotPlayer *player_new(Shot *s, BuildOpts opts, char *err, size_t errlen) { return player_new_over(s, opts, NULL, 0, err, errlen); }
+
+ShotPlayer *player_new_over(Shot *s, BuildOpts opts, const SpecOverride *over, int nover, char *err, size_t errlen) {
   ShotPlayer *p = calloc(1, sizeof *p);
   p->shot = s;
   p->cur = -1;
   Arena ar = {0};
   for (int i = 0; i < arr_len(s->scenes); i++) {
     const char *full = path_join(&ar, s->path, s->scenes[i].file);
-    AssemblySpec *sp = spec_load(full, err, errlen);
+    AssemblySpec *sp = NULL;
+    for (int k = 0; k < nover && !sp; k++)
+      if (path_same(over[k].path, full)) sp = spec_clone(over[k].spec);
+    if (!sp) sp = spec_load(full, err, errlen);
     if (!sp) {
       arena_free(&ar);
       player_free(p);

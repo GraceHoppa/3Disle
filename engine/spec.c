@@ -736,6 +736,110 @@ WireSpec *spec_add_wire(AssemblySpec *s, const char *from, const char *to) {
   return &arr_last(s->wires);
 }
 
+#define ARR_COPY(dst, src)                                         \
+  do {                                                             \
+    (dst) = NULL;                                                  \
+    for (int i_ = 0; i_ < arr_len(src); i_++) arr_push((dst), (src)[i_]); \
+  } while (0)
+
+static void part_own_arrays(PartSpec *c, const PartSpec *o) {
+  ARR_COPY(c->points, o->points);
+  ARR_COPY(c->cutouts, o->cutouts);
+  ARR_COPY(c->specs, o->specs);
+  ARR_COPY(c->spin.map, o->spin.map);
+  ARR_COPY(c->pulse_level.map, o->pulse_level.map);
+  // Copy names are the original's: two copies answering to one name would only confuse.
+  c->repeat.names = NULL;
+}
+
+PartSpec *spec_dup_part(AssemblySpec *s, int layer, int part) {
+  LayerSpec *l = &s->layers[layer];
+  PartSpec c = l->parts[part];
+  part_own_arrays(&c, &l->parts[part]);
+  c.name = free_name(s, l->parts[part].name);
+  arr_insert(l->parts, part + 1, c);
+  return &l->parts[part + 1];
+}
+
+int spec_dup_layer(AssemblySpec *s, int layer) {
+  LayerSpec c = s->layers[layer];
+  const LayerSpec *o = &s->layers[layer];
+  c.parts = NULL;
+  c.links = NULL;
+  ARR_COPY(c.holes, o->holes);
+  ARR_COPY(c.specs, o->specs);
+  c.name = free_name(s, o->name);
+  // Base stays automatic in the copy, or it would land inside the original.
+  c.base = UNSET;
+  // Into the document first, empty, so each new name sees the ones before it.
+  arr_insert(s->layers, layer + 1, c);
+  for (int i = 0; i < arr_len(s->layers[layer].parts); i++) {
+    const PartSpec *orig = &s->layers[layer].parts[i];
+    PartSpec p = *orig;
+    part_own_arrays(&p, orig);
+    p.name = free_name(s, orig->name);
+    arr_push(s->layers[layer + 1].parts, p);
+  }
+  s->layers[layer + 1].has_parts = s->layers[layer].has_parts;
+  return layer + 1;
+}
+
+WireSpec *spec_dup_wire(AssemblySpec *s, int wire) {
+  WireSpec c = s->wires[wire];
+  const WireSpec *o = &s->wires[wire];
+  ARR_COPY(c.via, o->via);
+  ARR_COPY(c.specs, o->specs);
+  ARR_COPY(c.level.map, o->level.map);
+  arr_insert(s->wires, wire + 1, c);
+  return &s->wires[wire + 1];
+}
+
+static void free_part(PartSpec *p) {
+  arr_free(p->points);
+  arr_free(p->cutouts);
+  arr_free(p->repeat.names);
+  arr_free(p->specs);
+  arr_free(p->spin.map);
+  arr_free(p->pulse_level.map);
+}
+static void free_link(LinkSpec *n) {
+  arr_free(n->to);
+  arr_free(n->specs);
+  arr_free(n->level.map);
+}
+void spec_remove_part(AssemblySpec *s, int layer, int part) {
+  LayerSpec *l = &s->layers[layer];
+  free_part(&l->parts[part]);
+  arr_remove(l->parts, part);
+}
+void spec_remove_link(AssemblySpec *s, int layer, int link) {
+  LayerSpec *l = &s->layers[layer];
+  free_link(&l->links[link]);
+  arr_remove(l->links, link);
+}
+void spec_remove_layer(AssemblySpec *s, int layer) {
+  LayerSpec *l = &s->layers[layer];
+  for (int i = 0; i < arr_len(l->parts); i++) free_part(&l->parts[i]);
+  for (int i = 0; i < arr_len(l->links); i++) free_link(&l->links[i]);
+  arr_free(l->parts);
+  arr_free(l->links);
+  arr_free(l->holes);
+  arr_free(l->specs);
+  arr_remove(s->layers, layer);
+}
+void spec_remove_wire(AssemblySpec *s, int wire) {
+  WireSpec *w = &s->wires[wire];
+  arr_free(w->via);
+  arr_free(w->specs);
+  arr_free(w->level.map);
+  arr_remove(s->wires, wire);
+}
+void spec_remove_readout(AssemblySpec *s, int readout) {
+  arr_free(s->readouts[readout].map);
+  arr_remove(s->readouts, readout);
+}
+bool spec_name_taken(const AssemblySpec *s, const char *name) { return name_taken(s, name); }
+
 // ------------------------------------------------------------------ logic
 double lookup(const Dbl2 *m, double x) {
   int n = arr_len(m);

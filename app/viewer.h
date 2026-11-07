@@ -10,6 +10,10 @@ Viewer *viewer_new(const char *data_root, bool embed);
 bool viewer_open(Viewer *v, const char *path, char *err, size_t errlen);
 // One frame: reads input, moves things, draws to `fbo`.
 void viewer_frame(Viewer *v, const UiInput *in, u32 fbo);
+// Show a document that may not be saved yet; `path` is where its links resolve from.
+bool viewer_open_doc(Viewer *v, const AssemblySpec *doc, const char *path, float aspect);
+// Called each frame just before the interface is drawn, for the host's own widgets.
+void viewer_set_overlay(Viewer *v, void (*fn)(void *ud), void *ud);
 void viewer_set_intro(Viewer *v, bool intro);
 void viewer_set_status(Viewer *v, const char *text);
 const char *viewer_title(const Viewer *v);
