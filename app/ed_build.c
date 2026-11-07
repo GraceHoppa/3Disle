@@ -601,7 +601,7 @@ static void draw_view(Editor *e, Rect view) {
   post.time = (float)fmod(e->clock, 100);
   post.grain = 0; // while building, what matters is seeing it clearly
   // What is selected keeps a faint glow, or a small part inside a big device is hard to find again.
-  int sel_n = node_of_sel(m, d->built, d->sel);
+  int sel_n = d->sel.kind == SEL_LAYER ? -1 : node_of_sel(m, d->built, d->sel);
   SceneHints hints = {e->hover_node >= 0 ? e->hover_node : sel_n, e->hover_node >= 0 ? e->hover_copy : -1};
   ed_view_prepare(e, (int)view.w, (int)view.h);
   r_render(m, &d->stage.cam, &post, &hints, e->vfbo);

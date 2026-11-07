@@ -125,7 +125,10 @@ static void texture_mark(Model *m) {
   if (!m) return;
   for (int i = 0; i < arr_len(m->nodes); i++)
     for (int k = 0; k < m->nodes[i].nmats; k++)
+    {
       if (m->nodes[i].mats[k].tex) m->nodes[i].mats[k].tex->marked = true;
+      if (m->nodes[i].mats[k].tex_mr) m->nodes[i].mats[k].tex_mr->marked = true;
+    }
 }
 
 // Painted surfaces are cached by what they show, so a moved chip leaves its old board behind.

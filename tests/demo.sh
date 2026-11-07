@@ -1,13 +1,15 @@
 #!/bin/sh
 # Records the app being used, start to finish: builds a small device from nothing, tries it, animates
-# it, renders the video. Every step goes through the real input path, so this doubles as a check.
-# Writes build/demo/: app.mp4 (what the screen showed), the device and its video (made in the app).
+# it, renders the video, exports a page; then imports a real model and takes it apart. Every step goes
+# through the real input path, so this doubles as a check.
+# Writes build/demo/: app.mp4 (what the screen showed), and everything made in the app along the way.
 set -eu
 BIN=${BIN:-build/3disle}
 OUT=${OUT:-build/demo}
 rm -rf "$OUT"
 mkdir -p "$OUT"
 OUT=$(cd "$OUT" && pwd)
+cp public/projects/motor/motor.glb "$OUT/"
 
 "$BIN" script --app - \
   "record:$OUT/app.mp4" wait:0.8 \
@@ -43,7 +45,12 @@ OUT=$(cd "$OUT" && pwd)
   "press:START##render" expect:rendering=1 wait:3.2 expect:renderdone=1 wait:1 \
   press:CLOSE##render wait:0.4 \
   press:BUILD wait:0.6 \
-  record: expect:shotdirty=0 expect:dirty=0
+  press:EXPORT wait:1.5 expect:dirty=0 \
+  press:OPEN wait:0.4 "field:file-field=$OUT/motor.glb" wait:1 \
+  "dragby:apart@0.05,0.5|130|0" wait:1 "press:group2" wait:0.6 "press:SPLIT##objects" wait:0.8 \
+  "dragby:view@0.5,0.15|-200|30" wait:1 \
+  ctrl:s wait:0.3 press:EXPORT wait:1.5 press:VIEW wait:2 press:BUILD wait:0.4 \
+  record:
 
 echo "$OUT/app.mp4"
 ls -la "$OUT"

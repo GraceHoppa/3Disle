@@ -3,6 +3,7 @@
 | What | Where | License |
 | --- | --- | --- |
 | stb_truetype, stb_image_write, stb_image (Sean Barrett) | `third_party/` | MIT or public domain |
+| OpenGL ES 3 constants and prototypes (Khronos), the ones the engine uses | `wasm/include/GLES3/gl3.h` | MIT |
 | JetBrains Mono, subset | `assets/` | SIL OFL 1.1, `third_party/JetBrainsMono-OFL.txt` |
 | three.js: shading model, room environment values, extrude and curve algorithms, ported to C and GLSL | `engine/mesh.c`, `gfx/` | MIT |
 | postprocessing (Raoul van Rüschen): bloom, grade and tone-map passes, ported to GLSL | `gfx/shaders/` | Zlib |

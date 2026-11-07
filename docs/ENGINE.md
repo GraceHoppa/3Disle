@@ -33,6 +33,15 @@ arrays of `{ "name", "file", "note", "hidden" }`, `file` relative to its folder.
 stay out of the lists but still open by `?model=`. The viewer also opens `.stl`, `.glb`, `.gltf`
 and assembly `.json` files from disk (Open file, or drop one on the page).
 
+## Model files in the C version
+
+`shape: file` takes a `.glb` or `.stl`. The part sits as if the whole file were seated on the slab and centred on `at`, so
+parts cut from one file assemble back into the model. `nodes` names which of the file's objects the part is, with everything
+below them (none: all of it); a name matches as written or the way three.js rewrites it. `units` is `"m"` or `"mm"`
+(glTF defaults to metres, STL to millimetres), `scale` multiplies on top. `material` or `color` on the part overrides the file.
+One layer of thickness 0 holding only file parts takes apart outward instead of as a stack. A project file reads as exactly
+that. In the app, open a `.glb` or `.stl` to import it, then SPLIT and JOIN A PART on a part.
+
 ## Three ways to describe a device
 
 Paths inside a file (`detail`, a tour's `file`, a project's `model`, a `file` part) are relative

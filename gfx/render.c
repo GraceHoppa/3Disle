@@ -472,8 +472,9 @@ static void draw_item(Model *m, const DrawItem *it, const SceneHints *hints, Vec
     glUniform1i(R.u.hasmap, 0);
   }
   if (mat->tex_mr) {
-    ensure_texture(mat->tex_mr);
+    // Uploading binds to the active unit: on unit 1 it would stand in for the colour map for a frame.
     glActiveTexture(GL_TEXTURE2);
+    ensure_texture(mat->tex_mr);
     glBindTexture(GL_TEXTURE_2D, mat->tex_mr->gl);
     glActiveTexture(GL_TEXTURE1);
     glUniform1i(R.u.hasmr, 1);

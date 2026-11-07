@@ -374,33 +374,40 @@ bool viewer_open(Viewer *v, const char *path, char *err, size_t errlen) {
   }
   Tour *t = tour_parse(path, text);
   free(text);
+  float aspect = 1400.f / 850;
+  Arena ar = {0};
+  const char *open_path = path, *name = NULL;
+  if (t) {
+    if (!arr_len(t->levels)) {
+      snprintf(err, errlen, "%s: a tour with no levels", path);
+      tour_free(t);
+      arena_free(&ar);
+      return false;
+    }
+    open_path = path_join(&ar, path, t->levels[0].file);
+    name = t->levels[0].title;
+    t->at = 0;
+  }
+  // Nothing of what is open changes until the new thing has loaded.
+  if (!show_file(v, open_path, name, 1, aspect, err, errlen)) {
+    tour_free(t);
+    arena_free(&ar);
+    return false;
+  }
   tour_free(v->tour);
   v->tour = t;
   v->ntrail = 0;
   v->finale = false;
   v->auto_on = false;
-  float aspect = 1400.f / 850;
-  Arena ar = {0};
-  const char *open_path = path, *name = NULL;
-  if (t) {
-    open_path = path_join(&ar, path, t->levels[0].file);
-    name = t->levels[0].title;
-    t->at = 0;
-    v->landing = v->intro;
-    v->landing_leaving = false;
-    v->landing_t = 0;
-  } else {
-    v->landing = false;
-  }
-  bool ok = show_file(v, open_path, name, 1, aspect, err, errlen);
-  if (ok) {
-    Entry *e = &v->trail[v->ntrail++];
-    snprintf(e->path, sizeof e->path, "%s", open_path);
-    snprintf(e->name, sizeof e->name, "%s", v->title);
-    v->stage.flying = false;
-  }
+  v->landing = t ? v->intro : false;
+  v->landing_leaving = false;
+  v->landing_t = 0;
+  Entry *e = &v->trail[v->ntrail++];
+  snprintf(e->path, sizeof e->path, "%s", open_path);
+  snprintf(e->name, sizeof e->name, "%s", v->title);
+  v->stage.flying = false;
   arena_free(&ar);
-  return ok;
+  return true;
 }
 
 void viewer_free(Viewer *v) {

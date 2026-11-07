@@ -29,14 +29,21 @@ function of its time, so two renders of the same moment are identical.
   <img src="docs/media/fc.jpg" alt="The flight controller, one level down" width="49%" />
 </p>
 
+## The app
+
+<p align="center">
+  <img src="docs/media/app.jpg" alt="The app's Build tab: the quad's parts in a tree, the 3D view, and every field of the selected part" width="100%" />
+</p>
+
 ## Status
 
 | | |
 | --- | --- |
 | Engine, renderer, viewer, tours, dives, labels, throttle | **Working, in C** |
-| Timeline format, automatic videos, MP4 rendering | **Working, command line** |
-| Editor: build a device and animate it on a timeline | Next |
-| One-file web export, GLB models and projects | Planned; for now they live in [`legacy-ts/`](legacy-ts/) |
+| Timeline format, automatic videos, MP4 rendering | **Working** |
+| The app: build a device, animate it on a timeline, render it | **Working; checked headless, waiting for a person in a real window** |
+| One-file web export | **Working** |
+| GLB and STL models: import, cut into parts, take apart | **Working** |
 
 Details: [docs/STATE.md](docs/STATE.md) and [docs/PLAN.md](docs/PLAN.md).
 
@@ -47,7 +54,7 @@ Linux, with a C compiler, SDL3, EGL and OpenGL ES 3 headers; ffmpeg to render vi
 ```sh
 make            # build/3disle
 make test       # engine checks; needs no screen or GPU
-build/3disle    # open the viewer on the quad tour
+build/3disle    # the app: build, animate, view; or give it a device, tour, video, .glb or .stl
 ```
 
 More: [INSTALL.md](INSTALL.md). How it works: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Every
