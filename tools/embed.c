@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     int c;
     long n = 0;
     while ((c = fgetc(f)) != EOF) fprintf(o, "%s%d,", n++ % 32 ? "" : "\n", c);
-    fprintf(o, "0};\n");
+    fprintf(o, "0};\n#define %s_len %ldu\n", argv[i], n);
     fclose(f);
   }
   fclose(o);

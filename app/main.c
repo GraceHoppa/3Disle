@@ -20,6 +20,7 @@ static void usage(void) {
           "3disle auto <device-or-tour.json> <out.shot.json>   write a video's timeline from the data\n"
           "3disle render <file.shot.json> -o out.mp4 [--size WxH] [--fps N] [--crf N] [--ss K] [--from S] [--to S] [--no-grain]\n"
           "3disle still <file.shot.json> <out.png> <seconds> [--size WxH]\n"
+          "3disle export <device-or-tour.json> -o page.html    one file that opens from disk\n"
           "3disle script [--app] <file.json> <steps>  drive the viewer or the app headless (for checks)\n");
 }
 
@@ -67,6 +68,18 @@ static int cmd_auto(int argc, char **argv) {
   if (!shot_save(s, argv[1])) return fprintf(stderr, "can't write %s\n", argv[1]), 1;
   printf("%s: %d scenes, %.1f s\n", argv[1], arr_len(s->scenes), s->duration);
   shot_free(s);
+  return 0;
+}
+
+static int cmd_export(int argc, char **argv) {
+  const char *in = NULL, *out = NULL;
+  for (int i = 0; i < argc; i++) {
+    if (!strcmp(argv[i], "-o") && i + 1 < argc) out = argv[++i];
+    else in = argv[i];
+  }
+  if (!in || !out) return usage(), 2;
+  char err[2048] = "";
+  if (!export_page(in, out, err, sizeof err)) return fprintf(stderr, "%s\n", err), 1;
   return 0;
 }
 
@@ -147,6 +160,7 @@ int main(int argc, char **argv) {
   if (!strcmp(cmd, "auto")) return cmd_auto(argc - 2, argv + 2);
   if (!strcmp(cmd, "render")) return cmd_render(argc - 2, argv + 2);
   if (!strcmp(cmd, "still")) return cmd_still(argc - 2, argv + 2);
+  if (!strcmp(cmd, "export")) return cmd_export(argc - 2, argv + 2);
   if (!strcmp(cmd, "script")) return cmd_script(argc - 2, argv + 2);
   if (!strcmp(cmd, "--help") || !strcmp(cmd, "-h")) return usage(), 0;
   return app_window(argc - 1, argv + 1);

@@ -1,3 +1,4 @@
+#include "app.h"
 #include "editor_int.h"
 #include <dirent.h>
 #include <stdarg.h>
@@ -427,8 +428,10 @@ static void files_finish(Editor *e) {
     anim_save(e);
   } else {
     Doc *d = ed_doc(e);
-    snprintf(d->path, sizeof d->path, "%s", full);
-    ed_doc_save(e, d);
+    if (d) {
+      snprintf(d->path, sizeof d->path, "%s", full);
+      ed_doc_save(e, d);
+    }
   }
   e->modal = MODAL_NONE;
   e->modal_for_video = false;
@@ -591,6 +594,33 @@ void ed_sel_valid(Doc *d) {
   if (!ok) *c = (Sel){SEL_DEVICE, -1, -1};
 }
 
+// One page from what is on disk, so what the page shows is what was saved.
+static void editor_export(Editor *e) {
+  Doc *d = ed_doc(e);
+  bool tour = e->tour && (d->sel.kind == SEL_TOUR || d->sel.kind == SEL_LEVEL);
+  if (tour && e->tour->dirty && !ed_tour_save(e)) return;
+  for (int i = 0; i < arr_len(e->docs); i++) {
+    Doc *o = e->docs[i];
+    if (!o->dirty) continue;
+    if (!o->path[0]) {
+      e->cur = i;
+      ed_status(e, true, "Save this device first: the page is made from the files");
+      ed_doc_save(e, o);
+      return;
+    }
+    if (!ed_doc_save(e, o)) return;
+  }
+  const char *entry = tour ? e->tour->path : d->path;
+  char out[1100], err[1024] = "";
+  snprintf(out, sizeof out, "%s", entry);
+  char *dot = strrchr(out, '.');
+  if (dot && !strchr(dot, '/')) *dot = 0;
+  size_t n = strlen(out);
+  snprintf(out + n, sizeof out - n, ".html");
+  if (export_page(entry, out, err, sizeof err)) ed_status(e, false, "Wrote %s: one file, opens in any browser", out);
+  else ed_status(e, true, "%s", err);
+}
+
 static void apply_doc_text(Doc *d, const char *text, Sel sel) {
   char err[256];
   AssemblySpec *s = spec_parse(text, err, sizeof err);
@@ -660,11 +690,13 @@ static void top_bar(Editor *e) {
     }
   }
   tabs(e, h / 2);
-  float bw = S(62), bx = W - S(10) - bw;
+  float bw = S(56), bx = W - S(10) - bw;
   if (ui_button(rect(bx, S(6), bw, S(26)), "REDO", 0)) editor_undo(e, true);
   bx -= bw + S(4);
   if (ui_button(rect(bx, S(6), bw, S(26)), "UNDO", 0)) editor_undo(e, false);
   bx -= bw + S(12);
+  if (ui_button(rect(bx, S(6), bw, S(26)), "EXPORT", 0)) editor_export(e);
+  bx -= bw + S(4);
   if (ui_button(rect(bx, S(6), bw, S(26)), "SAVE", 0)) editor_save(e);
   bx -= bw + S(4);
   if (ui_button(rect(bx, S(6), bw, S(26)), "OPEN", 0)) ed_modal_files(e, MODAL_OPEN);

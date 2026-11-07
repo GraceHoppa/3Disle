@@ -89,6 +89,12 @@ run "a tour: levels open as documents" public/models/drone/tour.json \
 run "the View tab shows unsaved work" - \
   "press:+ PART" ctrl:3 expect:tab=view wait:0.2 press:ANIMATE expect:tab=animate press:BUILD expect:tab=build
 
+run "export a page from the app" "$T/plate.json" press:EXPORT expect:dirty=0
+if [ ! -s "$T/plate.html" ]; then
+  echo "FAIL no page"
+  fails=$((fails + 1))
+fi
+
 # ---- Animate
 cp -r public/models/drone "$T/drone"
 run "auto video: scrub, keys, undo, save, reopen" "$T/drone/motor.json" \

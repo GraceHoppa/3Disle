@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="3Disle">
+<meta name="author" content="f3nt">
+<title>@TITLE@</title>
+<style>
+html, body { margin: 0; height: 100%; background: #04070a; overflow: hidden; }
+canvas { display: block; width: 100vw; height: 100vh; outline: 0; touch-action: none; }
+#credit { position: fixed; right: 10px; bottom: 6px; font: 11px ui-monospace, "JetBrains Mono", monospace; color: #5e6960; pointer-events: none; }
+#fail { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 24px; font: 14px ui-monospace, monospace; color: #e8eee6; text-align: center; }
+</style>
+</head>
+<body>
+<canvas id="c" tabindex="0"></canvas>
+<div id="credit">Created by f3nt</div>
+<div id="fail"></div>
+<script id="data" type="application/json">@DATA@</script>
+<script>
+const ENTRY = "@ENTRY@";
+const WASM_B64 = "@WASM@";
+@GLUE@
+</script>
+</body>
+</html>
