@@ -976,8 +976,16 @@ void props_take_pick(Editor *e, Model *m, Hit h) {
   const char *copy = spec_str(s, name);
   if (d->sel.kind == SEL_WIRE) {
     WireSpec *w = &s->wires[d->sel.index];
+    // A name the app made up keeps telling the truth; one the author wrote is left alone.
+    char was[640];
+    snprintf(was, sizeof was, "%s to %s", w->from ? w->from : "", w->to ? w->to : "");
+    bool auto_name = w->name && !strcmp(w->name, was);
     if (e->pick == PICK_WIRE_FROM) w->from = copy;
     if (e->pick == PICK_WIRE_TO) w->to = copy;
+    if (auto_name) {
+      snprintf(was, sizeof was, "%s to %s", w->from ? w->from : "", w->to ? w->to : "");
+      w->name = spec_str(s, was);
+    }
   } else if (d->sel.kind == SEL_LINK) {
     LinkSpec *l = &s->layers[d->sel.layer].links[d->sel.index];
     if (e->pick == PICK_LINK_FROM) l->from = copy;

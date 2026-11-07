@@ -132,6 +132,7 @@ struct Editor {
   bool orbit_pending;
 
   PickFor pick;
+  bool reveal; // bring the selected row into sight in the tree
 
   Modal modal;
   bool modal_for_video;

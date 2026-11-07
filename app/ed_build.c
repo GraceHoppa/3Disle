@@ -83,8 +83,19 @@ static void select_item(Editor *e, Sel s) {
   ui_unfocus();
 }
 
+// A selection made in the 3D view brings its row into sight.
+static void reveal(Editor *e, Scroll *sc, float y, float h) {
+  if (!e->reveal) return;
+  e->reveal = false;
+  if (y < sc->r.y) *sc->pos -= sc->r.y - y;
+  else if (y + h > sc->r.y + sc->r.h) *sc->pos += y + h - (sc->r.y + sc->r.h);
+}
+
+static Scroll *g_tree_scroll;
+
 static bool row(Editor *e, float *y, float x, float w, int depth, const char *label, const char *id, bool on, u32 mark) {
   Rect r = rect(x, *y, w, S(22));
+  if (on) reveal(e, g_tree_scroll, *y, S(22));
   char lbl[300];
   snprintf(lbl, sizeof lbl, "%s##%s", label, id);
   bool hit = ui_button(rect(r.x + S(10) * (float)depth, r.y, r.w - S(10) * (float)depth, r.h), lbl, BTN_LEFT | BTN_QUIET | (on ? BTN_ON : 0));
@@ -108,6 +119,7 @@ static void tree(Editor *e, Rect r) {
   Doc *d = ed_doc(e);
   AssemblySpec *s = d->spec;
   Scroll sc = ui_scroll_begin(r, "tree");
+  g_tree_scroll = &sc;
   float x = r.x + S(4), w = r.w - S(8), y = sc.y + S(4);
   char id[64], buf[300];
   if (e->tour) {
@@ -145,6 +157,9 @@ static void tree(Editor *e, Rect r) {
     snprintf(buf, sizeof buf, "%s##fold%d", closed ? "+" : "\xE2\x88\x92", li);
     if (arr_len(l->parts) + arr_len(l->links) > 0 && ui_button(fold, buf, BTN_QUIET) && li < COUNT(d->closed_layer)) d->closed_layer[li] = !closed;
     Rect rr = rect(x + S(18), y, w - S(18), S(22));
+    if (d->sel.kind == SEL_LAYER && d->sel.layer == li) reveal(e, &sc, y, S(22));
+    // A part chosen in the view can't stay hidden inside a folded layer.
+    if (e->reveal && d->sel.kind >= SEL_PART && d->sel.kind <= SEL_LINK && d->sel.layer == li) closed = false, d->closed_layer[li] = false;
     snprintf(buf, sizeof buf, "%s##%s", l->name, id);
     if (ui_button(rr, buf, BTN_LEFT | BTN_QUIET | (d->sel.kind == SEL_LAYER && d->sel.layer == li ? BTN_ON : 0))) select_item(e, (Sel){SEL_LAYER, li, -1});
     y += S(22);
@@ -514,6 +529,7 @@ static void view_input(Editor *e, Rect view) {
           if (h.node >= 0) props_take_pick(e, m, h);
         } else {
           select_item(e, h.node >= 0 ? sel_of_node(m, d->built, h.node) : (Sel){SEL_DEVICE, -1, -1});
+          e->reveal = true;
         }
       }
     }
@@ -530,7 +546,7 @@ static void view_input(Editor *e, Rect view) {
 
 static void view_tools(Editor *e, Rect view) {
   Doc *d = ed_doc(e);
-  float h = S(26), w = S(330), x = view.x + (view.w - w) / 2, y = view.y + view.h - h - S(12);
+  float h = S(26), w = minf(S(300), view.w - S(24)), x = view.x + S(12), y = view.y + view.h - h - S(12);
   Rect bar = rect(x, y, w, h);
   ui_rect(bar, RGBA(6, 12, 8, 230));
   ui_border(bar, C_LINE, maxf(1, S(1)));

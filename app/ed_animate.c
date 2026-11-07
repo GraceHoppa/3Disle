@@ -553,12 +553,24 @@ static void timeline(Editor *e, Rect r) {
   }
   strip_y += rh;
   int cur_scene = shot_scene_at(s, a->t);
+  // Labels that overlap in time stack in lanes, so each can still be grabbed.
+  double lane_end[6];
+  for (int i = 0; i < 6; i++) lane_end[i] = -1;
+  int lanes = 1;
   for (int i = 0; i < arr_len(s->labels); i++) {
     const ShotLabel *l = &s->labels[i];
     if (l->scene != cur_scene) continue;
-    strip_block(e, rect(tx, strip_y, tw, rh), tx, tw, WHAT_LABEL, i, l->t0, l->t1, l->text ? l->text : l->part, RGBA(0xff, 0xe0, 0x5a, 255), "label");
+    int at = 5;
+    for (int k = 0; k < 6; k++)
+      if (lane_end[k] <= l->t0) {
+        at = k;
+        break;
+      }
+    lane_end[at] = l->t1;
+    lanes = maxi(lanes, at + 1);
+    strip_block(e, rect(tx, strip_y + (float)at * rh, tw, rh), tx, tw, WHAT_LABEL, i, l->t0, l->t1, l->text ? l->text : l->part, RGBA(0xff, 0xe0, 0x5a, 255), "label");
   }
-  strip_y += rh;
+  strip_y += rh * (float)lanes;
   ui_clip_pop();
   for (int i = 0; i < 3; i++) ui_text(r.x + S(10), y + (float)i * rh + S(3), S(10.5f), FONT_REGULAR, C_FAINT, STRIP[i]);
   y = strip_y;
@@ -1028,11 +1040,7 @@ void anim_frame(Editor *e) {
   Rect tl = rect(b.x, b.y + b.h - th, b.w - rw, th);
   Rect area = rect(b.x, b.y, b.w - rw, b.h - th);
   if (!a->shot) {
-    ed_view_prepare(e, (int)area.w, (int)area.h);
-    PostParams post = post_defaults();
-    r_render_empty(&post, e->vfbo);
-    ed_view_blit(e, area);
-    empty_card(e, area);
+    empty_card(e, b);
     return;
   }
   anim_keys(e);
