@@ -65,7 +65,7 @@ typedef struct {
 
 typedef enum { MODAL_NONE, MODAL_OPEN, MODAL_SAVE_AS, MODAL_CLOSE, MODAL_QUIT, MODAL_RENDER, MODAL_NEW_VIDEO } Modal;
 
-typedef enum { PICK_NONE, PICK_WIRE_FROM, PICK_WIRE_TO, PICK_LINK_FROM, PICK_LINK_TO } PickFor;
+typedef enum { PICK_NONE, PICK_WIRE_FROM, PICK_WIRE_TO, PICK_LINK_FROM, PICK_LINK_TO, PICK_JOIN } PickFor;
 
 typedef struct {
   Shot *shot;
@@ -183,6 +183,7 @@ void ed_rename_everywhere(Editor *e, const char *from, const char *to);
 // ed_props.c
 void props_panel(Editor *e, Rect r);
 void props_take_pick(Editor *e, Model *m, Hit h);
+bool part_split(Editor *e, int li, int pi);
 bool ed_tour_active(const Editor *e);
 const char *ed_tour_level_file(const Editor *e, int i);
 bool ed_tour_save(Editor *e);

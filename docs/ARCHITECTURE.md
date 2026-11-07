@@ -39,4 +39,4 @@ shot.json ─ shot.c ─► Shot ─ player_seek(t) ─► ShotFrame ─ video.c
 - Painted textures are `SRGB8_ALPHA8`: mips average in linear light. Filtering sRGB bytes made carbon
   weave moiré.
 - C has no raw strings: shaders live in `.glsl` files.
-- `3disle` with an unknown word opens a window. Check that the build succeeded before scripting it.
+- An old binary without a new subcommand used to open a window on the owner's screen. Now an unknown word that is no file is refused; still chain scripted runs after the build with `&&`.

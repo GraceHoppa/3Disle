@@ -7,6 +7,7 @@
 #include "ui.h"
 #include "video.h"
 #include "viewer.h"
+#include <unistd.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
@@ -21,6 +22,7 @@ static void usage(void) {
           "3disle render <file.shot.json> -o out.mp4 [--size WxH] [--fps N] [--crf N] [--ss K] [--from S] [--to S] [--no-grain]\n"
           "3disle still <file.shot.json> <out.png> <seconds> [--size WxH]\n"
           "3disle export <device-or-tour.json> -o page.html    one file that opens from disk\n"
+          "3disle check [folder-or-file]      every file opens, and everything it names exists\n"
           "3disle script [--app] <file.json> <steps>  drive the viewer or the app headless (for checks)\n");
 }
 
@@ -161,7 +163,14 @@ int main(int argc, char **argv) {
   if (!strcmp(cmd, "render")) return cmd_render(argc - 2, argv + 2);
   if (!strcmp(cmd, "still")) return cmd_still(argc - 2, argv + 2);
   if (!strcmp(cmd, "export")) return cmd_export(argc - 2, argv + 2);
+  if (!strcmp(cmd, "check")) return cmd_check(argc - 2, argv + 2);
   if (!strcmp(cmd, "script")) return cmd_script(argc - 2, argv + 2);
   if (!strcmp(cmd, "--help") || !strcmp(cmd, "-h")) return usage(), 0;
+  // Only a real file or `view` may open a window: a mistyped command must never pop one up.
+  if (argc > 1 && strcmp(cmd, "view") && access(cmd, R_OK)) {
+    fprintf(stderr, "3disle: no command or file called %s\n", cmd);
+    usage();
+    return 2;
+  }
   return app_window(argc - 1, argv + 1);
 }

@@ -1,6 +1,7 @@
 // What a device becomes once built: a tree of named nodes with meshes and materials. No GL here,
 // so the whole of it runs in tests. The renderer reads it; the viewer and timeline move it.
 #pragma once
+#include "glb.h"
 #include "mesh.h"
 #include "spec.h"
 
@@ -16,6 +17,7 @@ typedef struct Texture {
   int w, h;
   u8 *rgba; // freed once uploaded
   bool repeat;
+  bool linear; // data, not colour: a metal and roughness map
   u32 gl;
   u32 last_used;
   bool marked;
@@ -29,6 +31,8 @@ typedef struct {
   Vec3 emissive; // linear
   float emissive_intensity;
   Texture *tex;
+  Texture *tex_mr; // green is roughness, blue is metalness, as glTF has it
+  bool two_sided;
   float uv_scale;
   // Wires and flows.
   Vec3 glow;
@@ -127,6 +131,8 @@ typedef struct {
   const char **missing; // arr: wire ends that name nothing
   float flow_speed;
   float explode;
+  const char *credit;     // what the model files ask to be credited with
+  const char *file_error; // a model file that could not be used
   // Making room around a selection.
   Vec3 *room_to;      // arr per piece
   bool room_moving;

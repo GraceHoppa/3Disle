@@ -85,6 +85,46 @@ run "layers: add, move, delete; opening a linked file" public/models/drone/quad.
 run "a tour: levels open as documents" public/models/drone/tour.json \
   expect:sel=tour expect:docs=3 "press:2  SpeedyBee F405 V5 flight controller" expect:sel=level
 
+# ---- Model files
+cp public/projects/motor/motor.glb "$T/motor.glb"
+run "import a model: parts cut from it, join, split, save" "$T/motor.glb" \
+  expect:sel=device expect:dirty=1 wait:0.2 \
+  "dragby:apart@0.1,0.5|100|0" wait:0.1 \
+  ctrl:s expect:dirty=0 \
+  press:VIEW wait:0.2 press:BUILD
+if [ ! -s "$T/motor.json" ]; then
+  echo "FAIL the import was not saved beside the model"
+  fails=$((fails + 1))
+fi
+run "and it opens again" "$T/motor.json" expect:dirty=0 expect:missing=0 wait:0.1 press:EXPORT
+if [ ! -s "$T/motor.html" ]; then
+  echo "FAIL no page from the imported model"
+  fails=$((fails + 1))
+fi
+run "a project opens as a device" public/projects/motor/project.json "press:Bell" expect:sel=part "expect:selname=Bell" wait:0.1
+
+# ---- The checker
+if ! "$BIN" check public >/dev/null; then
+  echo "FAIL the data checker found problems in public/"
+  "$BIN" check public | tail -5
+  fails=$((fails + 1))
+else
+  echo "ok   the data checker passes the real data"
+fi
+cat >"$T/broken.json" <<JSON
+{ "name": "Broken", "footprint": [10, 10], "layers": [ { "name": "L", "thickness": 1, "detail": "gone.json", "parts": [
+  { "name": "A", "shape": "box", "size": [1, 1, 1], "spin": { "by": "nope", "map": [[0, 0]] } } ],
+  "links": [ { "from": "A", "to": "ghost" } ] } ], "wires": [ { "name": "w", "from": "A", "to": "ghost2" } ] }
+JSON
+n=$("$BIN" check "$T/broken.json" | tail -1)
+if [ "$n" = "1 files, 4 problems" ]; then
+  echo "ok   the data checker names what is broken"
+else
+  echo "FAIL the checker said: $n"
+  "$BIN" check "$T/broken.json"
+  fails=$((fails + 1))
+fi
+
 # ---- View
 run "the View tab shows unsaved work" - \
   "press:+ PART" ctrl:3 expect:tab=view wait:0.2 press:ANIMATE expect:tab=animate press:BUILD expect:tab=build

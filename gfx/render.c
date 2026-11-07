@@ -25,7 +25,7 @@ static struct {
   int nlevels;
   // Cached uniform locations of the scene shader.
   struct {
-    int vp, model, tint, eye, mode, color, emissive, glow, metal, rough, opacity, clearcoat, lods, uvs, map, hasmap, env;
+    int vp, model, tint, eye, mode, color, emissive, glow, metal, rough, opacity, clearcoat, lods, uvs, map, hasmap, env, mrmap, hasmr;
     int keydir, keycol, rimdir, rimcol, sky, ground, ppos, pcol, pdist, pdecay;
     int flowa, flowb, level, speed, phase, length, wiremode;
   } u;
@@ -217,7 +217,7 @@ bool r_init(char *err, size_t errlen) {
 #define U(f, n) R.u.f = LOC(R.scene, n)
   U(vp, "uViewProj"), U(model, "uModel"), U(tint, "uTintCopy"), U(eye, "uEye"), U(mode, "uMode"), U(color, "uColor");
   U(emissive, "uEmissive"), U(glow, "uGlow"), U(metal, "uMetal"), U(rough, "uRough"), U(opacity, "uOpacity");
-  U(clearcoat, "uClearcoat"), U(lods, "uEnvLods"), U(uvs, "uUvScale"), U(map, "uMap"), U(hasmap, "uHasMap"), U(env, "uEnv");
+  U(clearcoat, "uClearcoat"), U(lods, "uEnvLods"), U(uvs, "uUvScale"), U(map, "uMap"), U(hasmap, "uHasMap"), U(env, "uEnv"), U(mrmap, "uMrMap"), U(hasmr, "uHasMr");
   U(keydir, "uKeyDir"), U(keycol, "uKeyColor"), U(rimdir, "uRimDir"), U(rimcol, "uRimColor"), U(sky, "uHemiSky");
   U(ground, "uHemiGround"), U(ppos, "uPointPos"), U(pcol, "uPointColor"), U(pdist, "uPointDist"), U(pdecay, "uPointDecay");
   U(flowa, "uFlowA"), U(flowb, "uFlowB"), U(level, "uLevel"), U(speed, "uSpeed"), U(phase, "uPhase"), U(length, "uLength");
@@ -356,7 +356,8 @@ static void ensure_texture(Texture *t) {
   glBindTexture(GL_TEXTURE_2D, t->gl);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   // sRGB: mips and filtering happen in linear light, so fine patterns average to the right colour.
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8_ALPHA8, t->w, t->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, t->rgba);
+  // Maps that hold numbers instead of colours stay as they are.
+  glTexImage2D(GL_TEXTURE_2D, 0, t->linear ? GL_RGBA8 : GL_SRGB8_ALPHA8, t->w, t->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, t->rgba);
   glGenerateMipmap(GL_TEXTURE_2D);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -470,7 +471,16 @@ static void draw_item(Model *m, const DrawItem *it, const SceneHints *hints, Vec
   } else {
     glUniform1i(R.u.hasmap, 0);
   }
-  if (mat->mode == MAT_FLOW) glDisable(GL_CULL_FACE);
+  if (mat->tex_mr) {
+    ensure_texture(mat->tex_mr);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, mat->tex_mr->gl);
+    glActiveTexture(GL_TEXTURE1);
+    glUniform1i(R.u.hasmr, 1);
+  } else {
+    glUniform1i(R.u.hasmr, 0);
+  }
+  if (mat->mode == MAT_FLOW || mat->two_sided) glDisable(GL_CULL_FACE);
   else glEnable(GL_CULL_FACE);
   bool blended = mat->transparent || it->opacity < 0.999f;
   if (blended) {
@@ -502,6 +512,7 @@ static void scene_uniforms(const Model *m, const Camera *c, const Mat4 *vp) {
   glBindTexture(GL_TEXTURE_CUBE_MAP, R.env);
   glUniform1i(R.u.env, 0);
   glUniform1i(R.u.map, 1);
+  glUniform1i(R.u.mrmap, 2);
   glUniform1f(R.u.lods, ENV_LODS);
   // The light rig, turned to sit relative to our default view and scaled to the model.
   Vec3 view = v3norm(v3(1, 0.7f, 1.2f));

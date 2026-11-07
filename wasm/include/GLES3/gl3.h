@@ -51,6 +51,8 @@ typedef unsigned int GLuint; typedef float GLfloat; typedef char GLchar; typedef
 #define GL_STATIC_DRAW 0x88E4
 #define GL_STREAM_DRAW 0x88E0
 #define GL_TEXTURE0 0x84C0
+#define GL_TEXTURE2 0x84C2
+#define GL_RGBA8 0x8058
 #define GL_TEXTURE1 0x84C1
 #define GL_TEXTURE_2D 0x0DE1
 #define GL_TEXTURE_CUBE_MAP 0x8513

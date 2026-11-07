@@ -414,7 +414,7 @@ static void tree_tools(Editor *e, Rect r) {
   float pad = S(6), x = r.x + pad, w = r.w - 2 * pad, y = r.y + pad, h = S(24), gap = S(4);
   ui_rect(rect(r.x, r.y, r.w, maxf(1, S(1))), C_LINE);
   float half = (w - gap) / 2, third = (w - 2 * gap) / 3, quarter = (w - 3 * gap) / 4;
-  static const char *const SHAPES[] = {"Box", "Cylinder", "Sphere", "Fan", "Port", "Outline"};
+  static const char *const SHAPES[] = {"Box", "Cylinder", "Sphere", "Fan", "Port", "Outline", "Model file"};
   ui_dropdown(rect(x, y, half, h), "add-shape", &e->add_shape, SHAPES, COUNT(SHAPES));
   if (ui_button(rect(x + half + gap, y, half, h), "+ PART", BTN_ON)) add_part(e);
   y += h + gap;
@@ -639,6 +639,7 @@ static void draw_view(Editor *e, Rect view) {
     ui_border(b, C_ACCENT, maxf(1, S(1)));
     ui_text(b.x + S(12), b.y + S(5), S(12), FONT_BOLD, C_BRIGHT, msg);
   }
+  if (m->credit) ui_text_fit(view.x + S(12), view.y + S(8), view.w - S(24), S(10.5f), FONT_REGULAR, C_FAINT, m->credit);
   view_tools(e, view);
 }
 

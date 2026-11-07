@@ -13,7 +13,8 @@
   const encoder = new TextEncoder(), decoder = new TextDecoder();
   const raw = JSON.parse(document.getElementById("data").textContent);
   const files = new Map();
-  for (const k in raw) files.set(k, encoder.encode(raw[k]));
+  for (const k in raw.text) files.set(k, encoder.encode(raw.text[k]));
+  for (const k in raw.bin) files.set(k, Uint8Array.from(atob(raw.bin[k]), (c) => c.charCodeAt(0)));
 
   let wasm, memory;
   const u8 = () => new Uint8Array(memory.buffer);

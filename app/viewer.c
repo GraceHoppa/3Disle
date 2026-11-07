@@ -1270,6 +1270,11 @@ void viewer_frame(Viewer *v, const UiInput *in, u32 fbo) {
     }
     if (v->status[0]) ui_text(S(32), H - S(24), S(12), FONT_REGULAR, C_ERROR, v->status);
   }
+  // A model's licence usually asks for this.
+  if (v->model->credit && !covered) {
+    float cw = minf(ui_text_width(S(10.5f), FONT_REGULAR, 0, v->model->credit), W * 0.5f);
+    ui_text_fit(W - cw - S(14), H - S(26), cw + 1, S(10.5f), FONT_REGULAR, C_FAINT, v->model->credit);
+  }
   draw_landing(v, in);
   draw_finale(v, in);
   if (v->overlay) v->overlay(v->overlay_ud);

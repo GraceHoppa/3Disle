@@ -6,6 +6,8 @@
 
 typedef struct {
   char **keys, **paths, **texts;
+  size_t *sizes; // bytes in texts[i]
+  bool *binary;
 } Pack;
 
 static bool pack_has(const Pack *p, const char *key) {
@@ -23,14 +25,37 @@ static char *dup_s(const char *s) {
 
 static bool pack_add(Pack *p, const char *key, const char *disk, char *err, size_t errlen);
 
-// Everything a file reaches: `detail` anywhere inside it, and a tour's level files.
+static bool is_model_file(const char *s) {
+  size_t n = strlen(s);
+  return n > 4 && (!strcmp(s + n - 4, ".glb") || !strcmp(s + n - 4, ".stl"));
+}
+
+static bool pack_add_binary(Pack *p, const char *key, const char *disk, char *err, size_t errlen) {
+  if (pack_has(p, key)) return true;
+  size_t n = 0;
+  char *bytes = file_read(disk, &n);
+  if (!bytes) {
+    snprintf(err, errlen, "%s is named by the data but isn't there", disk);
+    return false;
+  }
+  arr_push(p->keys, dup_s(key));
+  arr_push(p->paths, dup_s(disk));
+  arr_push(p->texts, bytes);
+  arr_push(p->sizes, n);
+  arr_push(p->binary, true);
+  return true;
+}
+
+// Everything a file reaches: `detail` anywhere inside it, model files, and a tour's level files.
 static bool walk_links(Pack *p, const Json *j, const char *key, const char *disk, char *err, size_t errlen) {
   if (j->type == J_OBJ || j->type == J_ARR) {
     for (const Json *c = j->head; c; c = c->next) {
       bool link = c->type == J_STR && c->key && !strcmp(c->key, "detail");
-      if (link && c->str[0]) {
+      bool model = c->type == J_STR && c->key && (!strcmp(c->key, "file") || !strcmp(c->key, "model")) && is_model_file(c->str);
+      if ((link && c->str[0]) || model) {
         Arena ar = {0};
-        bool ok = pack_add(p, path_join(&ar, key, c->str), path_join(&ar, disk, c->str), err, errlen);
+        const char *k2 = path_join(&ar, key, c->str), *d2 = path_join(&ar, disk, c->str);
+        bool ok = model ? pack_add_binary(p, k2, d2, err, errlen) : pack_add(p, k2, d2, err, errlen);
         arena_free(&ar);
         if (!ok) return false;
       }
@@ -50,6 +75,8 @@ static bool pack_add(Pack *p, const char *key, const char *disk, char *err, size
   arr_push(p->keys, dup_s(key));
   arr_push(p->paths, dup_s(disk));
   arr_push(p->texts, text);
+  arr_push(p->sizes, strlen(text));
+  arr_push(p->binary, false);
   Arena ar = {0};
   Json *j = json_parse(&ar, text, err, errlen);
   bool ok = j != NULL;
@@ -157,12 +184,24 @@ bool export_page(const char *entry, const char *out_path, char *err, size_t errl
       out_add(&o, (const char *)ASSET_web_glue, ASSET_web_glue_len);
       c = m + 6;
     } else if (!strncmp(m, "@DATA@", 6)) {
-      out_str(&o, "{");
-      for (int i = 0; i < arr_len(p.keys); i++) {
-        if (i) out_str(&o, ",\n");
-        out_json_string(&o, p.keys[i]);
-        out_str(&o, ":");
-        out_json_string(&o, p.texts[i]);
+      for (int bin = 0; bin < 2; bin++) {
+        out_str(&o, bin ? ",\"bin\":{" : "{\"text\":{");
+        bool first = true;
+        for (int i = 0; i < arr_len(p.keys); i++) {
+          if (p.binary[i] != (bin == 1)) continue;
+          if (!first) out_str(&o, ",\n");
+          first = false;
+          out_json_string(&o, p.keys[i]);
+          out_str(&o, ":");
+          if (bin) {
+            out_str(&o, "\"");
+            out_base64(&o, (const unsigned char *)p.texts[i], p.sizes[i]);
+            out_str(&o, "\"");
+          } else {
+            out_json_string(&o, p.texts[i]);
+          }
+        }
+        out_str(&o, "}");
       }
       out_str(&o, "}");
       c = m + 6;
@@ -177,6 +216,6 @@ bool export_page(const char *entry, const char *out_path, char *err, size_t errl
   free(o.d);
   arena_free(&ar);
   for (int i = 0; i < arr_len(p.keys); i++) free(p.keys[i]), free(p.paths[i]), free(p.texts[i]);
-  arr_free(p.keys), arr_free(p.paths), arr_free(p.texts);
+  arr_free(p.keys), arr_free(p.paths), arr_free(p.texts), arr_free(p.sizes), arr_free(p.binary);
   return ok;
 }

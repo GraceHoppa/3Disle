@@ -530,9 +530,51 @@ static void part_shape_fields(Form *f, PartSpec *p) {
     p_num(f, "Height", &p->height, 0.05, "mm", 1);
     p_pick(f, "Finish", &p->finish, FIN, COUNT(FIN), "None");
     break;
-  case SHAPE_FILE: p_text(f, "File", &p->file); break;
+  case SHAPE_FILE: {
+    static const char *const UNITS[] = {"mm", "m"};
+    p_text(f, "File", &p->file);
+    p_pick(f, "File is in", &p->units, UNITS, COUNT(UNITS), "As the format says");
+    p_num(f, "Scale", &p->scale, 0.01, NULL, 1);
+    break;
+  }
   default: break;
   }
+}
+
+// The objects of a model file this part is made of: split it, or pull another part into it.
+static void part_objects(Form *f, int li, int pi) {
+  Editor *e = f->e;
+  Doc *d = ed_doc(e);
+  PartSpec *p = &f->s->layers[li].parts[pi];
+  section(f, "OBJECTS IN THE FILE");
+  int del = -1;
+  for (int i = 0; i < arr_len(p->nodes); i++) {
+    ui_push_id(i);
+    char buf[300];
+    snprintf(buf, sizeof buf, "%s", p->nodes[i]);
+    if (ui_text_field(rect(f->x, f->y, f->w - S(21), f->rh), "object", buf, sizeof buf, NULL)) {
+      p->nodes[i] = spec_str(f->s, buf);
+      changed(f);
+    }
+    if (ui_button(rect(f->x + f->w - S(18), f->y, S(18), f->rh), "\xC3\x97##obj", arr_len(p->nodes) > 1 ? BTN_QUIET : BTN_QUIET | BTN_DISABLED)) del = i;
+    ui_pop_id();
+    f->y += f->rh + S(3);
+  }
+  if (!arr_len(p->nodes)) note(f, C_DIM, "All of the file.");
+  if (del >= 0) {
+    arr_remove(p->nodes, del);
+    changed(f);
+  }
+  float half = (f->w - S(3)) / 2;
+  if (ui_button(rect(f->x, f->y, half, f->rh), "SPLIT##objects", 0)) {
+    if (!part_split(e, li, pi)) ed_status(e, true, "This part is a single object: nothing to split");
+    return;
+  }
+  char lbl[64];
+  snprintf(lbl, sizeof lbl, "JOIN A PART##objects");
+  if (ui_button(rect(f->x + half + S(3), f->y, half, f->rh), lbl, e->pick == PICK_JOIN ? BTN_ON : 0)) e->pick = e->pick == PICK_JOIN ? PICK_NONE : PICK_JOIN;
+  f->y += f->rh + S(3);
+  (void)d;
 }
 
 static void form_part(Form *f, int li, int pi) {
@@ -639,6 +681,11 @@ static void form_part(Form *f, int li, int pi) {
     p_num(f, "Phase (0-2)", &p->pulse_phase, 1, NULL, 0);
     p_value(f, "Pulse level", &p->pulse_level, 0.05, NULL, 1);
     p_color(f, "Pulse colour", &p->pulse_color);
+  }
+  if (p->shape == SHAPE_FILE) {
+    part_objects(f, li, pi);
+    p = &f->s->layers[li].parts[mini(pi, arr_len(f->s->layers[li].parts) - 1)];
+    if (d->sel.kind != SEL_PART || d->sel.layer != li || d->sel.index != pi) return; // split: the form's part is gone
   }
   section(f, "ABOUT");
   form_identity(f, &p->category, &p->info, &p->detail);
@@ -966,12 +1013,107 @@ bool ed_tour_undo(Editor *e, bool redo) {
   return true;
 }
 
+// ------------------------------------------------------------------ cutting and joining a model
+// One part per object below this part, each under its object's own name.
+bool part_split(Editor *e, int li, int pi) {
+  Doc *d = ed_doc(e);
+  AssemblySpec *s = d->spec;
+  PartSpec *p = &s->layers[li].parts[pi];
+  if (!p->file) return false;
+  Arena ar = {0};
+  char err[300] = "";
+  ModelFile *f = modelfile_load(path_join(&ar, s->path ? s->path : "./x", p->file), err, sizeof err);
+  arena_free(&ar);
+  if (!f) {
+    ed_status(e, true, "%s", err);
+    return false;
+  }
+  const char **names = NULL;
+  if (arr_len(p->nodes) > 1) {
+    for (int i = 0; i < arr_len(p->nodes); i++) arr_push(names, p->nodes[i]);
+  } else {
+    // Children of the one named object; with no name, the file's natural cut.
+    bool *on = modelfile_pick(f, p->nodes, arr_len(p->nodes));
+    int top = -1;
+    for (int i = 0; i < arr_len(f->objects) && top < 0; i++)
+      if (on[i] && f->objects[i].has_geometry) top = i;
+    arr_free(on);
+    if (arr_len(p->nodes) == 0) {
+      int *cut = modelfile_natural_parts(f);
+      for (int i = 0; i < arr_len(cut); i++) arr_push(names, f->objects[cut[i]].name);
+      arr_free(cut);
+    } else if (top >= 0) {
+      for (int i = 0; i < arr_len(f->objects); i++)
+        if (f->objects[i].parent == top && f->objects[i].has_geometry) arr_push(names, f->objects[i].name);
+    }
+  }
+  if (arr_len(names) < 2) {
+    arr_free(names);
+    return false;
+  }
+  PartSpec keep = *p;
+  for (int i = 0; i < arr_len(names); i++) {
+    PartSpec *n = spec_dup_part(s, li, pi + i);
+    PartSpec *self = &s->layers[li].parts[pi + i + 1];
+    (void)n;
+    arr_free(self->nodes);
+    arr_push(self->nodes, spec_str(s, names[i]));
+    char pname[256];
+    snprintf(pname, sizeof pname, "%s", names[i]);
+    for (int k = 2; spec_name_taken(s, pname) && k < 10000; k++) snprintf(pname, sizeof pname, "%.240s %d", names[i], k);
+    self->name = spec_str(s, pname);
+    self->at = keep.at;
+  }
+  arr_free(names);
+  spec_remove_part(s, li, pi);
+  d->sel = (Sel){SEL_LAYER, li, -1};
+  ed_doc_changed(e);
+  ed_status(e, false, "Split into objects");
+  return true;
+}
+
+// The clicked part's objects move into the selected one, and it goes.
+static void part_join(Editor *e, const Model *m, int node) {
+  Doc *d = ed_doc(e);
+  AssemblySpec *s = d->spec;
+  if (d->sel.kind != SEL_PART) return;
+  int at = node;
+  while (at > 0 && m->nodes[at].part_index < 0) at = m->nodes[at].parent;
+  if (at <= 0) return;
+  int li = m->nodes[at].layer_index, pi = m->nodes[at].part_index;
+  if (li != d->sel.layer || pi == d->sel.index) {
+    ed_status(e, true, "Pick another part on the same layer");
+    return;
+  }
+  PartSpec *me = &s->layers[li].parts[d->sel.index], *other = &s->layers[li].parts[pi];
+  if (other->shape != SHAPE_FILE || !other->file || !me->file || strcmp(other->file, me->file)) {
+    ed_status(e, true, "Only parts of the same model file can join");
+    return;
+  }
+  if (!arr_len(other->nodes) || !arr_len(me->nodes)) {
+    ed_status(e, true, "One of these is already the whole file");
+    return;
+  }
+  for (int i = 0; i < arr_len(other->nodes); i++) arr_push(me->nodes, other->nodes[i]);
+  char nm[300];
+  snprintf(nm, sizeof nm, "Joined %s", other->name);
+  spec_remove_part(s, li, pi);
+  if (pi < d->sel.index) d->sel.index--;
+  ed_doc_changed(e);
+  ed_status(e, false, "%s", nm);
+}
+
 // ------------------------------------------------------------------ a click in the view fills a field
 void props_take_pick(Editor *e, Model *m, Hit h) {
   Doc *d = ed_doc(e);
   const Node *n = &m->nodes[h.node];
   const char *name = h.copy >= 0 && n->names && h.copy < arr_len(n->names) ? n->names[h.copy] : n->name;
   if (!name || !*name) return;
+  if (e->pick == PICK_JOIN) {
+    part_join(e, m, h.node);
+    e->pick = PICK_NONE;
+    return;
+  }
   AssemblySpec *s = d->spec;
   const char *copy = spec_str(s, name);
   if (d->sel.kind == SEL_WIRE) {

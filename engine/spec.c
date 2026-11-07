@@ -108,6 +108,12 @@ static PartSpec parse_part(Arena *ar, const Json *j) {
   p.color = rd_str(&r, "color");
   p.material = rd_str(&r, "material");
   p.file = rd_str(&r, "file");
+  const Json *nodes = rd_take(&r, "nodes");
+  if (nodes && nodes->type == J_ARR)
+    for (const Json *e = nodes->head; e; e = e->next)
+      if (e->type == J_STR) arr_push(p.nodes, arena_str(ar, e->str));
+  p.scale = rd_num(&r, "scale");
+  p.units = rd_str(&r, "units");
   p.pattern = rd_str(&r, "pattern");
   p.marking = rd_str(&r, "marking");
   p.finish = rd_str(&r, "finish");
@@ -252,9 +258,40 @@ static WireSpec parse_wire(Arena *ar, const Json *j) {
   return w;
 }
 
+// A project (one model file, its objects grouped into named parts) is the same thing as one layer of
+// file parts, so it reads as that and everything else needs to know nothing about projects.
+static Json *project_as_assembly(Arena *ar, const Json *j) {
+  const char *model = json_str(j, "model", "");
+  Json *root = json_new(ar, J_OBJ);
+  for (const Json *m = j->head; m; m = m->next)
+    if (strcmp(m->key, "model") && strcmp(m->key, "parts") && strcmp(m->key, "units") && strcmp(m->key, "scale")) json_add(ar, root, m->key, json_clone(ar, m));
+  Json *foot = json_new(ar, J_ARR);
+  json_add_num(ar, foot, NULL, 0);
+  json_add_num(ar, foot, NULL, 0);
+  json_add(ar, root, "footprint", foot);
+  Json *layers = json_new(ar, J_ARR), *layer = json_new(ar, J_OBJ), *parts = json_new(ar, J_ARR);
+  json_add_str(ar, layer, "name", "Model");
+  json_add_num(ar, layer, "thickness", 0);
+  const Json *list = json_get(j, "parts");
+  for (const Json *p = list && list->type == J_ARR ? list->head : NULL; p; p = p->next) {
+    Json *c = json_clone(ar, p);
+    json_add_str(ar, c, "shape", "file");
+    json_add_str(ar, c, "file", model);
+    const Json *units = json_get(j, "units"), *scale = json_get(j, "scale");
+    if (units) json_add(ar, c, "units", json_clone(ar, units));
+    if (scale) json_add(ar, c, "scale", json_clone(ar, scale));
+    json_add(ar, parts, NULL, c);
+  }
+  json_add(ar, layer, "parts", parts);
+  json_add(ar, layers, NULL, layer);
+  json_add(ar, root, "layers", layers);
+  return root;
+}
+
 AssemblySpec *spec_parse(const char *text, char *err, size_t errlen) {
   AssemblySpec *s = calloc(1, sizeof *s);
   Json *j = json_parse(&s->ar, text, err, errlen);
+  if (j && j->type == J_OBJ && !json_get(j, "layers") && json_get(j, "model") && json_get(j, "parts")) j = project_as_assembly(&s->ar, j);
   if (!j || j->type != J_OBJ || !json_get(j, "layers")) {
     if (j && err) snprintf(err, errlen, "not an assembly: it has no \"layers\"");
     spec_free(s);
@@ -315,8 +352,11 @@ AssemblySpec *spec_load(const char *path, char *err, size_t errlen) {
   }
   AssemblySpec *s = spec_parse(text, err, errlen);
   free(text);
+  if (s) spec_set_path(s, path);
   return s;
 }
+
+void spec_set_path(AssemblySpec *s, const char *path) { s->path = path ? arena_str(&s->ar, path) : NULL; }
 
 AssemblySpec *spec_new(const char *name, double w, double d) {
   AssemblySpec *s = calloc(1, sizeof *s);
@@ -337,6 +377,7 @@ void spec_free(AssemblySpec *s) {
       arr_free(p->specs);
       arr_free(p->spin.map);
       arr_free(p->pulse_level.map);
+      arr_free(p->nodes);
     }
     for (int k = 0; k < arr_len(l->links); k++) {
       LinkSpec *n = &l->links[k];
@@ -458,6 +499,13 @@ static Json *part_json(Arena *ar, const PartSpec *p) {
   if (p->has_points) json_add(ar, o, "points", map_json(ar, p->points));
   w_holes(ar, o, "cutouts", p->cutouts, p->has_cutouts);
   w_str(ar, o, "file", p->file);
+  if (p->nodes) {
+    Json *n = jarr(ar);
+    for (int i = 0; i < arr_len(p->nodes); i++) json_add_str(ar, n, NULL, p->nodes[i]);
+    json_add(ar, o, "nodes", n);
+  }
+  w_num(ar, o, "scale", p->scale);
+  w_str(ar, o, "units", p->units);
   w_str(ar, o, "pattern", p->pattern);
   if (p->has_cells) w_d2(ar, o, "cells", p->cells);
   w_str(ar, o, "marking", p->marking);
@@ -628,6 +676,7 @@ AssemblySpec *spec_clone(const AssemblySpec *s) {
   char *text = spec_write(s);
   AssemblySpec *c = spec_parse(text, NULL, 0);
   free(text);
+  if (c) spec_set_path(c, s->path);
   return c;
 }
 
@@ -652,7 +701,7 @@ static const char *free_name(AssemblySpec *s, const char *base) {
 
 void spec_part_defaults(AssemblySpec *s, PartSpec *p, Shape shape) {
   p->shape = shape;
-  p->radius = p->height = p->round = p->lift = p->facing = p->blades = p->pulse_phase = UNSET;
+  p->radius = p->height = p->round = p->lift = p->facing = p->blades = p->pulse_phase = p->scale = UNSET;
   (void)s;
   double span = fmin(s->footprint.x, s->footprint.y);
   double unit = span > 0 ? span / 8 : 5;
@@ -693,7 +742,7 @@ void spec_part_defaults(AssemblySpec *s, PartSpec *p, Shape shape) {
     p->material = spec_str(s, "aluminium");
     break;
   }
-  case SHAPE_FILE:
+  case SHAPE_FILE: p->scale = UNSET; break;
   default: break;
   }
 }
@@ -748,6 +797,7 @@ static void part_own_arrays(PartSpec *c, const PartSpec *o) {
   ARR_COPY(c->specs, o->specs);
   ARR_COPY(c->spin.map, o->spin.map);
   ARR_COPY(c->pulse_level.map, o->pulse_level.map);
+  ARR_COPY(c->nodes, o->nodes);
   // Copy names are the original's: two copies answering to one name would only confuse.
   c->repeat.names = NULL;
 }
@@ -801,6 +851,7 @@ static void free_part(PartSpec *p) {
   arr_free(p->specs);
   arr_free(p->spin.map);
   arr_free(p->pulse_level.map);
+  arr_free(p->nodes);
 }
 static void free_link(LinkSpec *n) {
   arr_free(n->to);

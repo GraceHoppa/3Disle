@@ -3,6 +3,7 @@
 #include <dirent.h>
 #include <stdarg.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 // ------------------------------------------------------------------ undo
 static char *dup_str(const char *s) {
@@ -174,6 +175,7 @@ static Doc *doc_add(Editor *e, AssemblySpec *s, const char *path) {
   Doc *d = calloc(1, sizeof *d);
   d->spec = s;
   if (path) snprintf(d->path, sizeof d->path, "%s", path);
+  spec_set_path(s, path);
   stage_init(&d->stage);
   char *text = spec_write(s);
   hist_init(&d->hist, text);
@@ -214,6 +216,62 @@ static const char *base_name(const char *p) {
   return s ? s + 1 : p;
 }
 
+static bool ends_with(const char *s, const char *tail) {
+  size_t n = strlen(s), m = strlen(tail);
+  return n >= m && !strcmp(s + n - m, tail);
+}
+
+// A model file becomes a new device: one layer of parts, cut where the file itself branches. The
+// device is not on disk yet; saving writes it beside the model.
+static int import_model(Editor *e, const char *path, char *err, size_t errlen) {
+  ModelFile *f = modelfile_load(path, err, errlen);
+  if (!f) return -1;
+  char name[256], json[1200];
+  snprintf(name, sizeof name, "%s", base_name(path));
+  char *dot = strrchr(name, '.');
+  if (dot) *dot = 0;
+  snprintf(json, sizeof json, "%s", path);
+  dot = strrchr(json, '.');
+  if (dot) *dot = 0;
+  size_t n = strlen(json);
+  snprintf(json + n, sizeof json - n, ".json");
+  for (int i = 2; !access(json, F_OK) && i < 1000; i++) {
+    snprintf(json, sizeof json, "%s", path);
+    dot = strrchr(json, '.');
+    if (dot) *dot = 0;
+    n = strlen(json);
+    snprintf(json + n, sizeof json - n, "-%d.json", i);
+  }
+  Vec3 sz = box_size(f->box);
+  AssemblySpec *s = spec_new(name, round((double)sz.x * f->units * 10) / 10, round((double)sz.z * f->units * 10) / 10);
+  spec_add_layer(s, 0, "Model");
+  s->layers[0].thickness = 0;
+  s->layers[0].material = NULL;
+  int *cut = modelfile_natural_parts(f);
+  const char *file = spec_str(s, base_name(path));
+  for (int i = 0; i < arr_len(cut); i++) {
+    PartSpec *p = spec_add_part(s, 0, SHAPE_FILE);
+    const char *on = f->objects[cut[i]].name;
+    char pname[256];
+    snprintf(pname, sizeof pname, "%s", on);
+    for (int k = 2; spec_name_taken(s, pname) && k < 10000; k++) snprintf(pname, sizeof pname, "%.240s %d", on, k);
+    p->name = spec_str(s, pname);
+    p->file = file;
+    p->has_at = false;
+    if (arr_len(cut) > 1) arr_push(p->nodes, spec_str(s, on));
+  }
+  int parts = arr_len(cut);
+  arr_free(cut);
+  doc_add(e, s, json);
+  Doc *d = ed_doc(e);
+  d->dirty = true;
+  free(d->saved);
+  d->saved = NULL;
+  d->sel = (Sel){SEL_DEVICE, -1, -1};
+  ed_status(e, false, "%s: %d parts, %d objects. Name them, join them, split them. Not saved yet.", base_name(path), parts, arr_len(f->objects));
+  return e->cur;
+}
+
 // The kind of file is what it says inside: tours have levels, videos have scenes.
 int ed_open_file(Editor *e, const char *path, char *err, size_t errlen) {
   int have = doc_find(e, path);
@@ -221,6 +279,7 @@ int ed_open_file(Editor *e, const char *path, char *err, size_t errlen) {
     e->cur = have;
     return have;
   }
+  if (ends_with(path, ".glb") || ends_with(path, ".stl")) return import_model(e, path, err, errlen);
   char *text = file_read(path, NULL);
   if (!text) {
     snprintf(err, errlen, "can't read %s", path);
@@ -365,7 +424,7 @@ static void list_dir(Editor *e) {
     if (stat(full, &st)) continue;
     char name[512];
     if (S_ISDIR(st.st_mode)) snprintf(name, sizeof name, "%s/", en->d_name);
-    else if (strstr(en->d_name, ".json")) snprintf(name, sizeof name, "%s", en->d_name);
+    else if (strstr(en->d_name, ".json") || ((e->modal == MODAL_OPEN) && (strstr(en->d_name, ".glb") || strstr(en->d_name, ".stl")))) snprintf(name, sizeof name, "%s", en->d_name);
     else continue;
     arr_push(e->entries, dup_str(name));
   }
@@ -406,6 +465,32 @@ static void modal_back(Editor *e, Rect r) {
   ui_border(r, C_ACCENT, maxf(1, S(1)));
 }
 
+// Links in a file are relative to it. Saved somewhere else, they have to keep pointing at the same things.
+static void rebase_one(AssemblySpec *s, const char **link, const char *from, const char *to) {
+  if (!*link || !**link) return;
+  Arena ar = {0};
+  char out[1400];
+  const char *abs = path_join(&ar, from, *link);
+  path_rel(to, abs, out, sizeof out);
+  *link = spec_str(s, out);
+  arena_free(&ar);
+}
+
+static void rebase_links(Doc *d, const char *to) {
+  if (!d->path[0] || !strcmp(d->path, to)) return;
+  AssemblySpec *s = d->spec;
+  // The target has to exist for its folder to resolve, and it may not yet.
+  FILE *probe = fopen(to, "ab");
+  if (probe) fclose(probe);
+  for (int i = 0; i < arr_len(s->layers); i++) {
+    rebase_one(s, &s->layers[i].detail, d->path, to);
+    for (int k = 0; k < arr_len(s->layers[i].parts); k++) {
+      rebase_one(s, &s->layers[i].parts[k].detail, d->path, to);
+      rebase_one(s, &s->layers[i].parts[k].file, d->path, to);
+    }
+  }
+}
+
 static void files_finish(Editor *e) {
   char full[2200], err[512] = "";
   if (e->file_field[0] == '/') snprintf(full, sizeof full, "%s", e->file_field);
@@ -429,8 +514,11 @@ static void files_finish(Editor *e) {
   } else {
     Doc *d = ed_doc(e);
     if (d) {
+      rebase_links(d, full);
       snprintf(d->path, sizeof d->path, "%s", full);
+      spec_set_path(d->spec, full);
       ed_doc_save(e, d);
+      d->stale = true;
     }
   }
   e->modal = MODAL_NONE;
@@ -627,6 +715,7 @@ static void apply_doc_text(Doc *d, const char *text, Sel sel) {
   if (!s) return;
   spec_free(d->spec);
   d->spec = s;
+  spec_set_path(s, d->path[0] ? d->path : NULL);
   d->stale = true;
   d->version++;
   d->sel = sel;
@@ -715,6 +804,8 @@ static void status_bar(Editor *e) {
   bool fresh = e->status[0] && e->clock - e->status_at < 6;
   if (fresh) {
     ui_text_fit(S(14), y, W * 0.55f, S(11), FONT_REGULAR, e->status_err ? C_ERROR : C_BRIGHT, e->status);
+  } else if (d && d->model && d->model->file_error) {
+    ui_text_fit(S(14), y, W * 0.55f, S(11), FONT_REGULAR, C_ERROR, d->model->file_error);
   } else if (d && d->model && arr_len(d->model->missing)) {
     char msg[300];
     snprintf(msg, sizeof msg, "A wire or link names nothing: %s", d->model->missing[0]);

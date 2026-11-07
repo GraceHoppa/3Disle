@@ -6,8 +6,8 @@ uniform vec3 uEye;
 uniform int uMode;
 uniform vec3 uColor, uEmissive, uGlow;
 uniform float uMetal, uRough, uOpacity, uClearcoat, uEnvLods, uUvScale;
-uniform sampler2D uMap;
-uniform bool uHasMap;
+uniform sampler2D uMap, uMrMap;
+uniform bool uHasMap, uHasMr;
 uniform samplerCube uEnv;
 uniform vec3 uKeyDir, uKeyColor, uRimDir, uRimColor, uHemiSky, uHemiGround, uPointPos, uPointColor;
 uniform float uPointDist, uPointDecay;
@@ -88,9 +88,11 @@ void main() {
   vec3 V = normalize(uEye - vWorld);
   vec3 dxy = max(abs(dFdx(N)), abs(dFdy(N)));
   float geo = max(max(dxy.x, dxy.y), dxy.z);
-  float rough = min(max(uRough, 0.0525) + geo, 1.0);
-  vec3 diffuse = base * (1.0 - uMetal);
-  vec3 f0 = mix(vec3(0.04), base, uMetal);
+  vec2 mr = uHasMr ? texture(uMrMap, vUv * uUvScale).gb : vec2(1.0);
+  float metal = uMetal * mr.y;
+  float rough = min(max(uRough * mr.x, 0.0525) + geo, 1.0);
+  vec3 diffuse = base * (1.0 - metal);
+  vec3 f0 = mix(vec3(0.04), base, metal);
 
   vec3 outDiffuse = vec3(0.0), outSpec = vec3(0.0), ccSpec = vec3(0.0);
   float ccRough = min(0.0525 + geo, 1.0);

@@ -462,12 +462,104 @@ static Mesh *part_mesh(const PartSpec *p, float *h_out) {
   return g;
 }
 
+// ------------------------------------------------------------------ parts from model files
+static Texture *file_texture(const ModelFile *f, int image, bool linear) {
+  char key[1200];
+  snprintf(key, sizeof key, "file:%s:%d", f->path, image);
+  Texture *t = texture_cached(key);
+  if (t) return t;
+  int w, h;
+  u8 *rgba = modelfile_image(f, image, &w, &h);
+  if (!rgba) return NULL;
+  t = texture_put(key, w, h, rgba, true);
+  t->linear = linear;
+  return t;
+}
+
+static Material file_material(const ModelFile *f, int index, const PartSpec *p, const BuildOpts *o) {
+  // A part that names a material or colour says so on purpose: that wins over the file.
+  if (index < 0 || index >= arr_len(f->materials) || p->material || p->color) return material_of(p->material, p->color, p->glow);
+  const ModelMaterial *s = &f->materials[index];
+  Material mat = {0};
+  mat.mode = MAT_STANDARD;
+  mat.color = s->color;
+  mat.metalness = s->metalness;
+  mat.roughness = s->roughness;
+  mat.opacity = s->alpha;
+  mat.transparent = s->blend && s->alpha < 1;
+  mat.emissive = s->emissive;
+  mat.emissive_intensity = 1;
+  mat.uv_scale = 1;
+  mat.two_sided = s->two_sided;
+  if (o->paint) {
+    if (s->image >= 0) mat.tex = file_texture(f, s->image, false);
+    if (s->mr_image >= 0) mat.tex_mr = file_texture(f, s->mr_image, true);
+  }
+  return mat;
+}
+
+// The part sits as if the whole file were seated on the slab and centred on `at`, so parts cut from
+// one file assemble back into the model.
+static void build_file_part(Model *m, int group, const PartSpec *p, int li, int pi, float base, float x, float z, const BuildOpts *o) {
+  int id = add_node(m, group, p->name);
+  tag_part(&m->nodes[id], p, li, pi);
+  m->nodes[id].home = v3(x, base, z);
+  if (p->spin.set && (p->spin.is_rule || p->spin.num != 0)) m->nodes[id].spin = &p->spin;
+  if (!p->file) return;
+  Arena ar = {0};
+  char err[512] = "";
+  ModelFile *f = modelfile_load(path_join(&ar, m->spec->path ? m->spec->path : "./x", p->file), err, sizeof err);
+  arena_free(&ar);
+  if (!f) {
+    m->file_error = arena_str(&m->ar, err);
+    return;
+  }
+  if (f->credit) m->credit = arena_str(&m->ar, f->credit);
+  double units = p->units ? (!strcmp(p->units, "mm") ? 1 : 1000) : f->units;
+  float s = (float)(units * (is_set(p->scale) ? p->scale : 1));
+  Vec3 c = box_center(f->box);
+  Vec3 off = v3(-c.x * s, -f->box.min.y * s, -c.z * s);
+  bool *on = modelfile_pick(f, p->nodes, arr_len(p->nodes));
+  // One child per material: a part can hold any number of them.
+  for (int mi = -1; mi < arr_len(f->materials); mi++) {
+    Mesh *g = NULL;
+    for (int oi = 0; oi < arr_len(f->objects); oi++) {
+      if (!on[oi]) continue;
+      for (int k = 0; k < arr_len(f->objects[oi].prims); k++) {
+        const ModelPrim *pr = &f->prims[f->objects[oi].prims[k]];
+        bool mine = pr->material == mi || (mi == -1 && (pr->material < 0 || pr->material >= arr_len(f->materials)));
+        if (!mine) continue;
+        if (!g) {
+          g = mesh_new();
+          g->idx = NULL;
+        }
+        u32 first = (u32)arr_len(g->v);
+        Vertex *v = arr_add(g->v, arr_len(pr->pos));
+        for (int q = 0; q < arr_len(pr->pos); q++) {
+          Vec3 w = pr->pos[q], nn = pr->nor[q];
+          Vec2 uv = pr->uv ? pr->uv[q] : v2(0, 0);
+          v[q] = (Vertex){w.x * s + off.x, w.y * s + off.y, w.z * s + off.z, nn.x, nn.y, nn.z, uv.x, uv.y, 0, 0};
+        }
+        u32 *ix = arr_add(g->idx, arr_len(pr->idx));
+        for (int q = 0; q < arr_len(pr->idx); q++) ix[q] = first + pr->idx[q];
+      }
+    }
+    if (!g) continue;
+    mesh_update_box(g);
+    int child = add_node(m, id, NULL);
+    Node *n = &m->nodes[child];
+    n->mesh = g;
+    n->mats[0] = file_material(f, mi, p, o);
+    n->nmats = 1;
+  }
+  arr_free(on);
+}
+
 static void build_part(Model *m, int group, const PartSpec *p, int li, int pi, float slab_top, const Footprint *avoid, int navoid, const BuildOpts *o) {
   float x = p->has_at ? (float)p->at.x : 0, z = p->has_at ? (float)p->at.y : 0;
   float base = slab_top + (is_set(p->lift) ? (float)p->lift : 0);
   if (p->shape == SHAPE_FILE) {
-    int id = add_node(m, group, p->name);
-    tag_part(&m->nodes[id], p, li, pi);
+    build_file_part(m, group, p, li, pi, base, x, z, o);
     return;
   }
   float h;
@@ -852,6 +944,15 @@ Model *model_build(AssemblySpec *spec, BuildOpts opts) {
   m->center = box_center(m->box);
   m->radius = maxf(box_radius(m->box), 1e-6f);
 
+  // Parts cut from one model file are no stack: each comes away on its own, outward.
+  bool outward = arr_len(spec->layers) == 1 && spec->layers[0].thickness <= 0 && arr_len(spec->layers[0].parts) > 1;
+  for (int i = 0; outward && i < arr_len(spec->layers[0].parts); i++) outward = spec->layers[0].parts[i].shape == SHAPE_FILE;
+  if (outward) {
+    m->layered = false;
+    arr_clear(m->pieces);
+    for (int i = 1; i < arr_len(m->nodes); i++)
+      if ((m->nodes[i].flags & NF_PART) && m->nodes[i].part_index >= 0 && m->nodes[i].parent >= 0 && (m->nodes[m->nodes[i].parent].flags & NF_LAYER)) arr_push(m->pieces, i);
+  }
   // Disassemble: rank the pieces along y and open equal gaps about the stack's middle.
   int np = arr_len(m->pieces);
   arr_set_len(m->spread_dir, np * 3);
@@ -876,6 +977,40 @@ Model *model_build(AssemblySpec *spec, BuildOpts opts) {
     m->spread_dir[i * 3] = 0;
     m->spread_dir[i * 3 + 1] = (float)r - mid;
     m->spread_dir[i * 3 + 2] = 0;
+  }
+  if (!m->layered) {
+    // Out from where most of the pieces are, not the middle of the box: a motor with long leads should
+    // open about the motor. Far pieces go further, so the order they sit in stays readable.
+    float *xs = malloc(sizeof(float) * (size_t)maxi(np, 1) * 3);
+    for (int i = 0; i < np; i++) {
+      Box b = m->nodes[m->pieces[i]].box;
+      Vec3 c = box_is_empty(b) ? m->center : box_center(b);
+      xs[i * 3] = c.x, xs[i * 3 + 1] = c.y, xs[i * 3 + 2] = c.z;
+    }
+    Vec3 mid3 = m->center;
+    for (int axis = 0; axis < 3 && np; axis++) {
+      for (int i = 0; i < np; i++) {
+        float v = xs[i * 3 + axis];
+        int j = i;
+        while (j > 0 && along[j - 1] > v) along[j] = along[j - 1], j--;
+        along[j] = v;
+      }
+      float med = along[np / 2];
+      if (axis == 0) mid3.x = med;
+      if (axis == 1) mid3.y = med;
+      if (axis == 2) mid3.z = med;
+    }
+    float far = 1e-6f;
+    for (int i = 0; i < np; i++) far = maxf(far, v3dist(v3(xs[i * 3], xs[i * 3 + 1], xs[i * 3 + 2]), mid3));
+    for (int i = 0; i < np; i++) {
+      Vec3 d = v3sub(v3(xs[i * 3], xs[i * 3 + 1], xs[i * 3 + 2]), mid3);
+      float l = v3len(d);
+      Vec3 u = l > m->radius * 0.02f ? v3scale(d, 1 / l) : v3(0, i & 1 ? -1.f : 1.f, 0);
+      Vec3 o = v3add(v3scale(d, 1 / far), v3scale(u, 0.3f));
+      m->spread_dir[i * 3] = o.x, m->spread_dir[i * 3 + 1] = o.y, m->spread_dir[i * 3 + 2] = o.z;
+    }
+    free(xs);
+    m->spread_gap = m->radius * 0.9f;
   }
   free(order);
   free(along);
@@ -996,7 +1131,7 @@ static void apply_spread(Model *m) {
   float amount = m->explode;
   for (int i = 0; i < arr_len(m->pieces); i++) {
     Node *n = &m->nodes[m->pieces[i]];
-    n->off_spread = v3(0, m->spread_dir[i * 3 + 1] * m->spread_gap * amount, 0);
+    n->off_spread = v3(m->spread_dir[i * 3] * m->spread_gap * amount, m->spread_dir[i * 3 + 1] * m->spread_gap * amount, m->spread_dir[i * 3 + 2] * m->spread_gap * amount);
   }
 }
 void model_set_explode(Model *m, float amount) {
@@ -1014,6 +1149,7 @@ int node_top_piece(const Model *m, int node) {
 }
 
 void model_make_room(Model *m, int node) {
+  if (!m->layered) return; // pieces of a model have no stack to open
   int np = arr_len(m->pieces);
   int top = node >= 0 ? node_top_piece(m, node) : -1;
   // Bottom to top, by assembled position.

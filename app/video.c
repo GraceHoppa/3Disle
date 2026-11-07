@@ -69,6 +69,10 @@ void shot_draw_overlay(const Shot *s, const ShotFrame *f, double t, float w, flo
     np++;
     draw_tag(x, ty, y - ty, text, fade_win(t, l->t0, l->t1, 0.3));
   }
+  if (f->model->credit) {
+    float cw = minf(ui_text_width(S(11), FONT_REGULAR, 0, f->model->credit), w * 0.6f);
+    ui_text_fit(w - cw - S(16), h - S(26), cw + 1, S(11), FONT_REGULAR, c_alpha(C_DIM, 0.8f), f->model->credit);
+  }
   for (int i = 0; i < arr_len(s->captions); i++) {
     const ShotCaption *c = &s->captions[i];
     if (t < c->t0 || t > c->t1) continue;

@@ -8,7 +8,7 @@ CHROMIUM=${CHROMIUM:-$(command -v chromium || command -v chromium-browser || com
 T=$(mktemp -d)
 trap 'rm -rf "$T"' EXIT
 fails=0
-for f in public/models/drone/tour.json public/models/rtx5070ti/tour.json public/models/drone/motor.json; do
+for f in public/models/drone/tour.json public/models/rtx5070ti/tour.json public/models/drone/motor.json public/projects/motor/project.json; do
   n=$(echo "$f" | tr '/.' '__')
   if ! "$BIN" export "$f" -o "$T/$n.html" >/dev/null; then
     echo "FAIL export $f"

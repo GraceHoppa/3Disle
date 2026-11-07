@@ -77,6 +77,10 @@ typedef struct {
   Repeat repeat;
   KV *specs; // arr
   bool has_specs;
+  // Shape `file`: which of the file's objects, and how big. No names: all of it.
+  const char **nodes; // arr
+  double scale;       // on top of the file's own units
+  const char *units;  // "m" or "mm"; unset: what the format says
   Json *extra;
 } PartSpec;
 
@@ -118,6 +122,7 @@ typedef struct {
 
 typedef struct {
   Arena ar;
+  const char *path; // where it came from, for the files it names; not saved
   const char *name;
   Dbl2 footprint;
   LayerSpec *layers;     // arr
@@ -137,6 +142,7 @@ Json *spec_to_json(Arena *ar, const AssemblySpec *s);
 char *spec_write(const AssemblySpec *s); // free() the result
 bool spec_save(const AssemblySpec *s, const char *path);
 AssemblySpec *spec_clone(const AssemblySpec *s);
+void spec_set_path(AssemblySpec *s, const char *path);
 
 // Editor helpers: the new item starts with sensible values and a free name.
 PartSpec *spec_add_part(AssemblySpec *s, int layer, Shape shape);

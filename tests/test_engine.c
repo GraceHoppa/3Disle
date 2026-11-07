@@ -255,6 +255,160 @@ static void test_editing(void) {
   spec_free(w);
 }
 
+// ------------------------------------------------------------------ model files
+static u8 *small_glb(size_t *out) {
+  // Two objects, a parent and its child, each one triangle, and the child moved up by a metre.
+  const char *js = "{\"asset\":{\"version\":\"2.0\",\"extras\":{\"author\":\"A\",\"license\":\"L\"}},\"scene\":0,\"scenes\":[{\"nodes\":[0]}],"
+                   "\"nodes\":[{\"name\":\"Top\",\"children\":[1,2]},{\"name\":\"Base plate\",\"mesh\":0},{\"name\":\"Arm.1\",\"mesh\":0,\"translation\":[0,1,0]}],"
+                   "\"meshes\":[{\"primitives\":[{\"attributes\":{\"POSITION\":0},\"indices\":1,\"material\":0}]}],"
+                   "\"materials\":[{\"name\":\"m\",\"pbrMetallicRoughness\":{\"baseColorFactor\":[1,0,0,1],\"metallicFactor\":0,\"roughnessFactor\":0.5}}],"
+                   "\"accessors\":[{\"bufferView\":0,\"componentType\":5126,\"count\":3,\"type\":\"VEC3\"},{\"bufferView\":1,\"componentType\":5123,\"count\":3,\"type\":\"SCALAR\"}],"
+                   "\"bufferViews\":[{\"buffer\":0,\"byteOffset\":0,\"byteLength\":36},{\"buffer\":0,\"byteOffset\":36,\"byteLength\":6}],\"buffers\":[{\"byteLength\":44}]}";
+  size_t jl = strlen(js), jp = (jl + 3) & ~(size_t)3, total = 12 + 8 + jp + 8 + 44;
+  u8 *b = calloc(1, total);
+  u32 h[3] = {0x46546c67, 2, (u32)total};
+  memcpy(b, h, 12);
+  u32 ch[2] = {(u32)jp, 0x4e4f534a};
+  memcpy(b + 12, ch, 8);
+  memset(b + 20, ' ', jp);
+  memcpy(b + 20, js, jl);
+  u32 ch2[2] = {44, 0x004e4942};
+  memcpy(b + 20 + jp, ch2, 8);
+  float pos[9] = {0, 0, 0, 1, 0, 0, 0, 0, 1};
+  uint16_t ix[3] = {0, 1, 2};
+  memcpy(b + 28 + jp, pos, 36);
+  memcpy(b + 64 + jp, ix, 6);
+  *out = total;
+  return b;
+}
+
+static u32 fuzz_next(u32 *s) {
+  *s = *s * 1664525u + 1013904223u;
+  return *s >> 8;
+}
+
+// Whatever the bytes say, parsing stays inside them. Run under the sanitizers by `make asan`.
+static void fuzz_bytes(const u8 *orig, size_t n, int rounds, size_t lo, size_t hi, u32 seed, int *parsed) {
+  for (int r = 0; r < rounds; r++) {
+    size_t len = r % 7 == 0 ? fuzz_next(&seed) % (n + 1) : n;
+    u8 *c = malloc(n + 1);
+    memcpy(c, orig, n);
+    int flips = 1 + (int)(fuzz_next(&seed) % 12);
+    for (int k = 0; k < flips && hi > lo; k++) {
+      size_t at = lo + fuzz_next(&seed) % (hi - lo);
+      if (at < n) c[at] = k & 1 ? (u8)fuzz_next(&seed) : (u8)("0123456789-.e\"[]{},"[fuzz_next(&seed) % 19]);
+    }
+    char err[256];
+    ModelFile *f = modelfile_parse(c, len, "fuzz", err, sizeof err);
+    if (f) {
+      (*parsed)++;
+      modelfile_free(f);
+    }
+  }
+}
+
+static void test_model_files(void) {
+  char err[512] = "";
+  size_t n;
+  u8 *glb = small_glb(&n);
+  u8 *copy = malloc(n);
+  memcpy(copy, glb, n);
+  ModelFile *f = modelfile_parse(copy, n, "small.glb", err, sizeof err);
+  CHECK(f, "small GLB: %s", err);
+  if (f) {
+    CHECK(arr_len(f->objects) == 3 && arr_len(f->prims) == 2, "objects and primitives");
+    CHECK(NEAR(f->box.max.y, 1, 1e-6), "the child's matrix is baked in");
+    CHECK(f->units == 1000, "glTF is metres");
+    CHECK(f->credit && strstr(f->credit, "A"), "credit comes from the file");
+    const char *ask[] = {"Base_plate"}, *ask2[] = {"Arm1"}, *ask3[] = {"Top"}, *ask4[] = {"nope"};
+    bool *on = modelfile_pick(f, ask, 1);
+    CHECK(!on[0] && on[1] && !on[2], "picks by a rewritten name");
+    arr_free(on);
+    on = modelfile_pick(f, ask2, 1);
+    CHECK(on[2] && !on[1], "dots are dropped the way three.js drops them");
+    arr_free(on);
+    on = modelfile_pick(f, ask3, 1);
+    CHECK(on[0] && on[1] && on[2], "a parent brings its children");
+    arr_free(on);
+    on = modelfile_pick(f, ask4, 1);
+    CHECK(!on[0] && !on[1] && !on[2], "an unknown name picks nothing");
+    arr_free(on);
+    int *cut = modelfile_natural_parts(f);
+    CHECK(arr_len(cut) == 2, "cut where the file branches, got %d", arr_len(cut));
+    arr_free(cut);
+    modelfile_free(f);
+  }
+  int parsed = 0;
+  fuzz_bytes(glb, n, 6000, 0, n, 12345, &parsed);
+  CHECK(parsed >= 0, "survived");
+  free(glb);
+
+  // STL, both forms.
+  u8 *bin = calloc(1, 84 + 50);
+  u32 one = 1;
+  memcpy(bin + 80, &one, 4);
+  float v[9] = {0, 0, 0, 10, 0, 0, 0, 0, 10};
+  memcpy(bin + 84 + 12, v, 36);
+  f = modelfile_parse(bin, 134, "b.stl", err, sizeof err);
+  CHECK(f && f->is_stl && arr_len(f->prims[0].idx) == 3 && f->units == 1, "binary STL");
+  modelfile_free(f);
+  const char *ascii = "solid x\nfacet normal 0 0 1\nouter loop\nvertex 0 0 0\nvertex 1 0 0\nvertex 0 1e1 0\nendloop\nendfacet\nendsolid";
+  u8 *at = malloc(strlen(ascii));
+  memcpy(at, ascii, strlen(ascii));
+  f = modelfile_parse(at, strlen(ascii), "a.stl", err, sizeof err);
+  CHECK(f && NEAR(f->box.max.y, 10, 1e-6), "text STL");
+  modelfile_free(f);
+  u8 *junk = calloc(1, 16);
+  f = modelfile_parse(junk, 16, "j.stl", err, sizeof err);
+  CHECK(!f, "junk is refused");
+
+  // The real one: a project reads as one layer of file parts.
+  AssemblySpec *s = spec_load("public/projects/motor/project.json", err, sizeof err);
+  CHECK(s, "project: %s", err);
+  if (s) {
+    CHECK(arr_len(s->layers) == 1 && arr_len(s->layers[0].parts) > 5, "project parts");
+    Model *m = model_build(s, (BuildOpts){.paint = false});
+    CHECK(!m->file_error, "model file: %s", m->file_error ? m->file_error : "");
+    CHECK(!m->layered && arr_len(m->pieces) == arr_len(s->layers[0].parts), "each part is a piece");
+    CHECK(m->radius > 5 && m->radius < 1000, "units come out in millimetres: radius %f", (double)m->radius);
+    CHECK(m->credit != NULL, "the model's credit reaches the model");
+    int bell = model_find(m, "Bell");
+    CHECK(bell >= 0, "named part");
+    Box before = node_box_now(m, bell);
+    model_set_explode(m, 1);
+    model_update(m);
+    Box after = node_box_now(m, bell);
+    CHECK(v3dist(box_center(before), box_center(after)) > 1, "the part moves when taken apart");
+    model_free(m);
+    char *text = spec_write(s);
+    AssemblySpec *again = spec_parse(text, err, sizeof err);
+    CHECK(again && arr_len(again->layers[0].parts[0].nodes) == arr_len(s->layers[0].parts[0].nodes), "saved as a device, object names survive");
+    free(text);
+    spec_free(again);
+    spec_free(s);
+  }
+  // Fuzz the real file's JSON and chunk headers; its geometry bytes can only change how it looks.
+  size_t mn = 0;
+  char *motor = file_read("public/projects/motor/motor.glb", &mn);
+  CHECK(motor != NULL, "motor.glb");
+  if (motor) {
+    u32 jl;
+    memcpy(&jl, motor + 12, 4);
+    parsed = 0;
+    fuzz_bytes((const u8 *)motor, mn, 40, 0, 20 + (size_t)jl + 8, 777, &parsed);
+    CHECK(parsed >= 0, "survived");
+    ModelFile *mf = modelfile_parse((u8 *)motor, mn, "motor", err, sizeof err);
+    CHECK(mf && arr_len(mf->images) == 3, "images found");
+    if (mf) {
+      int w = 0, h = 0;
+      u8 *px = modelfile_image(mf, 0, &w, &h);
+      CHECK(px && w > 0 && h > 0, "image decodes");
+      free(px);
+      modelfile_free(mf);
+    }
+  }
+}
+
 int main(void) {
   test_json();
   test_logic();
@@ -264,6 +418,8 @@ int main(void) {
   test_pick();
   test_paint();
   test_editing();
+  test_model_files();
+  modelfile_cache_clear();
   printf("%d checks, %d failed\n", g_checks, g_fail);
   return g_fail ? 1 : 0;
 }
