@@ -9,3 +9,5 @@ playwright-report
 legacy-ts/demo/*/
 build/
 build-asan/
+# rendered videos next to the models (3disle render): regenerated, not kept in git
+public/models/**/*.mp4
